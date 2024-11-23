@@ -16,24 +16,27 @@ func (c *CMD) Auto() string {
 	chmodCMD, chmodARG := c.informer.CMDChmod()
 
 	ARGstr := strings.Builder{}
-
+	ARGstr.WriteString(mountCMD)
+	ARGstr.WriteString(" ")
 	for _, v := range mountARG {
 		ARGstr.WriteString(v)
 		ARGstr.WriteString(" ")
 	}
 
-	err = syscall.Exec(mountCMD, mountARG, nil)
+	err = syscall.Exec(ARGstr.String(), nil, nil)
 	if err != nil {
 		return fmt.Sprintf("auto(mount) error: %s\ncommand: %s %s", err.Error(), mountCMD, ARGstr.String())
 	}
 
 	ARGstr.Reset()
+	ARGstr.WriteString(chmodCMD)
+	ARGstr.WriteString(" ")
 	for _, v := range chmodARG {
 		ARGstr.WriteString(v)
 		ARGstr.WriteString(" ")
 	}
 
-	err = syscall.Exec(chmodCMD, chmodARG, nil)
+	err = syscall.Exec(ARGstr.String(), nil, nil)
 	if err != nil {
 		return fmt.Sprintf("auto(chmod) error: %s\ncommand: %s %s", err.Error(), chmodCMD, ARGstr.String())
 	}
