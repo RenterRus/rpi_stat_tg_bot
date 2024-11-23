@@ -25,7 +25,7 @@ func (c *CMD) Auto() string {
 
 	err = syscall.Exec(ARGstr.String(), nil, nil)
 	if err != nil {
-		return fmt.Sprintf("auto(mount) error: %s\ncommand: %s %s", err.Error(), mountCMD, ARGstr.String())
+		return fmt.Sprintf("auto(mount) error: %s\ncommand: %s", err.Error(), ARGstr.String())
 	}
 
 	ARGstr.Reset()
@@ -38,7 +38,7 @@ func (c *CMD) Auto() string {
 
 	err = syscall.Exec(ARGstr.String(), nil, nil)
 	if err != nil {
-		return fmt.Sprintf("auto(chmod) error: %s\ncommand: %s %s", err.Error(), chmodCMD, ARGstr.String())
+		return fmt.Sprintf("auto(chmod) error: %s\ncommand: %s", err.Error(), ARGstr.String())
 	}
 
 	return "auto-connection attempt completed"
