@@ -5,11 +5,12 @@ import (
 	"strings"
 )
 
-func (c *CMD) Info() string {
+func (c *CMD) Info() (string, string) {
 	message := strings.Builder{}
 	m := ""
 	var err error
-	if m, err = c.informer.Basic(); err != nil {
+	cmd := ""
+	if m, cmd, err = c.informer.Basic(); err != nil {
 		message.WriteString("Error branch\n")
 		message.WriteString("Reason: ")
 		message.WriteString(err.Error())
@@ -52,8 +53,8 @@ func (c *CMD) Info() string {
 			}
 		}
 
-		return message.String()
+		return message.String(), cmd
 	}
 
-	return m
+	return m, cmd
 }

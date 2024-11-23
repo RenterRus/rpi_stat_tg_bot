@@ -6,12 +6,12 @@ import (
 	"strings"
 )
 
-func (k *KekInformer) Basic() (string, error) {
+func (k *KekInformer) Basic() (string, string, error) {
 	basic := strings.Builder{}
 
 	ips, err := k.finder.FindIP()
 	if err != nil {
-		return "", fmt.Errorf("Basic (IP): %w", err)
+		return "", "", fmt.Errorf("Basic (IP): %w", err)
 	}
 	log.Println(ips)
 
@@ -25,7 +25,7 @@ func (k *KekInformer) Basic() (string, error) {
 
 	md, err := k.finder.FindMD()
 	if err != nil {
-		return "", fmt.Errorf("Basic (MD): %w", err)
+		return "", "", fmt.Errorf("Basic (MD): %w", err)
 	}
 	log.Println(md)
 	basic.WriteString("Finding storage: ")
@@ -33,27 +33,31 @@ func (k *KekInformer) Basic() (string, error) {
 
 	basic.WriteString("\n------------\n")
 	basic.WriteString("Enter this command for fast implement storage into ftp: ")
-	basic.WriteString("sudo mount /dev/")
-	basic.WriteString(md)
-	basic.WriteString(" /home/")
-	basic.WriteString(k.root_user)
-	basic.WriteString(" && ")
-	basic.WriteString("sudo chown ")
-	basic.WriteString(k.root_user)
-	basic.WriteString(" /home/")
-	basic.WriteString(k.root_user)
-	basic.WriteString("/raid/")
 
+	cmd := strings.Builder{}
+
+	cmd.WriteString("sudo mount /dev/")
+	cmd.WriteString(md)
+	cmd.WriteString(" /home/")
+	cmd.WriteString(k.root_user)
+	cmd.WriteString(" && ")
+	cmd.WriteString("sudo chown ")
+	cmd.WriteString(k.root_user)
+	cmd.WriteString(" /home/")
+	cmd.WriteString(k.root_user)
+	cmd.WriteString("/raid/")
+
+	basic.WriteString(cmd.String())
 	basic.WriteString("\n")
 	basic.WriteString("\n")
 
 	full, err := k.FullState()
 	if err != nil {
 		basic.WriteString(fmt.Sprintf("Full state output error: %s\n", err.Error()))
-		return basic.String(), nil
+		return basic.String(), cmd.String(), nil
 	}
 
 	basic.WriteString(full)
 
-	return basic.String(), nil
+	return basic.String(), cmd.String(), nil
 }

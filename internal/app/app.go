@@ -8,7 +8,7 @@ import (
 	"time"
 )
 
-const time_to_start = 8
+const time_to_start = 7
 
 type App struct {
 	Conf Config
@@ -55,9 +55,6 @@ func (a *App) Run() {
 			User:   a.Conf.FTPuser,
 		}),
 	})
-
-	// lazy wait for device online
-	time.Sleep(time.Duration(a.TTS) * time.Second)
 
 	var wg sync.WaitGroup
 	wg.Add(1)

@@ -53,6 +53,8 @@ func (k *KekBot) Run() {
 			shutdown := false
 			var msg tgbotapi.MessageConfig
 			m := ""
+			command := ""
+
 			switch update.CallbackQuery.Data {
 			case buttonsMap["Shutdown"].Text:
 				m, shutdown = cmd.Shutdown()
@@ -61,7 +63,7 @@ func (k *KekBot) Run() {
 			case buttonsMap["AutoConnect"].Text:
 				m = cmd.Auto()
 			case buttonsMap["Info"].Text:
-				m = cmd.Info()
+				m, command = cmd.Info()
 			default:
 				m = "Press one of button:\nshutdown - shutdown server\nrestart - restart server\nauto - attempt auto connection\ninfo - show info\n"
 			}
@@ -70,6 +72,13 @@ func (k *KekBot) Run() {
 			msg = tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, m)
 			if _, err := bot.Send(msg); err != nil {
 				panic(err)
+			}
+
+			if command != "" {
+				msg = tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, command)
+				if _, err := bot.Send(msg); err != nil {
+					panic(err)
+				}
 			}
 
 			if shutdown {
