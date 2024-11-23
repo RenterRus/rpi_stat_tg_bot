@@ -22,6 +22,7 @@ func (k *KekInformer) Basic() (string, string, error) {
 			basic.WriteString(", ")
 		}
 	}
+	basic.WriteString(" ")
 
 	md, err := k.finder.FindMD()
 	if err != nil {
