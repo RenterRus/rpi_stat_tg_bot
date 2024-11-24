@@ -62,14 +62,14 @@ func (k *KekBot) Run() {
 			case buttonsMap["Info"].Text:
 				command := ""
 				m, command = cmd.Info()
-				if _, err := bot.Send(tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, "Try this command to connect raid to ftp server")); err != nil {
+				if _, err := bot.Send(tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, "Try this command to fast connect raid to ftp server")); err != nil {
 					panic(err)
 				}
 				if _, err := bot.Send(tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, command)); err != nil {
 					panic(err)
 				}
 
-				if _, err := bot.Send(tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, "Fast update into server:")); err != nil {
+				if _, err := bot.Send(tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, "Fast update and restart bot into server")); err != nil {
 					panic(err)
 				}
 
