@@ -33,7 +33,6 @@ func (k *KekInformer) Basic() (string, string, error) {
 	basic.WriteString(md)
 
 	basic.WriteString("\n------------\n")
-	basic.WriteString("Enter this command for fast implement storage into ftp: ")
 
 	cmd := strings.Builder{}
 
@@ -48,8 +47,6 @@ func (k *KekInformer) Basic() (string, string, error) {
 	cmd.WriteString(k.root_user)
 	cmd.WriteString("/raid/")
 
-	basic.WriteString(cmd.String())
-	basic.WriteString("\n")
 	basic.WriteString("\n")
 
 	full, err := k.FullState()
