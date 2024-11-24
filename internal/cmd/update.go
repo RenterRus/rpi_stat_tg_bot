@@ -18,7 +18,7 @@ func (c *CMD) Update() string {
 		return fmt.Sprintf("update error: %s", err.Error())
 	}
 
-	if err := exec.Command("/bin/sh", "-c", "sudo systemctl restart runbot.service").Run(); err != nil {
+	if err := exec.Command("/bin/sh", "-c", "sudo systemctl reboot runbot.service").Run(); err != nil {
 		return fmt.Sprintf("update error: %s", err.Error())
 	}
 
