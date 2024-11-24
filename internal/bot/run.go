@@ -29,11 +29,11 @@ func (k *KekBot) Run() {
 			// Убеждаемся, что пользователь из разрешенного пула
 			var msg tgbotapi.MessageConfig
 			if _, ok := k.allowedIPs[fmt.Sprintf("%d", int(update.Message.Chat.ID))]; ok {
-				msg = tgbotapi.NewMessage(update.Message.Chat.ID, k.welcomeMSG(update.Message.Chat.ID))
-
 				switch update.Message.Text {
 				case "/open":
 					msg.ReplyMarkup = keyboard()
+				default:
+					msg = tgbotapi.NewMessage(update.Message.Chat.ID, k.welcomeMSG(update.Message.Chat.ID))
 				}
 			} else { // Если нет, то даем ответ о запрещенном доступе
 				msg = tgbotapi.NewMessage(update.Message.Chat.ID, fmt.Sprintf("Access is denied: %d", int(update.Message.Chat.ID)))

@@ -38,7 +38,7 @@ func (k *KekBot) welcomeMSG(chatID int64) string {
 	welcome.WriteString(fmt.Sprintf("Access is allowed for: %d", int(chatID)))
 	welcome.WriteString("\n")
 
-	welcome.WriteString("write /open to open main menu")
+	welcome.WriteString("write /open to open menu-keyboard")
 	welcome.WriteString("\n")
 
 	m, _, err := k.informer.Basic()
