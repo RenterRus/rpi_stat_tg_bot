@@ -34,10 +34,14 @@ func (k *KekBot) Run() {
 				switch update.Message.Text {
 				case "/open":
 					msg.ReplyMarkup = keyboard()
-				case "/help":
-					msg.Text = "shutdown - shutdown server\nrestart - restart server\nauto - attempt auto connection\ninfo - show info"
 				}
 
+				msg = tgbotapi.NewMessage(update.Message.Chat.ID, "write /open to open main menu")
+				m, cmd, err := k.informer.Basic()
+				if err != nil {
+					msg = tgbotapi.NewMessage(update.Message.Chat.ID, m)
+					msg = tgbotapi.NewMessage(update.Message.Chat.ID, cmd)
+				}
 			} else {
 				msg = tgbotapi.NewMessage(update.Message.Chat.ID, fmt.Sprintf("Access is denied: %d", int(update.Message.Chat.ID)))
 			}
