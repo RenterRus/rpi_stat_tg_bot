@@ -40,11 +40,7 @@ func (k *KekBot) welcomeMSG(chatID int64) string {
 	welcome.WriteString("write /open to open menu-keyboard")
 	welcome.WriteString("\n")
 
-	m, _, err := k.informer.Basic()
-	if err == nil {
-		welcome.WriteString(m)
-		welcome.WriteString("\n")
-	}
+	welcome.WriteString(k.informer.IPFormatter())
 
 	return welcome.String()
 }

@@ -9,20 +9,7 @@ import (
 func (k *KekInformer) Basic() (string, string, error) {
 	basic := strings.Builder{}
 
-	ips, err := k.finder.FindIP()
-	if err != nil {
-		return "", "", fmt.Errorf("Basic (IP): %w", err)
-	}
-	log.Println(ips)
-
-	basic.WriteString("Running ip: ")
-	for i, v := range ips {
-		basic.WriteString(v.String())
-		if i > 0 && i < len(ips)-1 {
-			basic.WriteString(", ")
-		}
-	}
-	basic.WriteString(" ")
+	basic.WriteString(k.IPFormatter())
 
 	md, err := k.finder.FindMD()
 	if err != nil {

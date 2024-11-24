@@ -5,4 +5,5 @@ type Informer interface {
 	FullState() (string, error)
 	CMDMount(md string) (string, []string)
 	CMDChmod() (string, []string)
+	IPFormatter() string
 }
