@@ -1,8 +1,10 @@
 package bot
 
 import (
+	"fmt"
 	"rpi_stat_tg_bot/internal/finder"
 	"rpi_stat_tg_bot/internal/informer"
+	"strings"
 )
 
 type KekBot struct {
@@ -29,4 +31,21 @@ func NewKekBot(conf KekBotConf) Bot {
 		timeout:    conf.Timeout,
 		allowedIPs: conf.AllowedIPs,
 	}
+}
+
+func (k *KekBot) welcomeMSG(chatID int64) string {
+	welcome := strings.Builder{}
+	welcome.WriteString(fmt.Sprintf("Access is allowed for: %d", int(chatID)))
+	welcome.WriteString("\n")
+
+	welcome.WriteString("write /open to open main menu")
+	welcome.WriteString("\n")
+
+	m, _, err := k.informer.Basic()
+	if err == nil {
+		welcome.WriteString(m)
+		welcome.WriteString("\n")
+	}
+
+	return welcome.String()
 }
