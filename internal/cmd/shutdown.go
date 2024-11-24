@@ -3,12 +3,13 @@ package cmd
 import (
 	"fmt"
 	"os/exec"
+	"strconv"
 )
 
-func (*CMD) Shutdown() (string, bool) {
-	if err := exec.Command("/bin/sh", "-c", "sudo shutdown -h 3").Run(); err != nil {
+func (c *CMD) Shutdown() (string, bool) {
+	if err := exec.Command("/bin/sh", "-c", "sudo shutdown -h "+strconv.Itoa(c.ttp)).Run(); err != nil {
 		return fmt.Sprintf("restart error: %s", err.Error()), false
 	}
 
-	return "Shutdown is planing after 5 minutes", true
+	return "Shutdown is planing after " + strconv.Itoa(c.ttp) + " minutes", true
 }

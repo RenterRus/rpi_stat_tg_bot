@@ -8,4 +8,5 @@ import (
 type CMD struct {
 	informer informer.Informer
 	finder   finder.Finder
+	ttp      int // time to any poweroff
 }
