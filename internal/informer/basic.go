@@ -29,7 +29,7 @@ func (k *KekInformer) Basic() (string, string, error) {
 		return "", "", fmt.Errorf("Basic (MD): %w", err)
 	}
 	log.Println(md)
-	basic.WriteString("Finding storage: ")
+	basic.WriteString("\nFinding storage: ")
 	basic.WriteString(md)
 
 	basic.WriteString("\n------------\n")
