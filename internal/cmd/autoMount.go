@@ -2,8 +2,8 @@ package cmd
 
 import (
 	"fmt"
+	"os/exec"
 	"strings"
-	"syscall"
 )
 
 func (c *CMD) Auto() string {
@@ -23,8 +23,8 @@ func (c *CMD) Auto() string {
 		ARGstr.WriteString(" ")
 	}
 
-	err = syscall.Exec(ARGstr.String(), nil, nil)
-	if err != nil {
+	cmd := exec.Command("/bin/sh", "-c", ARGstr.String())
+	if err = cmd.Run(); err != nil {
 		return fmt.Sprintf("auto(mount) error: %s\ncommand: %s", err.Error(), ARGstr.String())
 	}
 
@@ -36,8 +36,8 @@ func (c *CMD) Auto() string {
 		ARGstr.WriteString(" ")
 	}
 
-	err = syscall.Exec(ARGstr.String(), nil, nil)
-	if err != nil {
+	cmd = exec.Command("/bin/sh", "-c", ARGstr.String())
+	if err = cmd.Run(); err != nil {
 		return fmt.Sprintf("auto(chmod) error: %s\ncommand: %s", err.Error(), ARGstr.String())
 	}
 
