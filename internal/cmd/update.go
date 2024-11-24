@@ -22,5 +22,5 @@ func (c *CMD) Update() string {
 		return fmt.Sprintf("update error: %s", err.Error())
 	}
 
-	return "Attempt to update is running. Maybe ruquried reboot"
+	return "Attempt to update is running///. Maybe ruquried reboot"
 }
