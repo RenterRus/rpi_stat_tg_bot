@@ -6,9 +6,21 @@ import (
 )
 
 func (c *CMD) Update() string {
-	if err := exec.Command("/bin/sh", "-c", "sudo rm main && git pull && go build cmd/main.go && sudo systemctl stop runbot.service && sudo systemctl start runbot.service && sudo systemctl enable runbot.service && sudo systemctl status runbot.service").Run(); err != nil {
+	if err := exec.Command("/bin/sh", "-c", "sudo rm main").Run(); err != nil {
 		return fmt.Sprintf("update error: %s", err.Error())
 	}
 
-	return "Attempt to update is running"
+	if err := exec.Command("/bin/sh", "-c", "git pull").Run(); err != nil {
+		return fmt.Sprintf("update error: %s", err.Error())
+	}
+
+	if err := exec.Command("/bin/sh", "-c", "go build cmd/main.go").Run(); err != nil {
+		return fmt.Sprintf("update error: %s", err.Error())
+	}
+
+	if err := exec.Command("/bin/sh", "-c", "sudo systemctl restart runbot.service").Run(); err != nil {
+		return fmt.Sprintf("update error: %s", err.Error())
+	}
+
+	return "Attempt to update is running. Maybe ruquried reboot"
 }
