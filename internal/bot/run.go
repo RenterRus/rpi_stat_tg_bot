@@ -31,6 +31,11 @@ func (k *KekBot) Run() {
 			if _, ok := k.allowedIPs[fmt.Sprintf("%d", int(update.Message.Chat.ID))]; ok {
 				msg = tgbotapi.NewMessage(update.Message.Chat.ID, k.welcomeMSG(update.Message.Chat.ID))
 
+				_, command := cmd.Info()
+				if _, err := bot.Send(tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, command)); err != nil {
+					panic(err)
+				}
+
 				switch update.Message.Text {
 				case "/open":
 					msg.ReplyMarkup = keyboard()

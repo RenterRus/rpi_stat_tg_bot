@@ -63,7 +63,7 @@ func (a *App) Run() {
 			wg.Done()
 		}()
 
-		// lazy wait for device online
+		// Ленивое ожидание, пока устройство загрузится
 		time.Sleep(time.Duration(a.TTS) * time.Second)
 		bot.Run()
 	}()
