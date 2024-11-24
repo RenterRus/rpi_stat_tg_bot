@@ -30,17 +30,16 @@ func (k *KekBot) Run() {
 			var msg tgbotapi.MessageConfig
 			if _, ok := k.allowedIPs[fmt.Sprintf("%d", int(update.Message.Chat.ID))]; ok {
 				msg = tgbotapi.NewMessage(update.Message.Chat.ID, fmt.Sprintf("Access is allowed for: %d", int(update.Message.Chat.ID)))
-
-				switch update.Message.Text {
-				case "/open":
-					msg.ReplyMarkup = keyboard()
-				}
-
 				msg = tgbotapi.NewMessage(update.Message.Chat.ID, "write /open to open main menu")
 				m, cmd, err := k.informer.Basic()
 				if err != nil {
 					msg = tgbotapi.NewMessage(update.Message.Chat.ID, m)
 					msg = tgbotapi.NewMessage(update.Message.Chat.ID, cmd)
+				}
+
+				switch update.Message.Text {
+				case "/open":
+					msg.ReplyMarkup = keyboard()
 				}
 			} else {
 				msg = tgbotapi.NewMessage(update.Message.Chat.ID, fmt.Sprintf("Access is denied: %d", int(update.Message.Chat.ID)))
