@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"rpi_stat_tg_bot/internal/cmd"
+	"strings"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
@@ -29,13 +30,23 @@ func (k *KekBot) Run() {
 
 			var msg tgbotapi.MessageConfig
 			if _, ok := k.allowedIPs[fmt.Sprintf("%d", int(update.Message.Chat.ID))]; ok {
-				msg = tgbotapi.NewMessage(update.Message.Chat.ID, fmt.Sprintf("Access is allowed for: %d", int(update.Message.Chat.ID)))
-				msg = tgbotapi.NewMessage(update.Message.Chat.ID, "write /open to open main menu")
+				welcome := strings.Builder{}
+				welcome.WriteString(fmt.Sprintf("Access is allowed for: %d", int(update.Message.Chat.ID)))
+				welcome.WriteString("\n")
+
+				welcome.WriteString("write /open to open main menu")
+				welcome.WriteString("\n")
+
 				m, cmd, err := k.informer.Basic()
-				if err != nil {
-					msg = tgbotapi.NewMessage(update.Message.Chat.ID, m)
-					msg = tgbotapi.NewMessage(update.Message.Chat.ID, cmd)
+				if err == nil {
+					welcome.WriteString(m)
+					welcome.WriteString("\n")
+
+					welcome.WriteString(cmd)
+					welcome.WriteString("\n")
 				}
+
+				msg = tgbotapi.NewMessage(update.Message.Chat.ID, welcome.String())
 
 				switch update.Message.Text {
 				case "/open":
