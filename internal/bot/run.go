@@ -37,12 +37,9 @@ func (k *KekBot) Run() {
 				welcome.WriteString("write /open to open main menu")
 				welcome.WriteString("\n")
 
-				m, cmd, err := k.informer.Basic()
+				m, _, err := k.informer.Basic()
 				if err == nil {
 					welcome.WriteString(m)
-					welcome.WriteString("\n")
-
-					welcome.WriteString(cmd)
 					welcome.WriteString("\n")
 				}
 
