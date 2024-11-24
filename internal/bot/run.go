@@ -59,6 +59,7 @@ func (k *KekBot) Run() {
 				m, shutdown = cmd.Restart()
 			case buttonsMap["AutoConnect"].Text:
 				m = cmd.Auto()
+			case buttonsMap["BotUpdate"].Text:
 			case buttonsMap["Info"].Text:
 				command := ""
 				m, command = cmd.Info()
