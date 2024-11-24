@@ -12,6 +12,8 @@ https://lumpics.ru/how-to-create-ftp-server-in-linux/
 Написание скрипта автозапуска https://losst.pro/avtozagruzka-linux
 
 
+Посмотреть примеры скриптов можно тут, в example_run_script и systemd_service_example
+
 # Создание программного RAID-массива на mdadm
 
 https://www.dmosk.ru/miniinstruktions.php?mini=mdadm

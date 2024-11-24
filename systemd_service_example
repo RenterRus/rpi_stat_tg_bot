@@ -1,0 +1,15 @@
+>> nano /lib/systemd/system/runbot.service
+
+[Unit]
+Description=runbot service
+After=multi-user.target
+[Service]
+Type=idle
+ExecStart=PATH TO RUN SCRIPT<>
+[Install]
+WantedBy=multi-user.target
+
+
+>> sudo systemctl enable runbot.service
+>> sudo systemctl start runbot.service
+>> sudo systemctl status runbot.service
