@@ -11,10 +11,10 @@ func (k *KekInformer) FullState() (string, error) {
 		return "", fmt.Errorf("syscall.Statfs: %w", err)
 	}
 
-	return fmt.Sprintf("Size\nTotal: %d\nFree: %d\nAvailable: %d\nUsed: %d\n",
-			stat.Blocks*uint64(stat.Bsize),
-			stat.Bfree*uint64(stat.Bsize),
-			stat.Bavail*uint64(stat.Bsize),
-			(stat.Blocks*uint64(stat.Bsize))-(stat.Bfree*uint64(stat.Bsize))),
+	return fmt.Sprintf("Size\nTotal: %d gb(round int)\nFree: %d gb(round int)\nAvailable: %d gb(round int)\nUsed: %d gb(round int)\n",
+			int(((stat.Blocks*uint64(stat.Bsize)/1024)/1024)/1024),
+			int(((stat.Bfree*uint64(stat.Bsize)/1024)/1024)/1024),
+			int(((stat.Bavail*uint64(stat.Bsize)/1024)/1024)/1024),
+			int((((stat.Blocks*uint64(stat.Bsize))-(stat.Bfree*uint64(stat.Bsize)))/1024)/1024)/1024),
 		nil
 }
