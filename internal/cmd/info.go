@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"fmt"
 	"strings"
 )
 
@@ -16,26 +15,11 @@ func (c *CMD) Info() (string, string) {
 		message.WriteString(err.Error())
 		message.WriteString("\n")
 
-		md, err := c.finder.FindMD()
+		_, err := c.finder.FindMD()
 		if err != nil {
 			message.WriteString("Finding md error: ")
 			message.WriteString(err.Error())
 			message.WriteString("\n")
-		} else {
-			message.WriteString("try this command to connect raid to ftp server: ")
-			mountCMD, arg := c.informer.CMDMount(md)
-			for _, v := range arg {
-				mountCMD += fmt.Sprintf(" %s", v)
-			}
-			mountCMD += " "
-
-			chmodCMD, arg := c.informer.CMDChmod()
-			mountCMD += chmodCMD
-			for _, v := range arg {
-				mountCMD += fmt.Sprintf(" %s", v)
-			}
-
-			message.WriteString(mountCMD)
 		}
 
 		message.WriteString("\n")
