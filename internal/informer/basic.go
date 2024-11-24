@@ -19,8 +19,6 @@ func (k *KekInformer) Basic() (string, string, error) {
 	basic.WriteString("\nFinding storage: ")
 	basic.WriteString(md)
 
-	basic.WriteString("\n------------\n")
-
 	cmd := strings.Builder{}
 
 	cmd.WriteString("sudo mount /dev/")
