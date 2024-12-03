@@ -6,7 +6,7 @@ import (
 )
 
 func NewCMD(informer informer.Informer, finder finder.Finder) CMD {
-	const ttp = 2
+	const ttp = 1
 	return CMD{
 		informer: informer,
 		finder:   finder,
