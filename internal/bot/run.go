@@ -4,6 +4,9 @@ import (
 	"fmt"
 	"log"
 	"rpi_stat_tg_bot/internal/cmd"
+	"rpi_stat_tg_bot/internal/downloader/file"
+	"rpi_stat_tg_bot/internal/downloader/yt"
+	"rpi_stat_tg_bot/internal/finder/directory"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
@@ -53,6 +56,16 @@ func (k *KekBot) Run() {
 			m := ""
 
 			switch update.CallbackQuery.Data {
+
+			case buttonsMap["DownloadQueue"].Text:
+				m = yt.NewDownloader() // unimplemented
+			case buttonsMap["GetFile"].Text:
+				m = file.NewGet() // unimplemented
+			case buttonsMap["SendFile"].Text:
+				m = file.NewSend() // unimplemented
+			case buttonsMap["DirecoryView"].Text:
+				m = directory.NewDirectory() // unimplemented
+
 			case buttonsMap["Shutdown"].Text:
 				m, shutdown = cmd.Shutdown()
 			case buttonsMap["Restart"].Text:

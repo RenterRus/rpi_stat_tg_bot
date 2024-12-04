@@ -30,6 +30,22 @@ func init() {
 		ID:   "Info",
 		Text: "Info",
 	}
+	buttonsMap["DownloadQueue"] = buttons{
+		ID:   "DownloadQueue",
+		Text: "DownloadQueue",
+	}
+	buttonsMap["GetFile"] = buttons{
+		ID:   "GetFile",
+		Text: "GetFile",
+	}
+	buttonsMap["SendFile"] = buttons{
+		ID:   "SendFile",
+		Text: "SendFile",
+	}
+	buttonsMap["DirecoryView"] = buttons{
+		ID:   "DirecoryView",
+		Text: "DirecoryView",
+	}
 }
 
 func keyboard() tgbotapi.InlineKeyboardMarkup {
@@ -41,6 +57,15 @@ func keyboard() tgbotapi.InlineKeyboardMarkup {
 		tgbotapi.NewInlineKeyboardRow(
 			tgbotapi.NewInlineKeyboardButtonData(buttonsMap["AutoConnect"].ID, buttonsMap["AutoConnect"].Text),
 			tgbotapi.NewInlineKeyboardButtonData(buttonsMap["Info"].ID, buttonsMap["Info"].Text),
+		),
+		// unimplemented
+		tgbotapi.NewInlineKeyboardRow(
+			tgbotapi.NewInlineKeyboardButtonData(buttonsMap["DownloadQueue"].ID, buttonsMap["DownloadQueue"].Text),
+			tgbotapi.NewInlineKeyboardButtonData(buttonsMap["DirecoryView"].ID, buttonsMap["DirecoryView"].Text),
+		),
+		tgbotapi.NewInlineKeyboardRow(
+			tgbotapi.NewInlineKeyboardButtonData(buttonsMap["GetFile"].ID, buttonsMap["GetFile"].Text),
+			tgbotapi.NewInlineKeyboardButtonData(buttonsMap["SendFile"].ID, buttonsMap["SendFile"].Text),
 		),
 	)
 }
