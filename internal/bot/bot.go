@@ -39,6 +39,8 @@ func (k *KekBot) welcomeMSG(chatID int64) string {
 	welcome.WriteString("\n")
 	welcome.WriteString("Write /open to open menu-keyboard")
 	welcome.WriteString("\n")
+	welcome.WriteString("Or paste link for send video to download")
+	welcome.WriteString("\n")
 
 	welcome.WriteString(k.informer.IPFormatter())
 

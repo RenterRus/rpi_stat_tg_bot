@@ -14,6 +14,14 @@ var (
 )
 
 func init() {
+	buttonsMap["DStatus"] = buttons{
+		ID:   "DStatus",
+		Text: "DStatus",
+	}
+	buttonsMap["DHistory"] = buttons{
+		ID:   "DHistory",
+		Text: "DHistory",
+	}
 	buttonsMap["Shutdown"] = buttons{
 		ID:   "Shutdown",
 		Text: "Shutdown",
@@ -41,6 +49,10 @@ func keyboard() tgbotapi.InlineKeyboardMarkup {
 		tgbotapi.NewInlineKeyboardRow(
 			tgbotapi.NewInlineKeyboardButtonData(buttonsMap["AutoConnect"].ID, buttonsMap["AutoConnect"].Text),
 			tgbotapi.NewInlineKeyboardButtonData(buttonsMap["Info"].ID, buttonsMap["Info"].Text),
+		),
+		tgbotapi.NewInlineKeyboardRow(
+			tgbotapi.NewInlineKeyboardButtonData(buttonsMap["DHistory"].ID, buttonsMap["DHistory"].Text),
+			tgbotapi.NewInlineKeyboardButtonData(buttonsMap["DStatus"].ID, buttonsMap["DStatus"].Text),
 		),
 	)
 }

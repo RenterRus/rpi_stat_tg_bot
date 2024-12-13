@@ -1,14 +1,19 @@
 module rpi_stat_tg_bot
 
-go 1.19
+go 1.21
+
+toolchain go1.23.2
 
 require (
 	github.com/go-playground/validator/v10 v10.23.0
 	github.com/go-telegram-bot-api/telegram-bot-api/v5 v5.5.1
+	github.com/lrstanley/go-ytdlp v0.0.0-20241213131016-731e0d4be09b
 	github.com/spf13/viper v1.19.0
 )
 
 require (
+	github.com/ProtonMail/go-crypto v1.0.0 // indirect
+	github.com/cloudflare/circl v1.3.7 // indirect
 	github.com/fsnotify/fsnotify v1.7.0 // indirect
 	github.com/gabriel-vasile/mimetype v1.4.3 // indirect
 	github.com/go-playground/locales v0.14.1 // indirect

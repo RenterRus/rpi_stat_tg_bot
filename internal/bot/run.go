@@ -1,10 +1,14 @@
 package bot
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"rpi_stat_tg_bot/internal/cmd"
+	"rpi_stat_tg_bot/internal/downloader"
+	"time"
 
+	"github.com/go-playground/validator/v10"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
 
@@ -13,14 +17,19 @@ func (k *KekBot) Run() {
 	if err != nil {
 		log.Panic(err)
 	}
-
 	log.Printf("Authorized on account %s", bot.Self.UserName)
 
+	validate := validator.New(validator.WithRequiredStructEnabled())
 	u := tgbotapi.NewUpdate(0)
 	u.Timeout = k.timeout
-
 	cmd := cmd.NewCMD(k.informer, k.finder)
 	updates := bot.GetUpdatesChan(u)
+	ctx := context.Background()
+	downloader := downloader.NewDownloader()
+	go func() {
+		downloader.Run(ctx)
+	}()
+
 	for update := range updates {
 		// Обработка простых сообщений
 		if update.Message != nil {
@@ -34,6 +43,18 @@ func (k *KekBot) Run() {
 				switch update.Message.Text {
 				case "/open":
 					msg.ReplyMarkup = keyboard()
+				default:
+
+					err := validate.Var(update.Message.Text, "url")
+					if err != nil {
+						msg = tgbotapi.NewMessage(update.Message.Chat.ID, k.welcomeMSG(update.Message.Chat.ID))
+					} else {
+						msg = tgbotapi.NewMessage(update.Message.Chat.ID, update.Message.Text)
+						go func(url string) {
+							downloader.ToDownload(url)
+						}(update.Message.Text)
+					}
+
 				}
 			} else { // Если нет, то даем ответ о запрещенном доступе
 				msg = tgbotapi.NewMessage(update.Message.Chat.ID, fmt.Sprintf("Access is denied: %d", int(update.Message.Chat.ID)))
@@ -54,11 +75,19 @@ func (k *KekBot) Run() {
 
 			switch update.CallbackQuery.Data {
 			case buttonsMap["Shutdown"].Text:
+				ctx.Done()
+				time.Sleep(time.Second * 10)
 				m, shutdown = cmd.Shutdown()
 			case buttonsMap["Restart"].Text:
+				ctx.Done()
+				time.Sleep(time.Second * 10)
 				m, shutdown = cmd.Restart()
 			case buttonsMap["AutoConnect"].Text:
 				m = cmd.Auto()
+			case buttonsMap["DStatus"].Text:
+				m = downloader.ActualStatus()
+			case buttonsMap["DHistory"].Text:
+				m = downloader.DownloadHistory()
 			case buttonsMap["Info"].Text:
 				command := ""
 				m, command = cmd.Info()
