@@ -115,7 +115,7 @@ func (d *DLP) fromFailed(ctx context.Context) {
 		case link := <-d.failedQueue:
 			d.ToDownload(link)
 		default:
-			time.Sleep(time.Minute * 17)
+			time.Sleep(time.Second)
 		}
 	}
 }
@@ -142,35 +142,27 @@ func (d *DLP) Run(ctx context.Context) {
 			d.worker.IsIdle = false
 			d.worker.Actual = make(map[string]map[string]FileInfo)
 
+			progressInfo := map[string]FileInfo{}
+
 			dl.ProgressFunc(time.Duration(time.Second*3), func(update ytdlp.ProgressUpdate) {
 				size := (float64(update.DownloadedBytes) / 1024) / 1024
 				totalSize := (float64(update.TotalBytes) / 1024) / 1024
 				fmt.Println(update.Status, update.PercentString(), fmt.Sprintf("[%d/%d] mb", int(size), int(totalSize)), update.Filename)
-				d.worker.History[link] = map[string]FileInfo{
-					update.Filename: {
-						Name:         d.path + "/" + update.Filename,
-						DownloadSize: strconv.Itoa(int(size)),
-						TotalSize:    strconv.Itoa(int(totalSize)),
-						Proc:         update.PercentString(),
-						Status:       string(update.Status),
-					},
+				progressInfo[update.Filename] = FileInfo{
+					Name:         d.path + "/" + update.Filename,
+					DownloadSize: strconv.Itoa(int(size)),
+					TotalSize:    strconv.Itoa(int(totalSize)),
+					Proc:         update.PercentString(),
+					Status:       string(update.Status),
 				}
 
-				d.worker.Actual[link] = map[string]FileInfo{
-					update.Filename: {
-						Name:         d.path + "/" + update.Filename,
-						DownloadSize: strconv.Itoa(int(size)),
-						TotalSize:    strconv.Itoa(int(totalSize)),
-						Proc:         update.PercentString(),
-						Status:       string(update.Status),
-					},
-				}
+				d.worker.History[link] = progressInfo
+				d.worker.Actual[link] = progressInfo
 			})
 			_, err := dl.Run(context.TODO(), link)
 			if err != nil {
 				d.failedQueue <- link
 				fmt.Println(err)
-				return
 			}
 			time.Sleep(time.Second * 7)
 		default:
