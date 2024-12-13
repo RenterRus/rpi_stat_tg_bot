@@ -148,7 +148,7 @@ func (d *DLP) Run(ctx context.Context) {
 				fmt.Println(update.Status, update.PercentString(), fmt.Sprintf("[%d/%d] mb", int(size), int(totalSize)), update.Filename)
 				d.worker.History[link] = map[string]FileInfo{
 					update.Filename: {
-						Name:         d.path + "\\" + update.Filename,
+						Name:         d.path + "/" + update.Filename,
 						DownloadSize: strconv.Itoa(int(size)),
 						TotalSize:    strconv.Itoa(int(totalSize)),
 						Proc:         update.PercentString(),
@@ -158,7 +158,7 @@ func (d *DLP) Run(ctx context.Context) {
 
 				d.worker.Actual[link] = map[string]FileInfo{
 					update.Filename: {
-						Name:         d.path + "\\" + update.Filename,
+						Name:         d.path + "/" + update.Filename,
 						DownloadSize: strconv.Itoa(int(size)),
 						TotalSize:    strconv.Itoa(int(totalSize)),
 						Proc:         update.PercentString(),
