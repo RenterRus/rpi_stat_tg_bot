@@ -50,10 +50,10 @@ func (d *DLP) DownloadHistory() string {
 	total_file := 0
 
 	for k, v := range d.worker.History {
-		res += fmt.Sprintf("link: %s", k)
+		res += fmt.Sprintf("\nLink: %s", k)
 		for k_file, v_file := range v {
 			total_file++
-			res += fmt.Sprintf("- File: %s\n- -Info:\n- - -Name: %s\n- - -DownloadedSize: %s\n- - -TotalSize: %s\n- - -Proc: %s\n- - -Status: %s", k_file,
+			res += fmt.Sprintf("\n- File: %s\n- -Info:\n- - -Name: %s\n- - -DownloadedSize: %s\n- - -TotalSize: %s\n- - -Proc: %s\n- - -Status: %s", k_file,
 				v_file.Name, v_file.DownloadSize, v_file.TotalSize, v_file.Proc, v_file.Status)
 		}
 	}
@@ -78,10 +78,10 @@ func (d *DLP) ActualStatus() string {
 	file_finished := 0
 
 	for k, v := range d.worker.History {
-		res += fmt.Sprintf("link: %s", k)
+		res += fmt.Sprintf("\nLink: %s", k)
 		for k_file, v_file := range v {
 			total_file++
-			res += fmt.Sprintf("- File: %s\n- -Info:\n- - -Name: %s\n- - -DownloadedSize: %s\n- - -TotalSize: %s\n- - -Proc: %s\n- - -Status: %s", k_file,
+			res += fmt.Sprintf("\n- File: %s\n- -Info:\n- - -Name: %s\n- - -DownloadedSize: %s\n- - -TotalSize: %s\n- - -Proc: %s\n- - -Status: %s", k_file,
 				v_file.Name, v_file.DownloadSize, v_file.TotalSize, v_file.Proc, v_file.Status)
 			if v_file.Proc == "100" {
 				file_finished++
