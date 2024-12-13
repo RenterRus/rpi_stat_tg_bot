@@ -31,12 +31,15 @@ type DLP struct {
 }
 
 func NewDownloader(path string) Downloader {
+	history := make(map[string]map[string]FileInfo)
+	actual := make(map[string]map[string]FileInfo)
+
 	return &DLP{
 		queue:       make(chan string, 1),
 		failedQueue: make(chan string, 100),
 		worker: WorkerStatus{
-			History: make(map[string]map[string]FileInfo),
-			Actual:  make(map[string]map[string]FileInfo),
+			History: history,
+			Actual:  actual,
 		},
 		path: path,
 	}
@@ -128,6 +131,9 @@ func (d *DLP) Run(ctx context.Context) {
 		d.fromFailed(ctx)
 	}()
 
+	d.worker.Actual = make(map[string]map[string]FileInfo)
+	d.worker.History = make(map[string]map[string]FileInfo)
+
 	for {
 		select {
 		case <-ctx.Done():
@@ -140,20 +146,24 @@ func (d *DLP) Run(ctx context.Context) {
 				size := (float64(update.DownloadedBytes) / 1024) / 1024
 				totalSize := (float64(update.TotalBytes) / 1024) / 1024
 				fmt.Println(update.Status, update.PercentString(), fmt.Sprintf("[%d/%d] mb", int(size), int(totalSize)), update.Filename)
-				d.worker.History[link][update.Filename] = FileInfo{
-					Name:         update.Filename,
-					DownloadSize: strconv.Itoa(int(size)),
-					TotalSize:    strconv.Itoa(int(totalSize)),
-					Proc:         update.PercentString(),
-					Status:       string(update.Status),
+				d.worker.History[link] = map[string]FileInfo{
+					update.Filename: {
+						Name:         d.path + "\\" + update.Filename,
+						DownloadSize: strconv.Itoa(int(size)),
+						TotalSize:    strconv.Itoa(int(totalSize)),
+						Proc:         update.PercentString(),
+						Status:       string(update.Status),
+					},
 				}
 
-				d.worker.Actual[link][update.Filename] = FileInfo{
-					Name:         update.Filename,
-					DownloadSize: strconv.Itoa(int(size)),
-					TotalSize:    strconv.Itoa(int(totalSize)),
-					Proc:         update.PercentString(),
-					Status:       string(update.Status),
+				d.worker.Actual[link] = map[string]FileInfo{
+					update.Filename: {
+						Name:         d.path + "\\" + update.Filename,
+						DownloadSize: strconv.Itoa(int(size)),
+						TotalSize:    strconv.Itoa(int(totalSize)),
+						Proc:         update.PercentString(),
+						Status:       string(update.Status),
+					},
 				}
 			})
 			_, err := dl.Run(context.TODO(), link)
@@ -165,7 +175,6 @@ func (d *DLP) Run(ctx context.Context) {
 			time.Sleep(time.Second * 7)
 		default:
 			d.worker.IsIdle = true
-			d.worker.Actual = nil
 			time.Sleep(time.Second * 3)
 		}
 	}

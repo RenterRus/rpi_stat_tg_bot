@@ -25,11 +25,12 @@ func NewApp(path string) App {
 	}
 
 	config := Config{
-		Token:      conf.Token,
-		Timeout:    conf.Timeout,
-		AllowedIDs: conf.AllowedIDs,
-		FTPuser:    conf.FTPuser,
-		DevSearch:  conf.DevSearch,
+		Token:          conf.Token,
+		Timeout:        conf.Timeout,
+		AllowedIDs:     conf.AllowedIDs,
+		FTPuser:        conf.FTPuser,
+		DevSearch:      conf.DevSearch,
+		PathToDownload: conf.PathToDownload,
 	}
 
 	return App{

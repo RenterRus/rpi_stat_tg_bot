@@ -46,6 +46,7 @@ func loadConfig(p string) (*Config, error) {
 	if err := valid(conf); err != nil {
 		return nil, fmt.Errorf("LoadConfig(Validate): %w", err)
 	}
+
 	return conf, nil
 }
 
