@@ -25,7 +25,7 @@ func (k *KekBot) Run() {
 	cmd := cmd.NewCMD(k.informer, k.finder)
 	updates := bot.GetUpdatesChan(u)
 	ctx := context.Background()
-	downloader := downloader.NewDownloader()
+	downloader := downloader.NewDownloader(k.pathDownload)
 	go func() {
 		downloader.Run(ctx)
 	}()

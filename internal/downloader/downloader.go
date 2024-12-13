@@ -27,9 +27,10 @@ type DLP struct {
 	queue       chan string
 	failedQueue chan string
 	worker      WorkerStatus
+	path        string
 }
 
-func NewDownloader() Downloader {
+func NewDownloader(path string) Downloader {
 	return &DLP{
 		queue:       make(chan string, 1),
 		failedQueue: make(chan string, 100),
@@ -37,6 +38,7 @@ func NewDownloader() Downloader {
 			History: make(map[string]map[string]FileInfo),
 			Actual:  make(map[string]map[string]FileInfo),
 		},
+		path: path,
 	}
 }
 
@@ -116,7 +118,7 @@ func (d *DLP) fromFailed(ctx context.Context) {
 }
 
 func (d *DLP) Run(ctx context.Context) {
-	dl := ytdlp.New().SetWorkDir("/home/ftppi/raid/Посмотреть/bot_download").
+	dl := ytdlp.New().SetWorkDir(d.path).
 		FormatSort("res,ext:mp4:m4a").
 		RecodeVideo("mp4").
 		Output("%(title)s.%(ext)s").

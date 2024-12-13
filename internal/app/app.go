@@ -60,6 +60,7 @@ func (a *App) Run() {
 			Finder: finder,
 			User:   a.Conf.FTPuser,
 		}),
+		PathDownload: a.Conf.PathToDownload,
 	})
 
 	var wg sync.WaitGroup

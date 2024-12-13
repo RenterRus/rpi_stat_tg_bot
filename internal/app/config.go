@@ -9,11 +9,12 @@ import (
 )
 
 type Config struct {
-	DevSearch  string   `validate:"required"`
-	Token      string   `validate:"required"`
-	Timeout    int      `validate:"required"`
-	AllowedIDs []string `validate:"required"`
-	FTPuser    string   `validate:"required"`
+	DevSearch      string   `validate:"required"`
+	Token          string   `validate:"required"`
+	Timeout        int      `validate:"required"`
+	AllowedIDs     []string `validate:"required"`
+	FTPuser        string   `validate:"required"`
+	PathToDownload string   `validate:"required"`
 }
 
 func loadConfig(p string) (*Config, error) {

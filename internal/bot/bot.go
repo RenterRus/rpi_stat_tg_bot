@@ -8,28 +8,31 @@ import (
 )
 
 type KekBot struct {
-	informer   informer.Informer
-	finder     finder.Finder
-	token      string
-	timeout    int
-	allowedIPs map[string]struct{}
+	informer     informer.Informer
+	finder       finder.Finder
+	token        string
+	timeout      int
+	allowedIPs   map[string]struct{}
+	pathDownload string
 }
 
 type KekBotConf struct {
-	Informer   informer.Informer
-	Token      string
-	Timeout    int
-	Finder     finder.Finder
-	AllowedIPs map[string]struct{}
+	Informer     informer.Informer
+	Token        string
+	Timeout      int
+	Finder       finder.Finder
+	AllowedIPs   map[string]struct{}
+	PathDownload string
 }
 
 func NewKekBot(conf KekBotConf) Bot {
 	return &KekBot{
-		informer:   conf.Informer,
-		token:      conf.Token,
-		finder:     conf.Finder,
-		timeout:    conf.Timeout,
-		allowedIPs: conf.AllowedIPs,
+		informer:     conf.Informer,
+		token:        conf.Token,
+		finder:       conf.Finder,
+		timeout:      conf.Timeout,
+		allowedIPs:   conf.AllowedIPs,
+		pathDownload: conf.PathDownload,
 	}
 }
 
