@@ -121,11 +121,17 @@ func (d *DLP) fromFailed(ctx context.Context) {
 }
 
 func (d *DLP) Run(ctx context.Context) {
-	dl := ytdlp.New().SetWorkDir(d.path).
+	ytdlp.MustInstall(context.TODO(), nil)
+	//ytdlp.Install(context.TODO(), nil)
+	dl := ytdlp.New().
+		UnsetCacheDir().
+		ProgressDelta(3).
+		SetWorkDir(d.path).
 		FormatSort("res,ext:mp4:m4a").
 		RecodeVideo("mp4").
 		Output("%(title)s.%(ext)s").
-		NoRestrictFilenames().Fixup(ytdlp.FixupForce).AbortOnError().ProgressDelta(3)
+		NoRestrictFilenames().
+		Fixup(ytdlp.FixupForce).AbortOnError()
 
 	go func() {
 		d.fromFailed(ctx)

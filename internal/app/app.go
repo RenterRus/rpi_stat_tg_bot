@@ -1,14 +1,11 @@
 package app
 
 import (
-	"context"
 	"rpi_stat_tg_bot/internal/bot"
 	"rpi_stat_tg_bot/internal/finder"
 	"rpi_stat_tg_bot/internal/informer"
 	"sync"
 	"time"
-
-	"github.com/lrstanley/go-ytdlp"
 )
 
 const time_to_start = 7
@@ -40,8 +37,6 @@ func NewApp(path string) App {
 }
 
 func (a *App) Run() {
-	ytdlp.MustInstall(context.TODO(), nil)
-
 	finder := finder.NewFinder(finder.KekFinderConf{
 		FileSearch: a.Conf.DevSearch,
 	})
