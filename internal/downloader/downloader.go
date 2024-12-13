@@ -122,7 +122,7 @@ func (d *DLP) Run(ctx context.Context) {
 		FormatSort("res,ext:mp4:m4a").
 		RecodeVideo("mp4").
 		Output("%(title)s.%(ext)s").
-		NoRestrictFilenames().Fixup(ytdlp.FixupForce).AbortOnError()
+		NoRestrictFilenames().Fixup(ytdlp.FixupForce).AbortOnError().ProgressDelta(3)
 
 	go func() {
 		d.fromFailed(ctx)

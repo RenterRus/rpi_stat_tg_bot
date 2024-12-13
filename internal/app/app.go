@@ -39,8 +39,7 @@ func NewApp(path string) App {
 }
 
 func (a *App) Run() {
-	//ytdlp.MustInstall(context.TODO(), nil)
-	ytdlp.Install(context.TODO(), nil)
+	ytdlp.MustInstall(context.TODO(), nil)
 
 	finder := finder.NewFinder(finder.KekFinderConf{
 		FileSearch: a.Conf.DevSearch,
