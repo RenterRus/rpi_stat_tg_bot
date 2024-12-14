@@ -90,15 +90,7 @@ func (d *DLP) ActualStatus() string {
 		}
 	}
 
-	status := "downloading"
-	if total_file <= file_finished {
-		status = "converting"
-		if file_finished == 0 {
-			status = "preparing"
-		}
-	}
-
-	res += fmt.Sprintf("\n\nTotal files: %d\nStatus for this download: %s\nQueue size: %d of %d\nFailed queue size (to repeat): %d of %d\n", total_file, status, len(d.queue), BASE_BUF_QUEUE_SIZE, len(d.failedQueue), BASE_BUF_QUEUE_SIZE*BASE_BUF_QUEUE_SIZE)
+	res += fmt.Sprintf("\n\nFiles in work right now: %d\nQueue size: %d of %d\nFailed queue size (to repeat): %d of %d\n", total_file, len(d.queue), BASE_BUF_QUEUE_SIZE, len(d.failedQueue), BASE_BUF_QUEUE_SIZE*BASE_BUF_QUEUE_SIZE)
 	if len(d.queue) == BASE_BUF_QUEUE_SIZE {
 		res += "\nThe download queue is full, new videos will be queued for download and processing as the queue is released"
 	}
