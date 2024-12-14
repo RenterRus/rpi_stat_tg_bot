@@ -122,7 +122,6 @@ func (d *DLP) Run(ctx context.Context) {
 	ytdlp.Install(context.TODO(), nil)
 	dl := ytdlp.New().
 		UnsetCacheDir().
-		ProgressDelta(3).
 		SetWorkDir(d.path).
 		FormatSort("res,ext:mp4:m4a").
 		RecodeVideo("mp4").
