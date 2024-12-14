@@ -118,8 +118,8 @@ func (d *DLP) fromFailed(ctx context.Context) {
 }
 
 func (d *DLP) Run(ctx context.Context) {
-	//ytdlp.MustInstall(context.TODO(), nil)
-	ytdlp.Install(context.TODO(), nil)
+	ytdlp.MustInstall(context.TODO(), nil)
+	//ytdlp.Install(context.TODO(), nil)
 	dl := ytdlp.New().
 		UnsetCacheDir().
 		SetWorkDir(d.path).
