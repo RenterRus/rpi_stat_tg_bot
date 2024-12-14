@@ -55,7 +55,7 @@ func (d *DLP) DownloadHistory() string {
 		res += fmt.Sprintf("%d. %s\n", k, v)
 	}
 
-	res += fmt.Sprintf("\n\nView %d last video\nTotal video is done: %d", len(d.worker.History), d.totalComplete.Load())
+	res += fmt.Sprintf("View %d last done video\nTotal video is done: %d", len(d.worker.History), d.totalComplete.Load())
 	if d.worker.IsIdle {
 		res += "\nDownloader is idle"
 	} else {
@@ -135,7 +135,7 @@ func (d *DLP) downloader(link string) {
 			}
 		}
 		d.totalComplete.Add(1)
-		d.worker.History = append(d.worker.History, fmt.Sprintf("IS DONE: [%s] %s", link, name))
+		d.worker.History = append(d.worker.History, fmt.Sprintf("sDONE: [%s] %s", link, name))
 
 		fmt.Printf("\n\nVIDEO %s\nLINK: %s\nIS DONE\n\n", name, link)
 		delete(d.worker.Actual, link)
@@ -144,7 +144,7 @@ func (d *DLP) downloader(link string) {
 	d.worker.IsIdle = false
 	progressInfo := map[string]FileInfo{}
 
-	d.dl.ProgressFunc(time.Duration(time.Millisecond*200), func(update ytdlp.ProgressUpdate) {
+	d.dl.ProgressFunc(time.Duration(time.Millisecond*500), func(update ytdlp.ProgressUpdate) {
 		size := (float64(update.DownloadedBytes) / 1024) / 1024
 		totalSize := (float64(update.TotalBytes) / 1024) / 1024
 		fmt.Println(update.Status, update.PercentString(), fmt.Sprintf("[%d/%d] mb", int(size), int(totalSize)), update.Filename)
