@@ -215,12 +215,12 @@ func (d *DLP) Run(ctx context.Context) {
 				d.downloader(<-d.queue)
 			}()
 
-			wg.Wait()
 		default:
 			if len(d.worker.Actual) == 0 {
 				d.worker.IsIdle = true
 			}
 			time.Sleep(time.Second * 3)
 		}
+		wg.Wait()
 	}
 }
