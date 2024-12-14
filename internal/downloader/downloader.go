@@ -87,7 +87,7 @@ func (d *DLP) ActualStatus() string {
 	}
 
 	status := "downloading"
-	if total_file == file_finished {
+	if total_file <= file_finished {
 		status = "converting"
 		if file_finished == 0 {
 			status = "preparing"
