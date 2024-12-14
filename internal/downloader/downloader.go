@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"strconv"
 	"strings"
-	"sync"
 	"time"
 
 	"github.com/lrstanley/go-ytdlp"
@@ -197,19 +196,16 @@ func (d *DLP) Run(ctx context.Context) {
 	d.worker.Actual = make(map[string]map[string]FileInfo)
 	d.worker.History = make(map[string]map[string]FileInfo)
 	doubleWay := make(chan struct{}, 2)
-	var wg sync.WaitGroup
 
 	for {
 		select {
 		case <-ctx.Done():
 			return
 		case doubleWay <- struct{}{}:
-			wg.Add(1)
 
 			go func() {
 				defer func() {
 					<-doubleWay
-					wg.Done()
 				}()
 
 				d.downloader(<-d.queue)
@@ -221,6 +217,5 @@ func (d *DLP) Run(ctx context.Context) {
 			}
 			time.Sleep(time.Second * 3)
 		}
-		wg.Wait()
 	}
 }
