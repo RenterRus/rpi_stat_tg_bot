@@ -150,7 +150,7 @@ func (d *DLP) Run(ctx context.Context) {
 
 			progressInfo := map[string]FileInfo{}
 
-			dl.ProgressFunc(time.Duration(time.Second*3), func(update ytdlp.ProgressUpdate) {
+			dl.ProgressFunc(time.Duration(time.Second), func(update ytdlp.ProgressUpdate) {
 				size := (float64(update.DownloadedBytes) / 1024) / 1024
 				totalSize := (float64(update.TotalBytes) / 1024) / 1024
 				fmt.Println(update.Status, update.PercentString(), fmt.Sprintf("[%d/%d] mb", int(size), int(totalSize)), update.Filename)
