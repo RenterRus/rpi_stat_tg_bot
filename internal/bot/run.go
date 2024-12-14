@@ -15,7 +15,7 @@ import (
 func (k *KekBot) Run() {
 	bot, err := tgbotapi.NewBotAPI(k.token)
 	if err != nil {
-		log.Panic(err)
+		panic(err)
 	}
 	log.Printf("Authorized on account %s", bot.Self.UserName)
 
@@ -62,12 +62,12 @@ func (k *KekBot) Run() {
 
 			// Отправляем сообщение
 			if _, err = bot.Send(msg); err != nil {
-				panic(err)
+				fmt.Println(err)
 			}
 		} else if update.CallbackQuery != nil { // Если пришел колбэк
 			callback := tgbotapi.NewCallback(update.CallbackQuery.ID, update.CallbackQuery.Data)
 			if _, err := bot.Request(callback); err != nil {
-				panic(err)
+				fmt.Println(err)
 			}
 
 			shutdown := false
@@ -92,18 +92,18 @@ func (k *KekBot) Run() {
 				command := ""
 				m, command = cmd.Info()
 				if _, err := bot.Send(tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, "Fast update and restart bot into server")); err != nil {
-					panic(err)
+					fmt.Println(err)
 				}
 
 				if _, err := bot.Send(tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, "cd pets/rpi_stat_tg_bot/ && sudo rm main && git pull && go build cmd/main.go && sudo systemctl stop runbot.service && sudo systemctl start runbot.service && sudo systemctl enable runbot.service && sudo systemctl status runbot.service")); err != nil {
-					panic(err)
+					fmt.Println(err)
 				}
 
 				if _, err := bot.Send(tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, "Try this command to fast connect raid to ftp server")); err != nil {
-					panic(err)
+					fmt.Println(err)
 				}
 				if _, err := bot.Send(tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, command)); err != nil {
-					panic(err)
+					fmt.Println(err)
 				}
 			default:
 				m = "Press one of button:\nshutdown - shutdown server\nrestart - restart server\nauto - attempt auto connection\ninfo - show info\n"
@@ -112,7 +112,7 @@ func (k *KekBot) Run() {
 			// Отправляем сообщение, полученное в результате обработки данных выше
 			msg := tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, m)
 			if _, err := bot.Send(msg); err != nil {
-				panic(err)
+				fmt.Println(err)
 			}
 
 			// Если вызвано выключение или перезапуск - выходим из бесконечного цикла, что б бот корректно завершидл работу
