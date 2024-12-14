@@ -84,6 +84,8 @@ func (k *KekBot) Run() {
 				m, shutdown = cmd.Restart()
 			case buttonsMap["AutoConnect"].Text:
 				m = cmd.Auto()
+			case buttonsMap["CleanHistory"].Text:
+				m = downloader.CleanHistory()
 			case buttonsMap["DStatus"].Text:
 				m = downloader.ActualStatus()
 			case buttonsMap["DHistory"].Text:

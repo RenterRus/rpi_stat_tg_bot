@@ -7,4 +7,5 @@ type Downloader interface {
 	Run(ctx context.Context)
 	DownloadHistory() string
 	ActualStatus() string
+	CleanHistory() string
 }

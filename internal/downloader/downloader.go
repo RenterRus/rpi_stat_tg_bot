@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"strconv"
 	"strings"
+	"sync/atomic"
 	"time"
 
 	"github.com/lrstanley/go-ytdlp"
@@ -22,16 +23,17 @@ type FileInfo struct {
 
 type WorkerStatus struct {
 	IsIdle  bool
-	History map[string]map[string]FileInfo
+	History []string
 	Actual  map[string]map[string]FileInfo
 }
 
 type DLP struct {
-	queue       chan string
-	failedQueue chan string
-	worker      WorkerStatus
-	path        string
-	dl          *ytdlp.Command
+	queue         chan string
+	failedQueue   chan string
+	worker        WorkerStatus
+	path          string
+	dl            *ytdlp.Command
+	totalComplete atomic.Int64
 }
 
 func NewDownloader(path string) Downloader {
@@ -39,7 +41,7 @@ func NewDownloader(path string) Downloader {
 		queue:       make(chan string, BASE_BUF_QUEUE_SIZE),
 		failedQueue: make(chan string, BASE_BUF_QUEUE_SIZE*BASE_BUF_QUEUE_SIZE),
 		worker: WorkerStatus{
-			History: make(map[string]map[string]FileInfo),
+			History: make([]string, 0, BASE_BUF_QUEUE_SIZE),
 			Actual:  make(map[string]map[string]FileInfo),
 		},
 		path: path,
@@ -47,19 +49,13 @@ func NewDownloader(path string) Downloader {
 }
 
 func (d *DLP) DownloadHistory() string {
-	res := ""
-	total_file := 0
+	res := "\n"
 
 	for k, v := range d.worker.History {
-		res += fmt.Sprintf("\nLink: %s", k)
-		for k_file, v_file := range v {
-			total_file++
-			res += fmt.Sprintf("\n- File: %s\n- - -Info:\n- - - - - -Name: %s\n- - - - - -DownloadedSize: %s\n- - - - - -TotalSize: %s\n- - - - - -Proc: %s\n- - - - - -Status: %s", k_file,
-				v_file.Name, v_file.DownloadSize, v_file.TotalSize, v_file.Proc, v_file.Status)
-		}
+		res += fmt.Sprintf("%d. %s\n", k, v)
 	}
 
-	res += fmt.Sprintf("\n\nTotal files: %d\nTotal video: %d", total_file, len(d.worker.History))
+	res += fmt.Sprintf("\n\nView %d last video\nTotal video is done: %d", len(d.worker.History), d.totalComplete.Load())
 	if d.worker.IsIdle {
 		res += "\nDownloader is idle"
 	} else {
@@ -67,6 +63,15 @@ func (d *DLP) DownloadHistory() string {
 	}
 
 	return res
+}
+
+func (d *DLP) CleanHistory() string {
+	d.worker.History = make([]string, 0, BASE_BUF_QUEUE_SIZE)
+	for k := range d.worker.Actual {
+		delete(d.worker.Actual, k)
+	}
+
+	return fmt.Sprintf("The history has been cleared\n\n%s\n", d.DownloadHistory())
 }
 
 func (d *DLP) ActualStatus() string {
@@ -123,19 +128,14 @@ func (d *DLP) fromFailed(ctx context.Context) {
 func (d *DLP) downloader(link string) {
 	defer func() {
 		name := ""
-		for i := range d.worker.History[link] {
+		for i := range d.worker.Actual[link] {
 			if name == "" {
-				name = d.worker.History[link][i].Name
-			}
-
-			d.worker.History[link][i] = FileInfo{
-				Name:         d.worker.History[link][i].Name,
-				DownloadSize: d.worker.History[link][i].DownloadSize,
-				TotalSize:    d.worker.History[link][i].TotalSize,
-				Proc:         d.worker.History[link][i].Proc,
-				Status:       "DONE",
+				name = d.worker.Actual[link][i].Name
+				break
 			}
 		}
+		d.totalComplete.Add(1)
+		d.worker.History = append(d.worker.History, fmt.Sprintf("IS DONE: [%s] %s", link, name))
 
 		fmt.Printf("\n\nVIDEO %s\nLINK: %s\nIS DONE\n\n", name, link)
 		delete(d.worker.Actual, link)
@@ -156,7 +156,6 @@ func (d *DLP) downloader(link string) {
 			Status:       string(update.Status),
 		}
 
-		d.worker.History[link] = progressInfo
 		d.worker.Actual[link] = progressInfo
 	})
 
@@ -186,7 +185,7 @@ func (d *DLP) Run(ctx context.Context) {
 	}()
 
 	d.worker.Actual = make(map[string]map[string]FileInfo)
-	d.worker.History = make(map[string]map[string]FileInfo)
+	d.worker.History = make([]string, 0, BASE_BUF_QUEUE_SIZE)
 	doubleWay := make(chan struct{}, 2)
 
 	for {
