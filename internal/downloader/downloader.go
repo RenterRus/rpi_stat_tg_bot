@@ -22,7 +22,6 @@ type FileInfo struct {
 }
 
 type WorkerStatus struct {
-	IsIdle  bool
 	History []string
 	Actual  map[string]map[string]FileInfo
 }
@@ -56,11 +55,6 @@ func (d *DLP) DownloadHistory() string {
 	}
 
 	res += fmt.Sprintf("View %d last done video\nTotal video is done: %d", len(d.worker.History), d.totalComplete.Load())
-	if d.worker.IsIdle {
-		res += "\nDownloader is idle"
-	} else {
-		res += "\nDownloader is run"
-	}
 
 	return res
 }
@@ -75,11 +69,7 @@ func (d *DLP) CleanHistory() string {
 }
 
 func (d *DLP) ActualStatus() string {
-	if d.worker.IsIdle {
-		return "Downloader is idle"
-	}
-
-	res := "Downloader is run"
+	res := ""
 	total_file := 0
 	file_finished := 0
 
@@ -141,7 +131,6 @@ func (d *DLP) downloader(link string) {
 		delete(d.worker.Actual, link)
 	}()
 
-	d.worker.IsIdle = false
 	progressInfo := map[string]FileInfo{}
 
 	d.dl.ProgressFunc(time.Duration(time.Millisecond*500), func(update ytdlp.ProgressUpdate) {
@@ -193,7 +182,6 @@ func (d *DLP) Run(ctx context.Context) {
 		case <-ctx.Done():
 			return
 		case doubleWay <- struct{}{}:
-			d.worker.IsIdle = false
 			go func() {
 				defer func() {
 					<-doubleWay
@@ -203,9 +191,6 @@ func (d *DLP) Run(ctx context.Context) {
 			}()
 
 		default:
-			if len(d.worker.Actual) == 0 {
-				d.worker.IsIdle = true
-			}
 			time.Sleep(time.Second * 3)
 		}
 	}
