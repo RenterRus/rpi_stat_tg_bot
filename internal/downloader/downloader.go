@@ -202,7 +202,7 @@ func (d *DLP) Run(ctx context.Context) {
 		case <-ctx.Done():
 			return
 		case doubleWay <- struct{}{}:
-
+			d.worker.IsIdle = false
 			go func() {
 				defer func() {
 					<-doubleWay
