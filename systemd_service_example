@@ -5,7 +5,13 @@ Description=runbot service
 After=multi-user.target
 [Service]
 Type=idle
+User=<user>
+Group=<group>
 ExecStart=PATH TO RUN SCRIPT<>
+# or write script here
+# ExecStart=<absolute path>/main > /dev/null 2>&1 &
+
+
 [Install]
 WantedBy=multi-user.target
 
