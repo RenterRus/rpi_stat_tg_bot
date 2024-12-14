@@ -12,7 +12,7 @@ const time_to_start = 7
 
 type App struct {
 	Conf Config
-	TTS  int // time to real start in seconds
+	TTS  int
 }
 
 func NewApp(path string) App {
