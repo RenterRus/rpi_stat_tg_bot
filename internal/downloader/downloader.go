@@ -31,15 +31,12 @@ type DLP struct {
 }
 
 func NewDownloader(path string) Downloader {
-	history := make(map[string]map[string]FileInfo)
-	actual := make(map[string]map[string]FileInfo)
-
 	return &DLP{
 		queue:       make(chan string, 1),
 		failedQueue: make(chan string, 100),
 		worker: WorkerStatus{
-			History: history,
-			Actual:  actual,
+			History: make(map[string]map[string]FileInfo),
+			Actual:  make(map[string]map[string]FileInfo),
 		},
 		path: path,
 	}
@@ -77,7 +74,7 @@ func (d *DLP) ActualStatus() string {
 	total_file := 0
 	file_finished := 0
 
-	for k, v := range d.worker.History {
+	for k, v := range d.worker.Actual {
 		res += fmt.Sprintf("\nLink: %s", k)
 		for k_file, v_file := range v {
 			total_file++
@@ -146,7 +143,11 @@ func (d *DLP) Run(ctx context.Context) {
 			return
 		case link := <-d.queue:
 			d.worker.IsIdle = false
-			d.worker.Actual = make(map[string]map[string]FileInfo)
+
+			// Ультра чистка
+			for k := range d.worker.Actual {
+				delete(d.worker.Actual, k)
+			}
 
 			progressInfo := map[string]FileInfo{}
 
