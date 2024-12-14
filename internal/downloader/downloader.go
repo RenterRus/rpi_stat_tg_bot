@@ -94,7 +94,7 @@ func (d *DLP) ActualStatus() string {
 		}
 	}
 
-	res += fmt.Sprintf("\n\nTotal files: %d\nStatus for this download: %s", total_file, status)
+	res += fmt.Sprintf("\n\nTotal files: %d\nStatus for this download: %s\nQueue size: %d\nFailed queue size (to repeat): %d", total_file, status, len(d.queue), len(d.failedQueue))
 
 	return res
 
@@ -112,7 +112,7 @@ func (d *DLP) fromFailed(ctx context.Context) {
 		case link := <-d.failedQueue:
 			d.ToDownload(link)
 		default:
-			time.Sleep(time.Second)
+			time.Sleep(time.Minute * 7)
 		}
 	}
 }
@@ -171,7 +171,7 @@ func (d *DLP) Run(ctx context.Context) {
 				d.failedQueue <- link
 				fmt.Println(err)
 			}
-			time.Sleep(time.Second * 7)
+			time.Sleep(time.Second * 17)
 		default:
 			d.worker.IsIdle = true
 			time.Sleep(time.Second * 3)
