@@ -2,6 +2,7 @@ package db
 
 import "fmt"
 
+// Очищаем ссылки из таблицы, которые уже были скачаны. Они уже не играют функциональной роли
 func (m *manager) Delete() error {
 	m.Lock()
 	defer m.Unlock()

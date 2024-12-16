@@ -1,45 +1,77 @@
 package downloader
 
 import (
+	"context"
+	"fmt"
 	"rpi_stat_tg_bot/internal/db"
-	"sync/atomic"
+	"time"
 
 	"github.com/lrstanley/go-ytdlp"
 )
 
-const (
-	BASE_BUF_QUEUE_SIZE = 10
-	MAX_THREADS         = 2
-)
-
-type FileInfo struct {
-	Name         string
-	DownloadSize string
-	TotalSize    string
-	Proc         string
-	Status       string
-}
-
-type WorkerStatus struct {
-	Actual map[string]map[string]FileInfo
-}
-
-type DLP struct {
-	failedQueue   chan string
-	worker        WorkerStatus
-	path          string
-	dl            *ytdlp.Command
-	totalComplete atomic.Int64
-	qdb           db.Queue
-}
-
-func NewDownloader(path string, db db.Queue) Downloader {
-	return &DLP{
-		failedQueue: make(chan string, BASE_BUF_QUEUE_SIZE),
-		worker: WorkerStatus{
-			Actual: make(map[string]map[string]FileInfo),
-		},
-		path: path,
-		qdb:  db,
+func (d *DLP) ToDownload(url string) error {
+	if err := d.qdb.Insert(url); err != nil {
+		return fmt.Errorf("to download: %w", err)
 	}
+	return nil
+}
+
+func (d *DLP) fromFailed(ctx context.Context) {
+	for {
+		select {
+		case <-ctx.Done():
+			return
+		case link := <-d.failedQueue:
+			d.ToDownload(link)
+		default:
+			time.Sleep(time.Minute * 3)
+		}
+	}
+}
+
+func (d *DLP) downloader(link string) {
+	defer func() {
+		name := ""
+		for i := range d.worker.Actual[link] {
+			if name == "" {
+				name = d.worker.Actual[link][i].Name
+				break
+			}
+		}
+
+		d.totalComplete.Add(1)
+
+		fmt.Printf("\n\nVIDEO %s\nLINK: %s\nIS DONE\n\n", name, link)
+		delete(d.worker.Actual, link)
+	}()
+
+	progressInfo := map[string]FileInfo{}
+
+	d.dl.ProgressFunc(time.Duration(time.Millisecond*500), func(update ytdlp.ProgressUpdate) {
+		size := (float64(update.DownloadedBytes) / 1024) / 1024 // К мегабайтам
+		totalSize := (float64(update.TotalBytes) / 1024) / 1024 // К мегабайтам
+		fmt.Println(update.Status, update.PercentString(), fmt.Sprintf("[%f/%f]mb", size, totalSize), update.Filename)
+		progressInfo[update.Filename] = FileInfo{
+			Name:         d.path + "/" + update.Filename,
+			DownloadSize: fmt.Sprintf("%f", size),
+			TotalSize:    fmt.Sprintf("%f", totalSize),
+			Proc:         update.PercentString(),
+			Status:       string(update.Status),
+		}
+
+		d.worker.Actual[link] = progressInfo
+	})
+
+	_, err := d.dl.Run(context.TODO(), link)
+	if err != nil {
+		d.failedQueue <- link
+		fmt.Println(err)
+	} else {
+		if err := d.qdb.Update(link, db.StatusDONE); err != nil {
+			fmt.Printf("\ndownloader update db error: %s\n", err.Error())
+		}
+	}
+
+	// Даем процессору "отдохнуть". Ему реально было не просто
+	time.Sleep(time.Second * 7)
 }
