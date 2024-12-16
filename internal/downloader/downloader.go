@@ -37,11 +37,11 @@ func (d *DLP) downloader(link string) {
 	d.dl.ProgressFunc(time.Duration(time.Millisecond*500), func(update ytdlp.ProgressUpdate) {
 		size := (float64(update.DownloadedBytes) / 1024) / 1024 // К мегабайтам
 		totalSize := (float64(update.TotalBytes) / 1024) / 1024 // К мегабайтам
-		fmt.Println(update.Status, update.PercentString(), fmt.Sprintf("[%f.2/%f.2s]mb", size, totalSize), update.Filename)
+		fmt.Println(update.Status, update.PercentString(), fmt.Sprintf("[%.2f/%.2f]mb", size, totalSize), update.Filename)
 		progressInfo[update.Filename] = FileInfo{
 			Name:         d.path + "/" + update.Filename,
-			DownloadSize: fmt.Sprintf("%f.2", size),
-			TotalSize:    fmt.Sprintf("%f.2", totalSize),
+			DownloadSize: fmt.Sprintf("%.2f", size),
+			TotalSize:    fmt.Sprintf("%.2f", totalSize),
 			Proc:         update.PercentString(),
 			Status:       string(update.Status),
 		}
