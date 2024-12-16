@@ -11,8 +11,10 @@ import (
 	"github.com/lrstanley/go-ytdlp"
 )
 
-const BASE_BUF_QUEUE_SIZE = 10
-
+const (
+	BASE_BUF_QUEUE_SIZE = 10
+	MAX_THREADS = 2
+)
 type FileInfo struct {
 	Name         string
 	DownloadSize string
@@ -60,7 +62,6 @@ func (d *DLP) DownloadHistory() string {
 }
 
 func (d *DLP) CleanHistory() string {
-	d.worker.History = make([]string, 0, BASE_BUF_QUEUE_SIZE)
 	for k := range d.worker.Actual {
 		delete(d.worker.Actual, k)
 	}
@@ -175,7 +176,7 @@ func (d *DLP) Run(ctx context.Context) {
 
 	d.worker.Actual = make(map[string]map[string]FileInfo)
 	d.worker.History = make([]string, 0, BASE_BUF_QUEUE_SIZE)
-	doubleWay := make(chan struct{}, 2)
+	doubleWay := make(chan struct{}, MAX_THREADS)
 
 	for {
 		select {
