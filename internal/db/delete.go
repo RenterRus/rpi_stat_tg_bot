@@ -9,6 +9,7 @@ func (m *manager) Delete() error {
 		m.Unlock()
 	}()
 
+	m.close()
 	defer func() {
 		m.close()
 	}()

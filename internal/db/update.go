@@ -8,6 +8,7 @@ func (m *manager) Update(link, status string) error {
 		m.Unlock()
 	}()
 
+	m.close()
 	defer func() {
 		m.close()
 	}()

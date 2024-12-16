@@ -10,6 +10,7 @@ func (m *manager) SelectAll(whereStatus string) ([]string, error) {
 		m.Unlock()
 	}()
 
+	m.close()
 	defer func() {
 		m.close()
 	}()

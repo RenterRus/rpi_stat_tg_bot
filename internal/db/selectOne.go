@@ -8,6 +8,7 @@ func (m *manager) SelectOne() (string, error) {
 		m.Unlock()
 	}()
 
+	m.close()
 	defer func() {
 		m.close()
 	}()

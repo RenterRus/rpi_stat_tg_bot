@@ -10,6 +10,7 @@ func (m *manager) Insert(link string) error {
 		m.Unlock()
 	}()
 
+	m.close()
 	defer func() {
 		m.close()
 	}()
