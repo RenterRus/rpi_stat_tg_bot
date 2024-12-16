@@ -62,6 +62,10 @@ func (d *DLP) downloader(link string) {
 		d.worker.Actual[link] = progressInfo
 	})
 
+	if err := d.qdb.Update(link, db.StatusWORK); err != nil {
+		fmt.Printf("\ndownloader update db error: %s\n", err.Error())
+	}
+
 	_, err := d.dl.Run(context.TODO(), link)
 	if err != nil {
 		d.failedQueue <- link
