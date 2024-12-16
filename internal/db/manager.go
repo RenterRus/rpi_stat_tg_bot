@@ -42,11 +42,7 @@ func NewManager(pathToDB string) Queue {
 	for _, v := range work {
 		res.Update(v, StatusNEW)
 	}
-	fmt.Println(res.SelectOne())
-	fmt.Println(res.SelectOne())
-	fmt.Println(res.SelectOne())
-	fmt.Println(res.SelectOne())
-	fmt.Println(res.SelectOne())
+
 	return res
 }
 
