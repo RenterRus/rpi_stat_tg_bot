@@ -10,10 +10,12 @@ func (m *manager) SelectAll(whereStatus string) ([]string, error) {
 		<-m.block
 	}()
 
+	defer func() {
+		m.close()
+	}()
 	if err := m.open(); err != nil {
 		return nil, fmt.Errorf("db.SelectAll: %w", err)
 	}
-	defer m.close()
 
 	rows, err := m.db.Query("select link from links where status = $1", whereStatus)
 	if err != nil {

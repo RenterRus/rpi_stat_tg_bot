@@ -9,10 +9,12 @@ func (m *manager) Delete() error {
 		<-m.block
 	}()
 
+	defer func() {
+		m.close()
+	}()
 	if err := m.open(); err != nil {
 		return fmt.Errorf("db.Delete: %w", err)
 	}
-	defer m.close()
 
 	_, err := m.db.Exec("delete from links where status = $1", StatusDONE)
 	if err != nil {

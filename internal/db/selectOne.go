@@ -8,10 +8,12 @@ func (m *manager) SelectOne() (string, error) {
 		<-m.block
 	}()
 
+	defer func() {
+		m.close()
+	}()
 	if err := m.open(); err != nil {
 		return "", fmt.Errorf("db.SelectOne: %w", err)
 	}
-	defer m.close()
 
 	rows, err := m.db.Query("select link from links where status = $1 limit 1", StatusNEW)
 	if err != nil {
