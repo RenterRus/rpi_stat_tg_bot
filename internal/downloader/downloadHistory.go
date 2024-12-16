@@ -32,7 +32,7 @@ func (d *DLP) DownloadHistory() string {
 
 	history := ""
 	history, queueCH = d.getHistory(db.StatusNEW)
-	res += fmt.Sprintf("%s\n", history)
+	res += fmt.Sprintf("\n%s\n", history)
 
 	history, workCH = d.getHistory(db.StatusWORK)
 	res += fmt.Sprintf("%s\n", history)
