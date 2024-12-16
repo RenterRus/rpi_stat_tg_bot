@@ -2,18 +2,18 @@ package informer
 
 import "rpi_stat_tg_bot/internal/finder"
 
-type KekInformer struct {
+type RealInformer struct {
 	finder    finder.Finder
 	root_user string
 }
 
-type KekInformerConf struct {
+type InformerConf struct {
 	Finder finder.Finder
 	User   string
 }
 
-func NewKekInformer(conf KekInformerConf) Informer {
-	return &KekInformer{
+func NewInformer(conf InformerConf) Informer {
+	return &RealInformer{
 		finder:    conf.Finder,
 		root_user: conf.User,
 	}

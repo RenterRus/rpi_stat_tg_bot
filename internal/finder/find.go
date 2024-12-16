@@ -1,15 +1,15 @@
 package finder
 
-type KekFinder struct {
+type RealFinder struct {
 	fileSearch string // Example: md
 }
 
-type KekFinderConf struct {
+type FinderConf struct {
 	FileSearch string
 }
 
-func NewFinder(conf KekFinderConf) Finder {
-	return &KekFinder{
+func NewFinder(conf FinderConf) Finder {
+	return &RealFinder{
 		fileSearch: conf.FileSearch,
 	}
 }

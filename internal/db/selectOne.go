@@ -4,19 +4,17 @@ import "fmt"
 
 func (m *manager) SelectOne() (string, error) {
 	m.Lock()
-	defer func() {
-		m.Unlock()
-	}()
+	defer m.Unlock()
 
-	m.close()
-	defer func() {
-		m.close()
-	}()
 	if err := m.open(); err != nil {
 		return "", fmt.Errorf("db.SelectOne: %w", err)
 	}
+	defer m.close()
 
-	rows, err := m.db.Query("select link from links where status = $1 limit 1", StatusNEW)
+	rows, err := m.db.Query("select link from links where status = $1 order by RANDOM() limit 1", StatusNEW)
+	defer func() {
+		rows.Close()
+	}()
 	if err != nil {
 		return "", fmt.Errorf("db.SelectOne(query): %w", err)
 	}

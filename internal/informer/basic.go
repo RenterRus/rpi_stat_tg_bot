@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-func (k *KekInformer) Basic() (string, string, error) {
+func (k *RealInformer) Basic() (string, string, error) {
 	basic := strings.Builder{}
 
 	basic.WriteString(k.IPFormatter())

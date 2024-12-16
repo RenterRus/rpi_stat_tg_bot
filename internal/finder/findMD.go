@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-func (k *KekFinder) getMD() (string, error) {
+func (k *RealFinder) getMD() (string, error) {
 	devices, err := os.ReadDir("/dev")
 	if err != nil {
 		return "", fmt.Errorf("getMD (ReadDir): %w", err)
@@ -26,7 +26,7 @@ func (k *KekFinder) getMD() (string, error) {
 	return "", ErrNoFound
 }
 
-func (k *KekFinder) FindMD() (string, error) {
+func (k *RealFinder) FindMD() (string, error) {
 	device, err := k.getMD()
 	if err != nil {
 		return "", fmt.Errorf("FindMD(): %w", err)

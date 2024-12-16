@@ -5,7 +5,7 @@ import (
 	"strings"
 )
 
-func (k *KekInformer) IPFormatter() string {
+func (k *RealInformer) IPFormatter() string {
 	result := strings.Builder{}
 
 	result.WriteString("Host ip: ")

@@ -7,10 +7,7 @@ import (
 	"github.com/lrstanley/go-ytdlp"
 )
 
-const (
-	BASE_BUF_QUEUE_SIZE = 10
-	MAX_THREADS         = 2
-)
+const MAX_THREADS = 2
 
 type FileInfo struct {
 	Name         string

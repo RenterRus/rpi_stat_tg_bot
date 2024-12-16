@@ -11,7 +11,7 @@ import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
 
-func (k *KekBot) Run() {
+func (k *RealBot) Run() {
 	bot, err := tgbotapi.NewBotAPI(k.token)
 	if err != nil {
 		panic(err)

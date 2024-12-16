@@ -13,10 +13,10 @@ func (d *DLP) getHistory(mode string) (string, int) {
 	if err != nil {
 		res += fmt.Sprintf("Error get '%s' links: %s\n", mode, err.Error())
 	} else {
-		res += "\n" + strings.ToUpper(mode)
+		res += "\n" + strings.ToUpper(mode) + "\n"
 		ch = len(links)
 		for k, v := range links {
-			res += fmt.Sprintf("%d. %s\n", k, v)
+			res += fmt.Sprintf("%d. %s\n", (k + 1), v)
 		}
 	}
 
@@ -24,23 +24,13 @@ func (d *DLP) getHistory(mode string) (string, int) {
 }
 
 func (d *DLP) DownloadHistory() string {
-	res := "\n"
+	res := ""
+	for _, v := range []string{db.StatusDONE, db.StatusWORK, db.StatusNEW} {
+		history, _ := d.getHistory(v)
+		res += fmt.Sprintf("%s\n\n", history)
+	}
 
-	queueCH := 0
-	workCH := 0
-	doneCH := 0
-
-	history := ""
-	history, queueCH = d.getHistory(db.StatusNEW)
-	res += fmt.Sprintf("\n%s\n", history)
-
-	history, workCH = d.getHistory(db.StatusWORK)
-	res += fmt.Sprintf("%s\n", history)
-
-	history, doneCH = d.getHistory(db.StatusDONE)
-	res += fmt.Sprintf("%s\n", history)
-
-	res += fmt.Sprintf("\nTotal:\n--In queue: %d\n--In work: %d\n--Is done: %d\n--Retry: %d", queueCH, workCH, doneCH, d.totalRetry.Load())
+	res += fmt.Sprintf("\nRetry: %d", d.totalRetry.Load())
 
 	return res
 }

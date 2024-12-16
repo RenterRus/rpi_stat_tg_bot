@@ -48,10 +48,6 @@ func (d *DLP) downloader(link string) {
 
 		d.worker.Actual[link] = progressInfo
 	})
-	fmt.Println("!!!!!!!!!!!!!!!!!!!!!!!")
-	fmt.Println("!!!!!!!!!!!!!!!!!!!!!!!")
-	fmt.Println("!!!!!!!!!!!!!!!!!!!!!!!")
-	fmt.Println(link)
 
 	_, err := d.dl.Run(context.TODO(), link)
 	if err != nil {

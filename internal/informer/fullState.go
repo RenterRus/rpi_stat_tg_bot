@@ -5,7 +5,7 @@ import (
 	"syscall"
 )
 
-func (k *KekInformer) FullState() (string, error) {
+func (k *RealInformer) FullState() (string, error) {
 	var stat syscall.Statfs_t
 	if err := syscall.Statfs("/home/"+k.root_user, &stat); err != nil {
 		return "", fmt.Errorf("syscall.Statfs: %w", err)

@@ -5,7 +5,7 @@ import (
 	"net"
 )
 
-func (*KekFinder) getLocalIPs() ([]net.IP, error) {
+func (*RealFinder) getLocalIPs() ([]net.IP, error) {
 	var ips []net.IP
 	addresses, err := net.InterfaceAddrs()
 	if err != nil {
@@ -22,7 +22,7 @@ func (*KekFinder) getLocalIPs() ([]net.IP, error) {
 	return ips, nil
 }
 
-func (k *KekFinder) FindIP() ([]net.IP, error) {
+func (k *RealFinder) FindIP() ([]net.IP, error) {
 	ips, err := k.getLocalIPs()
 	if err != nil {
 		return nil, fmt.Errorf("FindIP(): %w", err)

@@ -40,7 +40,7 @@ func NewApp(path string) App {
 }
 
 func (a *App) Run() {
-	finder := finder.NewFinder(finder.KekFinderConf{
+	finder := finder.NewFinder(finder.FinderConf{
 		FileSearch: a.Conf.DevSearch,
 	})
 
@@ -49,12 +49,12 @@ func (a *App) Run() {
 		allowedIPs[v] = struct{}{}
 	}
 
-	bot := bot.NewKekBot(bot.KekBotConf{
+	bot := bot.NewBot(bot.BotConf{
 		Token:      a.Conf.Token,
 		Timeout:    a.Conf.Timeout,
 		AllowedIPs: allowedIPs,
 		Finder:     finder,
-		Informer: informer.NewKekInformer(informer.KekInformerConf{
+		Informer: informer.NewInformer(informer.InformerConf{
 			Finder: finder,
 			User:   a.Conf.FTPuser,
 		}),

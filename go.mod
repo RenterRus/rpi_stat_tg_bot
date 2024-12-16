@@ -2,12 +2,11 @@ module rpi_stat_tg_bot
 
 go 1.22.0
 
-toolchain go1.23.2
-
 require (
 	github.com/go-playground/validator/v10 v10.23.0
 	github.com/go-telegram-bot-api/telegram-bot-api/v5 v5.5.1
 	github.com/lrstanley/go-ytdlp v0.0.0-20241213131016-731e0d4be09b
+	github.com/mattn/go-sqlite3 v1.14.24
 	github.com/spf13/viper v1.19.0
 )
 
@@ -21,7 +20,6 @@ require (
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/leodido/go-urn v1.4.0 // indirect
 	github.com/magiconair/properties v1.8.7 // indirect
-	github.com/mattn/go-sqlite3 v1.14.24 // indirect
 	github.com/mitchellh/mapstructure v1.5.0 // indirect
 	github.com/pelletier/go-toml/v2 v2.2.2 // indirect
 	github.com/sagikazarmark/locafero v0.4.0 // indirect

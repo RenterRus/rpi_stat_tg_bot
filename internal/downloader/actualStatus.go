@@ -3,13 +3,11 @@ package downloader
 import (
 	"fmt"
 	"rpi_stat_tg_bot/internal/db"
-	"strings"
 )
 
 func (d *DLP) ActualStatus() string {
 	res := ""
 	total_file := 0
-	file_finished := 0
 
 	// Формируем основное сообщение
 	for k, v := range d.worker.Actual {
@@ -18,9 +16,6 @@ func (d *DLP) ActualStatus() string {
 			total_file++
 			res += fmt.Sprintf("\n- File: %s\n- - -Info:\n- - - - - -Name: %s\n- - - - - -Downloaded: [%s/%s]mb\n- - - - - -Proc: %s\n- - - - - -Status: %s", k_file,
 				v_file.Name, v_file.DownloadSize, v_file.TotalSize, v_file.Proc, v_file.Status)
-			if strings.Contains(v_file.Proc, "100") {
-				file_finished++
-			}
 		}
 	}
 

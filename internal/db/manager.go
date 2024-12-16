@@ -53,6 +53,11 @@ func (m *manager) open() error {
 		return fmt.Errorf("db.open: %w", err)
 	}
 
+	err = m.db.Ping()
+	if err != nil {
+		return fmt.Errorf("db.open(ping): %w", err)
+	}
+
 	return nil
 }
 

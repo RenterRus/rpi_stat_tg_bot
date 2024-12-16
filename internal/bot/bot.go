@@ -8,7 +8,7 @@ import (
 	"strings"
 )
 
-type KekBot struct {
+type RealBot struct {
 	informer   informer.Informer
 	finder     finder.Finder
 	token      string
@@ -17,7 +17,7 @@ type KekBot struct {
 	downloader downloader.Downloader
 }
 
-type KekBotConf struct {
+type BotConf struct {
 	Informer   informer.Informer
 	Token      string
 	Timeout    int
@@ -26,8 +26,8 @@ type KekBotConf struct {
 	Downloader downloader.Downloader
 }
 
-func NewKekBot(conf KekBotConf) Bot {
-	return &KekBot{
+func NewBot(conf BotConf) Bot {
+	return &RealBot{
 		informer:   conf.Informer,
 		token:      conf.Token,
 		finder:     conf.Finder,
@@ -37,7 +37,7 @@ func NewKekBot(conf KekBotConf) Bot {
 	}
 }
 
-func (k *KekBot) welcomeMSG(chatID int64) string {
+func (k *RealBot) welcomeMSG(chatID int64) string {
 	welcome := strings.Builder{}
 	welcome.WriteString(fmt.Sprintf("Access is allowed for: %d", int(chatID)))
 	welcome.WriteString("\n")
