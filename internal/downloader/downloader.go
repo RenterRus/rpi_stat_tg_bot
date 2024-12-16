@@ -110,7 +110,7 @@ func (d *DLP) fromFailed(ctx context.Context) {
 		case link := <-d.failedQueue:
 			d.ToDownload(link)
 		default:
-			time.Sleep(time.Minute * 7)
+			time.Sleep(time.Minute * 3)
 		}
 	}
 }
@@ -154,7 +154,7 @@ func (d *DLP) downloader(link string) {
 		fmt.Println(err)
 	}
 	// Даем процессору "отдохнуть". Ему реально было не просто
-	time.Sleep(time.Second * 17)
+	time.Sleep(time.Second * 7)
 }
 
 func (d *DLP) Run(ctx context.Context) {
@@ -191,7 +191,7 @@ func (d *DLP) Run(ctx context.Context) {
 			}()
 
 		default:
-			time.Sleep(time.Second * 3)
+			time.Sleep(time.Second * 17)
 		}
 	}
 }
