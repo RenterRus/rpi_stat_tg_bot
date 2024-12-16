@@ -20,10 +20,6 @@ func (d *DLP) Run(ctx context.Context) {
 		NoRestrictFilenames().
 		Fixup(ytdlp.FixupForce).AbortOnError()
 
-	go func() {
-		d.fromFailed(ctx)
-	}()
-
 	d.worker.Actual = make(map[string]map[string]FileInfo)
 	doubleWay := make(chan struct{}, MAX_THREADS)
 

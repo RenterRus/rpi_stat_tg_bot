@@ -3,8 +3,10 @@ package db
 import "fmt"
 
 func (m *manager) SelectOne() (string, error) {
-	m.Lock()
-	defer m.Unlock()
+	m.block <- struct{}{}
+	defer func() {
+		<-m.block
+	}()
 
 	if err := m.open(); err != nil {
 		return "", fmt.Errorf("db.SelectOne: %w", err)

@@ -25,18 +25,14 @@ func (d *DLP) ActualStatus() string {
 	}
 
 	// Докидываем сахара
-	res += fmt.Sprintf("\n\nFiles in work right now: %d\nFailed queue size (to repeat): %d of %d\n", total_file, len(d.failedQueue), BASE_BUF_QUEUE_SIZE)
-
-	if len(d.failedQueue) == BASE_BUF_QUEUE_SIZE {
-		res += "\nThe queue for downloading failed attempts is full, new videos will be queued for download and processing as the queue is released"
-	}
+	res += fmt.Sprintf("\n\nFiles in work right now: %d", total_file)
 
 	// Включаем кусочек общей статистики, т.к. это дает дполонительное понимание в каком месте находится сервис
 	_, queueCH := d.getHistory(db.StatusNEW)
 	_, workCH := d.getHistory(db.StatusWORK)
 	_, doneCH := d.getHistory(db.StatusDONE)
 
-	res += fmt.Sprintf("\nTotal:\n--In queue: %d\n--In work: %d\n--Is done: %d\n", queueCH, workCH, doneCH)
+	res += fmt.Sprintf("\nTotal:\n--In queue: %d\n--In work: %d\n--Is done: %d\n--Retry: %d", queueCH, workCH, doneCH, d.totalRetry.Load())
 
 	return res
 

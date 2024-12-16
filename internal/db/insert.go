@@ -5,8 +5,10 @@ import (
 )
 
 func (m *manager) Insert(link string) error {
-	m.Lock()
-	defer m.Unlock()
+	m.block <- struct{}{}
+	defer func() {
+		<-m.block
+	}()
 
 	if err := m.open(); err != nil {
 		return fmt.Errorf("db.Insert: %w", err)

@@ -5,8 +5,10 @@ import (
 )
 
 func (m *manager) SelectAll(whereStatus string) ([]string, error) {
-	m.Lock()
-	defer m.Unlock()
+	m.block <- struct{}{}
+	defer func() {
+		<-m.block
+	}()
 
 	if err := m.open(); err != nil {
 		return nil, fmt.Errorf("db.SelectAll: %w", err)

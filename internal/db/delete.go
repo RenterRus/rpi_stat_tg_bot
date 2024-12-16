@@ -4,8 +4,10 @@ import "fmt"
 
 // Очищаем ссылки из таблицы, которые уже были скачаны. Они уже не играют функциональной роли
 func (m *manager) Delete() error {
-	m.Lock()
-	defer m.Unlock()
+	m.block <- struct{}{}
+	defer func() {
+		<-m.block
+	}()
 
 	if err := m.open(); err != nil {
 		return fmt.Errorf("db.Delete: %w", err)

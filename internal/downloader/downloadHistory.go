@@ -40,7 +40,7 @@ func (d *DLP) DownloadHistory() string {
 	history, doneCH = d.getHistory(db.StatusDONE)
 	res += fmt.Sprintf("%s\n", history)
 
-	res += fmt.Sprintf("\nTotal:\n--In queue: %d\n--In work: %d\n--Is done: %d\n", queueCH, workCH, doneCH)
+	res += fmt.Sprintf("\nTotal:\n--In queue: %d\n--In work: %d\n--Is done: %d\n--Retry: %d", queueCH, workCH, doneCH, d.totalRetry.Load())
 
 	return res
 }

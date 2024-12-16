@@ -3,7 +3,6 @@ package db
 import (
 	"database/sql"
 	"fmt"
-	"sync"
 
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -27,14 +26,15 @@ type links struct {
 }
 
 type manager struct {
-	sync.Mutex
 	pathToDB string
 	db       *sql.DB
+	block    chan struct{}
 }
 
 func NewManager(pathToDB string) Queue {
 	res := &manager{
 		pathToDB: pathToDB,
+		block:    make(chan struct{}, 1),
 	}
 
 	work, _ := res.SelectAll(StatusWORK)

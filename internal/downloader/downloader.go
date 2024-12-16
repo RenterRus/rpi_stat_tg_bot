@@ -16,19 +16,6 @@ func (d *DLP) ToDownload(url string) error {
 	return nil
 }
 
-func (d *DLP) fromFailed(ctx context.Context) {
-	for {
-		select {
-		case <-ctx.Done():
-			return
-		case link := <-d.failedQueue:
-			d.ToDownload(link)
-		default:
-			time.Sleep(time.Minute * 3)
-		}
-	}
-}
-
 func (d *DLP) downloader(link string) {
 	defer func() {
 		name := ""
@@ -62,14 +49,11 @@ func (d *DLP) downloader(link string) {
 		d.worker.Actual[link] = progressInfo
 	})
 
-	if err := d.qdb.Update(link, db.StatusWORK); err != nil {
-		fmt.Printf("\ndownloader update db error: %s\n", err.Error())
-	}
-
 	_, err := d.dl.Run(context.TODO(), link)
 	if err != nil {
-		d.failedQueue <- link
+		d.ToDownload(link)
 		fmt.Println(err)
+		d.totalRetry.Add(1)
 	} else {
 		if err := d.qdb.Update(link, db.StatusDONE); err != nil {
 			fmt.Printf("\ndownloader update db error: %s\n", err.Error())

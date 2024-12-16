@@ -25,17 +25,16 @@ type WorkerStatus struct {
 }
 
 type DLP struct {
-	failedQueue   chan string
 	worker        WorkerStatus
 	path          string
 	dl            *ytdlp.Command
 	totalComplete atomic.Int64
+	totalRetry    atomic.Int64
 	qdb           db.Queue
 }
 
 func NewDownloader(path string, db db.Queue) Downloader {
 	return &DLP{
-		failedQueue: make(chan string, BASE_BUF_QUEUE_SIZE),
 		worker: WorkerStatus{
 			Actual: make(map[string]map[string]FileInfo),
 		},
