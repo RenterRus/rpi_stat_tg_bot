@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"log"
 	"rpi_stat_tg_bot/internal/cmd"
-	"rpi_stat_tg_bot/internal/downloader"
 	"time"
 
 	"github.com/go-playground/validator/v10"
@@ -25,9 +24,9 @@ func (k *KekBot) Run() {
 	cmd := cmd.NewCMD(k.informer, k.finder)
 	updates := bot.GetUpdatesChan(u)
 	ctx := context.Background()
-	downloader := downloader.NewDownloader(k.pathDownload)
+
 	go func() {
-		downloader.Run(ctx)
+		k.downloader.Run(ctx)
 	}()
 
 	for update := range updates {
@@ -49,9 +48,13 @@ func (k *KekBot) Run() {
 					if err != nil {
 						msg = tgbotapi.NewMessage(update.Message.Chat.ID, k.welcomeMSG(update.Message.Chat.ID))
 					} else {
-						msg = tgbotapi.NewMessage(update.Message.Chat.ID, update.Message.Text)
 						go func(url string) {
-							downloader.ToDownload(url)
+							if err := k.downloader.ToDownload(url); err != nil {
+								msg = tgbotapi.NewMessage(update.Message.Chat.ID, fmt.Sprintf("ERROR: %v", err.Error()))
+							} else {
+								msg = tgbotapi.NewMessage(update.Message.Chat.ID, update.Message.Text)
+
+							}
 						}(update.Message.Text)
 					}
 
@@ -85,11 +88,11 @@ func (k *KekBot) Run() {
 			case buttonsMap["AutoConnect"].Text:
 				m = cmd.Auto()
 			case buttonsMap["CleanHistory"].Text:
-				m = downloader.CleanHistory()
-			case buttonsMap["DStatus"].Text:
-				m = downloader.ActualStatus()
-			case buttonsMap["DHistory"].Text:
-				m = downloader.DownloadHistory()
+				m = k.downloader.CleanHistory()
+			case buttonsMap["DownloadStatus"].Text:
+				m = k.downloader.ActualStatus()
+			case buttonsMap["ViewQueue"].Text:
+				m = k.downloader.DownloadHistory()
 			case buttonsMap["Info"].Text:
 				command := ""
 				m, command = cmd.Info()

@@ -1,6 +1,8 @@
 package db
 
-import "fmt"
+import (
+	"fmt"
+)
 
 func (m *manager) Insert(link string) error {
 	m.Lock()
@@ -11,13 +13,10 @@ func (m *manager) Insert(link string) error {
 	}
 	defer m.close()
 
-	result, err := m.db.Exec("insert into links (link, status) values ($1, 'NEW')", link)
+	_, err := m.db.Exec("insert into links (link, status) values ($1, $2)", link, StatusNEW)
 	if err != nil {
 		return fmt.Errorf("db.Insert(exec): %w", err)
 	}
-
-	fmt.Println(result.LastInsertId()) // id последнего добавленного объекта
-	fmt.Println(result.RowsAffected()) // количество добавленных строк
 
 	return nil
 }

@@ -5,3 +5,4 @@ AllowedIDs:
 FTPuser:    ""
 DevSearch:  ""
 PathToDownload: ""
+PathToDB: ""

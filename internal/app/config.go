@@ -15,6 +15,7 @@ type Config struct {
 	AllowedIDs     []string `validate:"required"`
 	FTPuser        string   `validate:"required"`
 	PathToDownload string   `validate:"required"`
+	PathToDB       string   `validate:"required"`
 }
 
 func loadConfig(p string) (*Config, error) {

@@ -11,7 +11,7 @@ func (m *manager) SelectOne() (string, error) {
 	}
 	defer m.close()
 
-	rows, err := m.db.Query("select link from links where status = 'NEW' limit 1")
+	rows, err := m.db.Query("select link from links where status = $1 limit 1", StatusNEW)
 	if err != nil {
 		return "", fmt.Errorf("db.SelectOne(query): %w", err)
 	}

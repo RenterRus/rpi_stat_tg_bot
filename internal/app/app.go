@@ -2,6 +2,8 @@ package app
 
 import (
 	"rpi_stat_tg_bot/internal/bot"
+	"rpi_stat_tg_bot/internal/db"
+	"rpi_stat_tg_bot/internal/downloader"
 	"rpi_stat_tg_bot/internal/finder"
 	"rpi_stat_tg_bot/internal/informer"
 	"sync"
@@ -28,6 +30,7 @@ func NewApp(path string) App {
 		FTPuser:        conf.FTPuser,
 		DevSearch:      conf.DevSearch,
 		PathToDownload: conf.PathToDownload,
+		PathToDB:       conf.PathToDB,
 	}
 
 	return App{
@@ -55,7 +58,7 @@ func (a *App) Run() {
 			Finder: finder,
 			User:   a.Conf.FTPuser,
 		}),
-		PathDownload: a.Conf.PathToDownload,
+		Downloader: downloader.NewDownloader(a.Conf.PathToDownload, db.NewManager(a.Conf.PathToDB)),
 	})
 
 	var wg sync.WaitGroup

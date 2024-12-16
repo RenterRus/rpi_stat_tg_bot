@@ -4,14 +4,22 @@ import (
 	"database/sql"
 	"fmt"
 	"sync"
+
+	_ "github.com/mattn/go-sqlite3"
+)
+
+const (
+	StatusNEW  = "NEW"
+	StatusWORK = "WORK"
+	StatusDONE = "DONE"
 )
 
 type Queue interface {
 	Insert(link string) error
 	SelectOne() (string, error)
-	SelectAll() ([]string, error)
+	SelectAll(where string) ([]string, error)
 	Update(link, status string) error
-	Delete(link string) error
+	Delete() error
 }
 
 type links struct {

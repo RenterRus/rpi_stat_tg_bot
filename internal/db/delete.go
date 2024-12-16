@@ -2,7 +2,7 @@ package db
 
 import "fmt"
 
-func (m *manager) Delete(link string) error {
+func (m *manager) Delete() error {
 	m.Lock()
 	defer m.Unlock()
 
@@ -11,7 +11,7 @@ func (m *manager) Delete(link string) error {
 	}
 	defer m.close()
 
-	_, err := m.db.Exec("delete from links where link = $1", link)
+	_, err := m.db.Exec("delete from links where status = $1", StatusDONE)
 	if err != nil {
 		return fmt.Errorf("db.Delete(exec): %w", err)
 	}

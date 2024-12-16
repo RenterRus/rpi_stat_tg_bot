@@ -9,11 +9,6 @@ import (
 
 var path *string
 
-/*
-TODO: Проверить и пофиксить работу с БД, если потребуется
-TODO: Интегрировать работу с БД вместо каналов
-*/
-
 func init() {
 	path = flag.String("config", "../config.yaml", "path to config. Example: ../config.yaml")
 
@@ -22,8 +17,8 @@ func init() {
 		log.Fatal("config flag not found")
 		os.Exit(1)
 	}
-
 }
+
 func main() {
 	a := app.NewApp(*path)
 	a.Run()

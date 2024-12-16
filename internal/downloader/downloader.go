@@ -3,6 +3,7 @@ package downloader
 import (
 	"context"
 	"fmt"
+	"rpi_stat_tg_bot/internal/db"
 	"strconv"
 	"strings"
 	"sync/atomic"
@@ -13,8 +14,9 @@ import (
 
 const (
 	BASE_BUF_QUEUE_SIZE = 10
-	MAX_THREADS = 2
+	MAX_THREADS         = 2
 )
+
 type FileInfo struct {
 	Name         string
 	DownloadSize string
@@ -24,39 +26,64 @@ type FileInfo struct {
 }
 
 type WorkerStatus struct {
-	History []string
-	Actual  map[string]map[string]FileInfo
+	Actual map[string]map[string]FileInfo
 }
 
 type DLP struct {
-	queue         chan string
 	failedQueue   chan string
 	worker        WorkerStatus
 	path          string
 	dl            *ytdlp.Command
 	totalComplete atomic.Int64
+	qdb           db.Queue
 }
 
-func NewDownloader(path string) Downloader {
+func NewDownloader(path string, db db.Queue) Downloader {
 	return &DLP{
-		queue:       make(chan string, BASE_BUF_QUEUE_SIZE),
-		failedQueue: make(chan string, BASE_BUF_QUEUE_SIZE*BASE_BUF_QUEUE_SIZE),
+		failedQueue: make(chan string, BASE_BUF_QUEUE_SIZE),
 		worker: WorkerStatus{
-			History: make([]string, 0, BASE_BUF_QUEUE_SIZE),
-			Actual:  make(map[string]map[string]FileInfo),
+			Actual: make(map[string]map[string]FileInfo),
 		},
 		path: path,
+		qdb:  db,
 	}
+}
+
+func (d *DLP) getHistory(mode string) (string, int) {
+	res := ""
+	ch := 0
+	links, err := d.qdb.SelectAll(mode)
+	if err != nil {
+		res += fmt.Sprintf("Error get '%s' links: %s\n", mode, err.Error())
+	} else {
+		res += strings.ToUpper(mode)
+		ch = len(links)
+		for k, v := range links {
+			res += fmt.Sprintf("%d. %s\n", k, v)
+		}
+	}
+
+	return res, ch
 }
 
 func (d *DLP) DownloadHistory() string {
 	res := "\n"
 
-	for k, v := range d.worker.History {
-		res += fmt.Sprintf("%d. %s\n", k, v)
-	}
+	queueCH := 0
+	workCH := 0
+	doneCH := 0
 
-	res += fmt.Sprintf("View %d last done video\nTotal video is done: %d", len(d.worker.History), d.totalComplete.Load())
+	history := ""
+	history, queueCH = d.getHistory(db.StatusNEW)
+	res += fmt.Sprintf("%s\n", history)
+
+	history, workCH = d.getHistory(db.StatusWORK)
+	res += fmt.Sprintf("%s\n", history)
+
+	history, doneCH = d.getHistory(db.StatusDONE)
+	res += fmt.Sprintf("%s\n", history)
+
+	res += fmt.Sprintf("\nTotal:\n--In queue: %d\n--In work: %d\n--Is done: %d\n", queueCH, workCH, doneCH)
 
 	return res
 }
@@ -64,6 +91,10 @@ func (d *DLP) DownloadHistory() string {
 func (d *DLP) CleanHistory() string {
 	for k := range d.worker.Actual {
 		delete(d.worker.Actual, k)
+	}
+
+	if err := d.qdb.Delete(); err != nil {
+		return fmt.Errorf("CleanHistory: %w", err).Error()
 	}
 
 	return fmt.Sprintf("The history has been cleared\n\n%s\n", d.DownloadHistory())
@@ -86,21 +117,27 @@ func (d *DLP) ActualStatus() string {
 		}
 	}
 
-	res += fmt.Sprintf("\n\nFiles in work right now: %d\nQueue size: %d of %d\nFailed queue size (to repeat): %d of %d\n", total_file, len(d.queue), BASE_BUF_QUEUE_SIZE, len(d.failedQueue), BASE_BUF_QUEUE_SIZE*BASE_BUF_QUEUE_SIZE)
-	if len(d.queue) == BASE_BUF_QUEUE_SIZE {
-		res += "\nThe download queue is full, new videos will be queued for download and processing as the queue is released"
-	}
+	res += fmt.Sprintf("\n\nFiles in work right now: %d\nFailed queue size (to repeat): %d of %d\n", total_file, len(d.failedQueue), BASE_BUF_QUEUE_SIZE)
 
-	if len(d.failedQueue) == BASE_BUF_QUEUE_SIZE*BASE_BUF_QUEUE_SIZE {
+	if len(d.failedQueue) == BASE_BUF_QUEUE_SIZE {
 		res += "\nThe queue for downloading failed attempts is full, new videos will be queued for download and processing as the queue is released"
 	}
+
+	_, queueCH := d.getHistory(db.StatusNEW)
+	_, workCH := d.getHistory(db.StatusWORK)
+	_, doneCH := d.getHistory(db.StatusDONE)
+
+	res += fmt.Sprintf("\nTotal:\n--In queue: %d\n--In work: %d\n--Is done: %d\n", queueCH, workCH, doneCH)
 
 	return res
 
 }
 
-func (d *DLP) ToDownload(url string) {
-	d.queue <- url
+func (d *DLP) ToDownload(url string) error {
+	if err := d.qdb.Insert(url); err != nil {
+		return fmt.Errorf("to download: %w", err)
+	}
+	return nil
 }
 
 func (d *DLP) fromFailed(ctx context.Context) {
@@ -125,8 +162,12 @@ func (d *DLP) downloader(link string) {
 				break
 			}
 		}
+
+		if err := d.qdb.Update(link, db.StatusDONE); err != nil {
+			fmt.Printf("\ndownloader updare db error: %s\n", err.Error())
+		}
+
 		d.totalComplete.Add(1)
-		d.worker.History = append(d.worker.History, fmt.Sprintf("sDONE: [%s] %s", link, name))
 
 		fmt.Printf("\n\nVIDEO %s\nLINK: %s\nIS DONE\n\n", name, link)
 		delete(d.worker.Actual, link)
@@ -148,6 +189,10 @@ func (d *DLP) downloader(link string) {
 
 		d.worker.Actual[link] = progressInfo
 	})
+
+	if err := d.qdb.Update(link, db.StatusWORK); err != nil {
+		fmt.Printf("\ndownloader updare db error: %s\n", err.Error())
+	}
 
 	_, err := d.dl.Run(context.TODO(), link)
 	if err != nil {
@@ -175,7 +220,6 @@ func (d *DLP) Run(ctx context.Context) {
 	}()
 
 	d.worker.Actual = make(map[string]map[string]FileInfo)
-	d.worker.History = make([]string, 0, BASE_BUF_QUEUE_SIZE)
 	doubleWay := make(chan struct{}, MAX_THREADS)
 
 	for {
@@ -188,7 +232,12 @@ func (d *DLP) Run(ctx context.Context) {
 					<-doubleWay
 				}()
 
-				d.downloader(<-d.queue)
+				link, err := d.qdb.SelectOne()
+				if err != nil {
+					fmt.Printf("\nERROR get link: %v", err)
+				} else {
+					d.downloader(link)
+				}
 			}()
 
 		default:
