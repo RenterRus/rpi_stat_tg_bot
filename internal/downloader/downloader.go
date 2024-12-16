@@ -50,11 +50,11 @@ func (d *DLP) downloader(link string) {
 	d.dl.ProgressFunc(time.Duration(time.Millisecond*500), func(update ytdlp.ProgressUpdate) {
 		size := (float64(update.DownloadedBytes) / 1024) / 1024 // К мегабайтам
 		totalSize := (float64(update.TotalBytes) / 1024) / 1024 // К мегабайтам
-		fmt.Println(update.Status, update.PercentString(), fmt.Sprintf("[%f/%f]mb", size, totalSize), update.Filename)
+		fmt.Println(update.Status, update.PercentString(), fmt.Sprintf("[%f.2/%f.2s]mb", size, totalSize), update.Filename)
 		progressInfo[update.Filename] = FileInfo{
 			Name:         d.path + "/" + update.Filename,
-			DownloadSize: fmt.Sprintf("%f", size),
-			TotalSize:    fmt.Sprintf("%f", totalSize),
+			DownloadSize: fmt.Sprintf("%f.2", size),
+			TotalSize:    fmt.Sprintf("%f.2", totalSize),
 			Proc:         update.PercentString(),
 			Status:       string(update.Status),
 		}
@@ -62,11 +62,9 @@ func (d *DLP) downloader(link string) {
 		d.worker.Actual[link] = progressInfo
 	})
 
-	d.Lock()
 	if err := d.qdb.Update(link, db.StatusWORK); err != nil {
 		fmt.Printf("\ndownloader update db error: %s\n", err.Error())
 	}
-	d.Unlock()
 
 	_, err := d.dl.Run(context.TODO(), link)
 	if err != nil {

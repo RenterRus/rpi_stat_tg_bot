@@ -2,7 +2,6 @@ package downloader
 
 import (
 	"rpi_stat_tg_bot/internal/db"
-	"sync"
 	"sync/atomic"
 
 	"github.com/lrstanley/go-ytdlp"
@@ -32,7 +31,6 @@ type DLP struct {
 	dl            *ytdlp.Command
 	totalComplete atomic.Int64
 	qdb           db.Queue
-	sync.Mutex
 }
 
 func NewDownloader(path string, db db.Queue) Downloader {
