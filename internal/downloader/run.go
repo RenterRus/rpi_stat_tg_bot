@@ -3,6 +3,7 @@ package downloader
 import (
 	"context"
 	"fmt"
+	"rpi_stat_tg_bot/internal/db"
 	"time"
 
 	"github.com/lrstanley/go-ytdlp"
@@ -37,6 +38,11 @@ func (d *DLP) Run(ctx context.Context) {
 				if err != nil {
 					fmt.Printf("\nERROR get link: %v", err)
 				} else {
+
+					if err := d.qdb.Update(link, db.StatusWORK); err != nil {
+						fmt.Printf("\ndownloader update db error: %s\n", err.Error())
+					}
+
 					d.downloader(link)
 				}
 			}()
