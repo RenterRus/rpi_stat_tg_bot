@@ -33,9 +33,17 @@ type manager struct {
 }
 
 func NewManager(pathToDB string) Queue {
-	return &manager{
+	res := &manager{
 		pathToDB: pathToDB,
 	}
+
+	work, _ := res.SelectAll(StatusWORK)
+
+	for _, v := range work {
+		res.Update(v, StatusNEW)
+	}
+
+	return res
 }
 
 func (m *manager) open() error {

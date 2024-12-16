@@ -14,13 +14,9 @@ var (
 )
 
 func init() {
-	buttonsMap["DStatus"] = buttons{
-		ID:   "DStatus",
-		Text: "DStatus",
-	}
-	buttonsMap["DHistory"] = buttons{
-		ID:   "DHistory",
-		Text: "DHistory",
+	buttonsMap["DownloadStatus"] = buttons{
+		ID:   "DownloadStatus",
+		Text: "DownloadStatus",
 	}
 	buttonsMap["CleanHistory"] = buttons{
 		ID:   "CleanHistory",
