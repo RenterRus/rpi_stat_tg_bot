@@ -5,9 +5,9 @@ import (
 )
 
 func (m *manager) Insert(link string) error {
-	m.block <- struct{}{}
+	m.Lock()
 	defer func() {
-		<-m.block
+		m.Unlock()
 	}()
 
 	defer func() {

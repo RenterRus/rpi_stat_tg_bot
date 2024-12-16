@@ -4,9 +4,9 @@ import "fmt"
 
 // Очищаем ссылки из таблицы, которые уже были скачаны. Они уже не играют функциональной роли
 func (m *manager) Delete() error {
-	m.block <- struct{}{}
+	m.Lock()
 	defer func() {
-		<-m.block
+		m.Unlock()
 	}()
 
 	defer func() {

@@ -5,9 +5,9 @@ import (
 )
 
 func (m *manager) SelectAll(whereStatus string) ([]string, error) {
-	m.block <- struct{}{}
+	m.Lock()
 	defer func() {
-		<-m.block
+		m.Unlock()
 	}()
 
 	defer func() {
