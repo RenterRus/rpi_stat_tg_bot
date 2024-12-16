@@ -9,6 +9,11 @@ import (
 
 var path *string
 
+/*
+TODO: Проверить и пофиксить работу с БД, если потребуется
+TODO: Интегрировать работу с БД вместо каналов
+*/
+
 func init() {
 	path = flag.String("config", "../config.yaml", "path to config. Example: ../config.yaml")
 
