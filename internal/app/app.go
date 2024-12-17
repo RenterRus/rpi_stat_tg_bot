@@ -49,6 +49,7 @@ func (a *App) Run() {
 		allowedIPs[v] = struct{}{}
 	}
 
+	queue := db.NewManager(a.Conf.PathToDB)
 	bot := bot.NewBot(bot.BotConf{
 		Token:      a.Conf.Token,
 		Timeout:    a.Conf.Timeout,
@@ -58,7 +59,8 @@ func (a *App) Run() {
 			Finder: finder,
 			User:   a.Conf.FTPuser,
 		}),
-		Downloader: downloader.NewDownloader(a.Conf.PathToDownload, db.NewManager(a.Conf.PathToDB)),
+		Downloader: downloader.NewDownloader(a.Conf.PathToDownload, queue),
+		Queue:      queue,
 	})
 
 	var wg sync.WaitGroup

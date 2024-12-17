@@ -43,16 +43,27 @@ func (k *RealBot) Run() {
 				case "/open":
 					msg.ReplyMarkup = keyboard()
 				default:
+					// Этот блок должен идти до валидации на url, т.к. в очереди, теоретически, может оказаться вообще не ссылка (ручной ввод)
+					if k.isDelete {
+						k.isDelete = false
+						err := k.queue.DeleteByLink(update.Message.Text)
+						if err != nil {
+							msg = tgbotapi.NewMessage(update.Message.Chat.ID, fmt.Sprintf("Delete from queue failed. Reason: %s", err.Error()))
+						} else {
+							msg = tgbotapi.NewMessage(update.Message.Chat.ID, fmt.Sprintf("Link [%s] deleted from queue", update.Message.Text))
+						}
+					}
+
 					if err := validate.Var(update.Message.Text, "url"); err != nil {
 						msg = tgbotapi.NewMessage(update.Message.Chat.ID, k.welcomeMSG(update.Message.Chat.ID))
 						break
 					}
-					
-					if err := k.downloader.ToDownload(url); err != nil {
+
+					if err := k.downloader.ToDownload(update.Message.Text); err != nil {
 						msg = tgbotapi.NewMessage(update.Message.Chat.ID, fmt.Sprintf("ERROR: %v", err.Error()))
 						break
-					} 
-					
+					}
+
 					msg = tgbotapi.NewMessage(update.Message.Chat.ID, update.Message.Text)
 				}
 			} else { // Если нет, то даем ответ о запрещенном доступе
@@ -81,11 +92,14 @@ func (k *RealBot) Run() {
 				ctx.Done()
 				time.Sleep(time.Second * 10)
 				m, shutdown = cmd.Restart()
+			case buttonsMap["RemoveFromQueue"].Text:
+				m = "Paste link to delete from queue"
+				k.isDelete = true
 			case buttonsMap["AutoConnect"].Text:
 				m = cmd.Auto()
 			case buttonsMap["CleanHistory"].Text:
 				m = k.downloader.CleanHistory()
-			case buttonsMap["DownloadStatus"].Text:
+			case buttonsMap["ActualState"].Text:
 				m = k.downloader.ActualStatus()
 			case buttonsMap["ViewQueue"].Text:
 				m = k.downloader.DownloadHistory()

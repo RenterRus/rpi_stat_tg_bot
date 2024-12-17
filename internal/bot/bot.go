@@ -2,6 +2,7 @@ package bot
 
 import (
 	"fmt"
+	"rpi_stat_tg_bot/internal/db"
 	"rpi_stat_tg_bot/internal/downloader"
 	"rpi_stat_tg_bot/internal/finder"
 	"rpi_stat_tg_bot/internal/informer"
@@ -13,8 +14,10 @@ type RealBot struct {
 	finder     finder.Finder
 	token      string
 	timeout    int
+	isDelete   bool
 	allowedIPs map[string]struct{}
 	downloader downloader.Downloader
+	queue      db.Queue
 }
 
 type BotConf struct {
@@ -24,6 +27,7 @@ type BotConf struct {
 	Finder     finder.Finder
 	AllowedIPs map[string]struct{}
 	Downloader downloader.Downloader
+	Queue      db.Queue
 }
 
 func NewBot(conf BotConf) Bot {
@@ -34,6 +38,7 @@ func NewBot(conf BotConf) Bot {
 		timeout:    conf.Timeout,
 		allowedIPs: conf.AllowedIPs,
 		downloader: conf.Downloader,
+		queue:      conf.Queue,
 	}
 }
 

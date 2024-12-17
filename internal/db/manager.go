@@ -20,6 +20,7 @@ type Queue interface {
 	SelectAll(where string) ([]links, error)
 	Update(link, status string, name *string) error
 	Delete() error
+	DeleteByLink(link string) error
 }
 
 type links struct {

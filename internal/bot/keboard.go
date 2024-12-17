@@ -14,13 +14,17 @@ var (
 )
 
 func init() {
-	buttonsMap["DownloadStatus"] = buttons{
-		ID:   "DownloadStatus",
-		Text: "DownloadStatus",
+	buttonsMap["ActualState"] = buttons{
+		ID:   "ActualState",
+		Text: "ActualState",
 	}
 	buttonsMap["CleanHistory"] = buttons{
 		ID:   "CleanHistory",
 		Text: "CleanHistory",
+	}
+	buttonsMap["RemoveFromQueue"] = buttons{
+		ID:   "RemoveFromQueue",
+		Text: "RemoveFromQueue",
 	}
 	buttonsMap["ViewQueue"] = buttons{
 		ID:   "ViewQueue",
@@ -56,10 +60,11 @@ func keyboard() tgbotapi.InlineKeyboardMarkup {
 		),
 		tgbotapi.NewInlineKeyboardRow(
 			tgbotapi.NewInlineKeyboardButtonData(buttonsMap["CleanHistory"].ID, buttonsMap["CleanHistory"].Text),
+			tgbotapi.NewInlineKeyboardButtonData(buttonsMap["RemoveFromQueue"].ID, buttonsMap["RemoveFromQueue"].Text),
 		),
 		tgbotapi.NewInlineKeyboardRow(
 			tgbotapi.NewInlineKeyboardButtonData(buttonsMap["ViewQueue"].ID, buttonsMap["ViewQueue"].Text),
-			tgbotapi.NewInlineKeyboardButtonData(buttonsMap["DownloadStatus"].ID, buttonsMap["DownloadStatus"].Text),
+			tgbotapi.NewInlineKeyboardButtonData(buttonsMap["ActualState"].ID, buttonsMap["ActualState"].Text),
 		),
 	)
 }
