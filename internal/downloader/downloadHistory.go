@@ -12,9 +12,8 @@ func (d *DLP) getHistory(mode string) (string, int) {
 	links, err := d.qdb.SelectAll(mode)
 	if err != nil {
 		res += fmt.Sprintf("Error get '%s' links: %s\n", mode, err.Error())
-		fmt.Printf("Error get '%s' links: %s\n", mode, err.Error())
 	} else {
-		fmt.Println("this")
+		fmt.Println("len links", len(links))
 		res += "\n" + strings.ToUpper(mode) + "\n"
 		ch = len(links)
 		for k, v := range links {
