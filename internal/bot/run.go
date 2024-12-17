@@ -38,25 +38,29 @@ func (k *RealBot) Run() {
 			var msg tgbotapi.MessageConfig
 			if _, ok := k.allowedIPs[fmt.Sprintf("%d", int(update.Message.Chat.ID))]; ok {
 				// Этот блок должен идти до валидации на url, т.к. в очереди, теоретически, может оказаться вообще не ссылка (ручной ввод)
+				// Если режим удаления
 				if k.isDelete {
 					k.isDelete = false
 					err := k.queue.DeleteByLink(update.Message.Text)
 					if err != nil {
 						msg = tgbotapi.NewMessage(update.Message.Chat.ID, fmt.Sprintf("Delete from queue failed. Reason: %s", err.Error()))
 					} else {
-						msg = tgbotapi.NewMessage(update.Message.Chat.ID, fmt.Sprintf("Link [%s] deleted from queue", update.Message.Text))
+						msg = tgbotapi.NewMessage(update.Message.Chat.ID, fmt.Sprintf("Link [%s] deleted from download queue", update.Message.Text))
 					}
 
 					continue
 				}
 
+				// Не получилось обновружить ссылку
 				if err := validate.Var(update.Message.Text, "url"); err != nil {
 					msg = tgbotapi.NewMessage(update.Message.Chat.ID, k.welcomeMSG(update.Message.Chat.ID))
 					msg.ReplyMarkup = keyboard()
+					// Это ссылка, но вставка не удалась
 				} else if err := k.downloader.ToDownload(update.Message.Text); err != nil {
 					msg = tgbotapi.NewMessage(update.Message.Chat.ID, fmt.Sprintf("ERROR: %v", err.Error()))
+					//Ссылка встала в очередь
 				} else {
-					msg = tgbotapi.NewMessage(update.Message.Chat.ID, update.Message.Text)
+					msg = tgbotapi.NewMessage(update.Message.Chat.ID, fmt.Sprintf("Link [%s] set to download queue", update.Message.Text))
 				}
 
 			} else { // Если нет, то даем ответ о запрещенном доступе

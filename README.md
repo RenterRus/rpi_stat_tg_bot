@@ -59,3 +59,8 @@ https://losst.pro/programmnyj-raid-v-linux
 
 # Скрипт создания таблицы ЫЙДшеу3
 create table links (link text unique, status text, name text;
+
+# Установка и настройка sensors
+
+```sudo apt install lm-sensors``` установка
+```sudo sensors-detect``` настройка. Везьде Yes

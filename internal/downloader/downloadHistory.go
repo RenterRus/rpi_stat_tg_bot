@@ -31,7 +31,7 @@ func (d *DLP) DownloadHistory() string {
 	res := ""
 	for _, v := range []string{db.StatusDONE, db.StatusWORK, db.StatusNEW} {
 		history, _ := d.getHistory(v)
-		res += fmt.Sprintf("%s\n\n", history)
+		res += fmt.Sprintf("%s\n", history)
 	}
 
 	res += fmt.Sprintf("\nRetry: %d", d.totalRetry.Load())
