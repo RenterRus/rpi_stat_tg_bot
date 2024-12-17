@@ -52,6 +52,8 @@ func (k *RealBot) Run() {
 						} else {
 							msg = tgbotapi.NewMessage(update.Message.Chat.ID, fmt.Sprintf("Link [%s] deleted from queue", update.Message.Text))
 						}
+
+						break
 					}
 
 					if err := validate.Var(update.Message.Text, "url"); err != nil {
