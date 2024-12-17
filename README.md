@@ -56,3 +56,6 @@ https://losst.pro/programmnyj-raid-v-linux
 - github.com/go-telegram-bot-api/telegram-bot-api/v5 
 - github.com/lrstanley/go-ytdlp 
 - github.com/spf13/viper 
+
+# Скрипт создания таблицы ЫЙДшеу3
+create table links (link text unique, status text, name text;

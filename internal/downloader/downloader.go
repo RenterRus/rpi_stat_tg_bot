@@ -33,7 +33,7 @@ func (d *DLP) downloader(link string) {
 	}()
 
 	progressInfo := map[string]FileInfo{}
-
+	name := ""
 	d.dl.ProgressFunc(time.Duration(time.Millisecond*750), func(update ytdlp.ProgressUpdate) {
 		size := (float64(update.DownloadedBytes) / 1024) / 1024 // К мегабайтам
 		totalSize := (float64(update.TotalBytes) / 1024) / 1024 // К мегабайтам
@@ -45,8 +45,10 @@ func (d *DLP) downloader(link string) {
 			Proc:         update.PercentString(),
 			Status:       string(update.Status),
 		}
-
 		d.worker.Actual[link] = progressInfo
+		if name == "" {
+			name = update.Filename
+		}
 	})
 
 	_, err := d.dl.Run(context.TODO(), link)
@@ -55,7 +57,7 @@ func (d *DLP) downloader(link string) {
 		fmt.Println(err)
 		d.totalRetry.Add(1)
 	} else {
-		if err := d.qdb.Update(link, db.StatusDONE); err != nil {
+		if err := d.qdb.Update(link, db.StatusDONE, &name); err != nil {
 			fmt.Printf("\ndownloader update db error: %s\n", err.Error())
 		}
 	}

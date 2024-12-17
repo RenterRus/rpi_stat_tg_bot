@@ -39,7 +39,7 @@ func (d *DLP) Run(ctx context.Context) {
 					fmt.Printf("\nERROR get link: %v", err)
 				} else {
 
-					if err := d.qdb.Update(link, db.StatusWORK); err != nil {
+					if err := d.qdb.Update(link, db.StatusWORK, nil); err != nil {
 						fmt.Printf("\ndownloader update db error(run): %s\n", err.Error())
 					}
 

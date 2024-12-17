@@ -4,7 +4,7 @@ import (
 	"fmt"
 )
 
-func (m *manager) SelectAll(whereStatus string) ([]string, error) {
+func (m *manager) SelectAll(whereStatus string) ([]links, error) {
 	m.Lock()
 	defer m.Unlock()
 
@@ -20,14 +20,15 @@ func (m *manager) SelectAll(whereStatus string) ([]string, error) {
 	if err != nil {
 		return nil, fmt.Errorf("db.SelectAll(Query(where)): %w", err)
 	}
-	res := make([]string, 0, 2)
+	res := make([]links, 0, 2)
 	for rows.Next() {
 		p := links{}
-		err = rows.Scan(&p.link)
+		err = rows.Scan(&p.Link, &p.Name)
 		if err != nil {
 			break
 		}
-		res = append(res, p.link)
+
+		res = append(res, p)
 	}
 
 	return res, nil

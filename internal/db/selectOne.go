@@ -21,11 +21,11 @@ func (m *manager) SelectOne() (string, error) {
 
 	rows.Next()
 	p := links{}
-	err = rows.Scan(&p.link)
+	err = rows.Scan(&p.Link)
 	if err != nil {
 		return "", fmt.Errorf("db.SelectOne(Scan): %w", err)
 	}
 
-	return p.link, nil
+	return p.Link, nil
 
 }

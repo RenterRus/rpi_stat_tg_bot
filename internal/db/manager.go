@@ -17,13 +17,14 @@ const (
 type Queue interface {
 	Insert(link string) error
 	SelectOne() (string, error)
-	SelectAll(where string) ([]string, error)
-	Update(link, status string) error
+	SelectAll(where string) ([]links, error)
+	Update(link, status string, name *string) error
 	Delete() error
 }
 
 type links struct {
-	link string
+	Link string
+	Name string
 }
 
 type manager struct {
@@ -40,7 +41,7 @@ func NewManager(pathToDB string) Queue {
 	work, _ := res.SelectAll(StatusWORK)
 
 	for _, v := range work {
-		res.Update(v, StatusNEW)
+		res.Update(v.Link, StatusNEW, nil)
 	}
 
 	return res
