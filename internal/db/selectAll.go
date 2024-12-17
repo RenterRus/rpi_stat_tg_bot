@@ -13,7 +13,7 @@ func (m *manager) SelectAll(whereStatus string) ([]links, error) {
 	}
 	defer m.close()
 
-	rows, err := m.db.Query("select link from links where status = $1", whereStatus)
+	rows, err := m.db.Query("select link, name from links where status = $1", whereStatus)
 	defer func() {
 		rows.Close()
 	}()
@@ -25,7 +25,7 @@ func (m *manager) SelectAll(whereStatus string) ([]links, error) {
 		p := links{}
 		err = rows.Scan(&p.Link, &p.Name)
 		if err != nil {
-			fmt.Println(err)
+			fmt.Printf("db.SelectAll (rows): %s", err.Error())
 			break
 		}
 
