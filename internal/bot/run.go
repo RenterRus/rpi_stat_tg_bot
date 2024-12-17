@@ -105,6 +105,8 @@ func (k *RealBot) Run() {
 				m = k.downloader.ActualStatus()
 			case buttonsMap["ViewQueue"].Text:
 				m = k.downloader.DownloadHistory()
+			case buttonsMap["Sensors"].Text:
+				m = cmd.Sensors()
 			case buttonsMap["Info"].Text:
 				command := ""
 				m, command = cmd.Info()
