@@ -80,29 +80,29 @@ func (k *RealBot) Run() {
 			shutdown := false
 			m := ""
 
-			switch update.CallbackQuery.Data {
-			case buttonsMap["Shutdown"].Text:
+			switch update.CallbackQuery.ID {
+			case buttonsMap["Shutdown"].ID:
 				ctx.Done()
 				time.Sleep(time.Second * 10)
 				m, shutdown = cmd.Shutdown()
-			case buttonsMap["Restart"].Text:
+			case buttonsMap["Restart"].ID:
 				ctx.Done()
 				time.Sleep(time.Second * 10)
 				m, shutdown = cmd.Restart()
-			case buttonsMap["RemoveFromQueue"].Text:
+			case buttonsMap["RemoveFromQueue"].ID:
 				m = "Paste link to delete from queue"
 				k.isDelete = true
-			case buttonsMap["AutoConnect"].Text:
+			case buttonsMap["AutoConnect"].ID:
 				m = cmd.Auto()
-			case buttonsMap["CleanHistory"].Text:
+			case buttonsMap["CleanHistory"].ID:
 				m = k.downloader.CleanHistory()
-			case buttonsMap["ActualState"].Text:
+			case buttonsMap["ActualState"].ID:
 				m = k.downloader.ActualStatus()
-			case buttonsMap["ViewQueue"].Text:
+			case buttonsMap["ViewQueue"].ID:
 				m = k.downloader.DownloadHistory()
-			case buttonsMap["Sensors"].Text:
+			case buttonsMap["Sensors"].ID:
 				m = cmd.Sensors()
-			case buttonsMap["Info"].Text:
+			case buttonsMap["Info"].ID:
 				command := ""
 				m, command = cmd.Info()
 				if _, err := bot.Send(tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, "Fast update and restart bot into server")); err != nil {

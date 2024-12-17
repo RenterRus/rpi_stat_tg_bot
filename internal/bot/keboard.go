@@ -16,19 +16,19 @@ var (
 func init() {
 	buttonsMap["ActualState"] = buttons{
 		ID:   "ActualState",
-		Text: "ActualState",
+		Text: "Actual State",
 	}
 	buttonsMap["CleanHistory"] = buttons{
 		ID:   "CleanHistory",
-		Text: "CleanHistory",
+		Text: "Clean History",
 	}
 	buttonsMap["RemoveFromQueue"] = buttons{
 		ID:   "RemoveFromQueue",
-		Text: "RemoveFromQueue",
+		Text: "Remove From Queue",
 	}
 	buttonsMap["ViewQueue"] = buttons{
 		ID:   "ViewQueue",
-		Text: "ViewQueue",
+		Text: "View Queue",
 	}
 	buttonsMap["Shutdown"] = buttons{
 		ID:   "Shutdown",
@@ -40,7 +40,7 @@ func init() {
 	}
 	buttonsMap["AutoConnect"] = buttons{
 		ID:   "AutoConnect",
-		Text: "AutoConnect",
+		Text: "Auto Connect",
 	}
 	buttonsMap["Info"] = buttons{
 		ID:   "Info",
