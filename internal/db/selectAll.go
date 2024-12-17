@@ -20,6 +20,7 @@ func (m *manager) SelectAll(whereStatus string) ([]links, error) {
 	if err != nil {
 		return nil, fmt.Errorf("db.SelectAll(Query(where)): %w", err)
 	}
+
 	res := make([]links, 0, 2)
 	for rows.Next() {
 		p := links{}
