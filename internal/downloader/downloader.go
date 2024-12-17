@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"rpi_stat_tg_bot/internal/db"
+	"strings"
 	"time"
 
 	"github.com/lrstanley/go-ytdlp"
@@ -38,12 +39,16 @@ func (d *DLP) downloader(link string) {
 		size := (float64(update.DownloadedBytes) / 1024) / 1024 // К мегабайтам
 		totalSize := (float64(update.TotalBytes) / 1024) / 1024 // К мегабайтам
 		fmt.Println(update.Status, update.PercentString(), fmt.Sprintf("[%.2f/%.2f]mb", size, totalSize), update.Filename)
+		status := string(update.Status)
+		if strings.Contains(status, "100") {
+			status = "converting"
+		}
 		progressInfo[update.Filename] = FileInfo{
 			Name:         d.path + "/" + update.Filename,
 			DownloadSize: fmt.Sprintf("%.2f", size),
 			TotalSize:    fmt.Sprintf("%.2f", totalSize),
 			Proc:         update.PercentString(),
-			Status:       string(update.Status),
+			Status:       status,
 		}
 		d.worker.Actual[link] = progressInfo
 		if name == "" {
