@@ -51,8 +51,8 @@ func (k *RealBot) Run() {
 				}
 
 				if err := validate.Var(update.Message.Text, "url"); err != nil {
-					msg.ReplyMarkup = keyboard()
 					msg = tgbotapi.NewMessage(update.Message.Chat.ID, k.welcomeMSG(update.Message.Chat.ID))
+					msg.ReplyMarkup = keyboard()
 				} else if err := k.downloader.ToDownload(update.Message.Text); err != nil {
 					msg = tgbotapi.NewMessage(update.Message.Chat.ID, fmt.Sprintf("ERROR: %v", err.Error()))
 				}
