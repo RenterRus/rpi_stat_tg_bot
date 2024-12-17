@@ -14,7 +14,7 @@ func (d *DLP) ActualStatus() string {
 		res += fmt.Sprintf("\nLink: %s", k)
 		for k_file, v_file := range v {
 			total_file++
-			res += fmt.Sprintf("\n- File: %s\n- - -Info:\n- - - - - -Name: %s\n- - - - - -Downloaded: [%s/%s]mb\n- - - - - -Proc: %s\n- - - - - -Status: %s", k_file,
+			res += fmt.Sprintf("\n- File: %s\n- - -Info:\n- - - - - -Name: %s\n- - - - - -Downloaded: [%s/%s]mb or %s\n- - - - - -Status: %s", k_file,
 				v_file.Name, v_file.DownloadSize, v_file.TotalSize, v_file.Proc, v_file.Status)
 		}
 	}
