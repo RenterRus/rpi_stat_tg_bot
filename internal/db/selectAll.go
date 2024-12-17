@@ -25,6 +25,7 @@ func (m *manager) SelectAll(whereStatus string) ([]links, error) {
 		p := links{}
 		err = rows.Scan(&p.Link, &p.Name)
 		if err != nil {
+			fmt.Println(err)
 			break
 		}
 

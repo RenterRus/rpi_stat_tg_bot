@@ -13,7 +13,6 @@ func (d *DLP) getHistory(mode string) (string, int) {
 	if err != nil {
 		res += fmt.Sprintf("Error get '%s' links: %s\n", mode, err.Error())
 	} else {
-		fmt.Println("len links", len(links))
 		res += "\n" + strings.ToUpper(mode) + "\n"
 		ch = len(links)
 		for k, v := range links {
