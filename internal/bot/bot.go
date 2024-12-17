@@ -46,12 +46,12 @@ func (k *RealBot) welcomeMSG(chatID int64) string {
 	welcome := strings.Builder{}
 	welcome.WriteString(fmt.Sprintf("Access is allowed for: %d", int(chatID)))
 	welcome.WriteString("\n")
-	welcome.WriteString("Write /open to open menu-keyboard")
-	welcome.WriteString("\n")
-	welcome.WriteString("Or paste link for send video to download")
-	welcome.WriteString("\n")
-
 	welcome.WriteString(k.informer.IPFormatter())
+	welcome.WriteString("\n")
+	welcome.WriteString("\n")
+	welcome.WriteString("Paste link for send video to download queue")
+	welcome.WriteString("\n")
+	welcome.WriteString("Or select one of the options on the keyboard below")
 
 	return welcome.String()
 }

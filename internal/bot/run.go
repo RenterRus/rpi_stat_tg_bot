@@ -37,37 +37,31 @@ func (k *RealBot) Run() {
 			// Убеждаемся, что пользователь из разрешенного пула
 			var msg tgbotapi.MessageConfig
 			if _, ok := k.allowedIPs[fmt.Sprintf("%d", int(update.Message.Chat.ID))]; ok {
-				msg = tgbotapi.NewMessage(update.Message.Chat.ID, k.welcomeMSG(update.Message.Chat.ID))
-
-				switch update.Message.Text {
-				case "/open":
-					msg.ReplyMarkup = keyboard()
-				default:
-					// Этот блок должен идти до валидации на url, т.к. в очереди, теоретически, может оказаться вообще не ссылка (ручной ввод)
-					if k.isDelete {
-						k.isDelete = false
-						err := k.queue.DeleteByLink(update.Message.Text)
-						if err != nil {
-							msg = tgbotapi.NewMessage(update.Message.Chat.ID, fmt.Sprintf("Delete from queue failed. Reason: %s", err.Error()))
-						} else {
-							msg = tgbotapi.NewMessage(update.Message.Chat.ID, fmt.Sprintf("Link [%s] deleted from queue", update.Message.Text))
-						}
-
-						break
+				// Этот блок должен идти до валидации на url, т.к. в очереди, теоретически, может оказаться вообще не ссылка (ручной ввод)
+				if k.isDelete {
+					k.isDelete = false
+					err := k.queue.DeleteByLink(update.Message.Text)
+					if err != nil {
+						msg = tgbotapi.NewMessage(update.Message.Chat.ID, fmt.Sprintf("Delete from queue failed. Reason: %s", err.Error()))
+					} else {
+						msg = tgbotapi.NewMessage(update.Message.Chat.ID, fmt.Sprintf("Link [%s] deleted from queue", update.Message.Text))
 					}
 
-					if err := validate.Var(update.Message.Text, "url"); err != nil {
-						msg = tgbotapi.NewMessage(update.Message.Chat.ID, k.welcomeMSG(update.Message.Chat.ID))
-						break
-					}
-
-					if err := k.downloader.ToDownload(update.Message.Text); err != nil {
-						msg = tgbotapi.NewMessage(update.Message.Chat.ID, fmt.Sprintf("ERROR: %v", err.Error()))
-						break
-					}
-
-					msg = tgbotapi.NewMessage(update.Message.Chat.ID, update.Message.Text)
+					break
 				}
+
+				if err := validate.Var(update.Message.Text, "url"); err != nil {
+					msg = tgbotapi.NewMessage(update.Message.Chat.ID, fmt.Sprintf("Validate text into url failed. Reason: %s", err.Error()))
+					break
+				}
+
+				if err := k.downloader.ToDownload(update.Message.Text); err != nil {
+					msg = tgbotapi.NewMessage(update.Message.Chat.ID, fmt.Sprintf("ERROR: %v", err.Error()))
+					break
+				}
+
+				msg.ReplyMarkup = keyboard()
+				msg = tgbotapi.NewMessage(update.Message.Chat.ID, k.welcomeMSG(update.Message.Chat.ID))
 			} else { // Если нет, то даем ответ о запрещенном доступе
 				msg = tgbotapi.NewMessage(update.Message.Chat.ID, fmt.Sprintf("Access is denied: %d", int(update.Message.Chat.ID)))
 			}
