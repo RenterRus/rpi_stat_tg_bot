@@ -47,17 +47,17 @@ func (k *RealBot) Run() {
 						msg = tgbotapi.NewMessage(update.Message.Chat.ID, fmt.Sprintf("Link [%s] deleted from queue", update.Message.Text))
 					}
 
-					break
+					continue
 				}
 
 				if err := validate.Var(update.Message.Text, "url"); err != nil {
 					msg = tgbotapi.NewMessage(update.Message.Chat.ID, fmt.Sprintf("Validate text into url failed. Reason: %s", err.Error()))
-					break
+					continue
 				}
 
 				if err := k.downloader.ToDownload(update.Message.Text); err != nil {
 					msg = tgbotapi.NewMessage(update.Message.Chat.ID, fmt.Sprintf("ERROR: %v", err.Error()))
-					break
+					continue
 				}
 
 				msg.ReplyMarkup = keyboard()
