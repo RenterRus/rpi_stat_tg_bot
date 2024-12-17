@@ -80,7 +80,7 @@ func (k *RealBot) Run() {
 			shutdown := false
 			m := ""
 
-			switch update.CallbackQuery.ID {
+			switch update.CallbackQuery.Data {
 			case buttonsMap["Shutdown"].ID:
 				ctx.Done()
 				time.Sleep(time.Second * 10)
