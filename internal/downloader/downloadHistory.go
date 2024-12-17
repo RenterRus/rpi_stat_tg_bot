@@ -16,6 +16,9 @@ func (d *DLP) getHistory(mode string) (string, int) {
 		res += "\n" + strings.ToUpper(mode) + "\n"
 		ch = len(links)
 		for k, v := range links {
+			if v.Name == "" {
+				v.Name = "We\\'ll find out soon"
+			}
 			res += fmt.Sprintf("%d. %s [%s]\n", (k + 1), v.Name, v.Link)
 		}
 	}
