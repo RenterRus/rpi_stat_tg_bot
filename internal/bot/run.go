@@ -69,12 +69,12 @@ func (k *RealBot) Run() {
 
 			// Отправляем сообщение
 			if _, err = bot.Send(msg); err != nil {
-				fmt.Println(err)
+				fmt.Println("Send", err)
 			}
 		} else if update.CallbackQuery != nil { // Если пришел колбэк
 			callback := tgbotapi.NewCallback(update.CallbackQuery.ID, update.CallbackQuery.Data)
 			if _, err := bot.Request(callback); err != nil {
-				fmt.Println(err)
+				fmt.Println("update.CallbackQuery", err)
 			}
 
 			shutdown := false
@@ -106,18 +106,18 @@ func (k *RealBot) Run() {
 				command := ""
 				m, command = cmd.Info()
 				if _, err := bot.Send(tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, "Fast update and restart bot into server")); err != nil {
-					fmt.Println(err)
+					fmt.Println("Info(send)", err)
 				}
 
 				if _, err := bot.Send(tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, "cd pets/rpi_stat_tg_bot/ && sudo rm main && git pull && sudo systemctl stop runbot.service && go build cmd/main.go && sudo systemctl start runbot.service && sudo systemctl enable runbot.service && sudo systemctl status runbot.service")); err != nil {
-					fmt.Println(err)
+					fmt.Println("Info(send2)", err)
 				}
 
 				if _, err := bot.Send(tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, "Try this command to fast connect raid to ftp server")); err != nil {
-					fmt.Println(err)
+					fmt.Println("Info(send3)", err)
 				}
 				if _, err := bot.Send(tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, command)); err != nil {
-					fmt.Println(err)
+					fmt.Println("Info(send4)", err)
 				}
 			default:
 				m = "Press one of button:\nshutdown - shutdown server\nrestart - restart server\nauto - attempt auto connection\ninfo - show info\n"
@@ -126,7 +126,7 @@ func (k *RealBot) Run() {
 			// Отправляем сообщение, полученное в результате обработки данных выше
 			msg := tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, m)
 			if _, err := bot.Send(msg); err != nil {
-				fmt.Println(err)
+				fmt.Println("NewMessage", err)
 			}
 
 			// Если вызвано выключение или перезапуск - выходим из бесконечного цикла, что б бот корректно завершидл работу
