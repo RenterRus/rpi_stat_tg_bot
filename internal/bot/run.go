@@ -55,6 +55,8 @@ func (k *RealBot) Run() {
 					msg.ReplyMarkup = keyboard()
 				} else if err := k.downloader.ToDownload(update.Message.Text); err != nil {
 					msg = tgbotapi.NewMessage(update.Message.Chat.ID, fmt.Sprintf("ERROR: %v", err.Error()))
+				} else {
+					msg = tgbotapi.NewMessage(update.Message.Chat.ID, update.Message.Text)
 				}
 
 			} else { // Если нет, то даем ответ о запрещенном доступе
