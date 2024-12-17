@@ -43,21 +43,17 @@ func (k *RealBot) Run() {
 				case "/open":
 					msg.ReplyMarkup = keyboard()
 				default:
-
-					err := validate.Var(update.Message.Text, "url")
-					if err != nil {
+					if err := validate.Var(update.Message.Text, "url"); err != nil {
 						msg = tgbotapi.NewMessage(update.Message.Chat.ID, k.welcomeMSG(update.Message.Chat.ID))
-					} else {
-						go func(url string) {
-							if err := k.downloader.ToDownload(url); err != nil {
-								msg = tgbotapi.NewMessage(update.Message.Chat.ID, fmt.Sprintf("ERROR: %v", err.Error()))
-							} else {
-								msg = tgbotapi.NewMessage(update.Message.Chat.ID, update.Message.Text)
-
-							}
-						}(update.Message.Text)
+						break
 					}
-
+					
+					if err := k.downloader.ToDownload(url); err != nil {
+						msg = tgbotapi.NewMessage(update.Message.Chat.ID, fmt.Sprintf("ERROR: %v", err.Error()))
+						break
+					} 
+					
+					msg = tgbotapi.NewMessage(update.Message.Chat.ID, update.Message.Text)
 				}
 			} else { // Если нет, то даем ответ о запрещенном доступе
 				msg = tgbotapi.NewMessage(update.Message.Chat.ID, fmt.Sprintf("Access is denied: %d", int(update.Message.Chat.ID)))
