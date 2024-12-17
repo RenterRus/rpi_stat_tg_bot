@@ -14,6 +14,7 @@ func (d *DLP) getHistory(mode string) (string, int) {
 		res += fmt.Sprintf("Error get '%s' links: %s\n", mode, err.Error())
 		fmt.Printf("Error get '%s' links: %s\n", mode, err.Error())
 	} else {
+		fmt.Println("this")
 		res += "\n" + strings.ToUpper(mode) + "\n"
 		ch = len(links)
 		for k, v := range links {
