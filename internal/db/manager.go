@@ -24,7 +24,7 @@ type Queue interface {
 
 type links struct {
 	Link string
-	Name string
+	Name *string
 }
 
 type manager struct {
