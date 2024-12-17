@@ -51,17 +51,12 @@ func (k *RealBot) Run() {
 				}
 
 				if err := validate.Var(update.Message.Text, "url"); err != nil {
-					msg = tgbotapi.NewMessage(update.Message.Chat.ID, fmt.Sprintf("Validate text into url failed. Reason: %s", err.Error()))
-					continue
-				}
-
-				if err := k.downloader.ToDownload(update.Message.Text); err != nil {
+					msg.ReplyMarkup = keyboard()
+					msg = tgbotapi.NewMessage(update.Message.Chat.ID, k.welcomeMSG(update.Message.Chat.ID))
+				} else if err := k.downloader.ToDownload(update.Message.Text); err != nil {
 					msg = tgbotapi.NewMessage(update.Message.Chat.ID, fmt.Sprintf("ERROR: %v", err.Error()))
-					continue
 				}
 
-				msg.ReplyMarkup = keyboard()
-				msg = tgbotapi.NewMessage(update.Message.Chat.ID, k.welcomeMSG(update.Message.Chat.ID))
 			} else { // Если нет, то даем ответ о запрещенном доступе
 				msg = tgbotapi.NewMessage(update.Message.Chat.ID, fmt.Sprintf("Access is denied: %d", int(update.Message.Chat.ID)))
 			}
