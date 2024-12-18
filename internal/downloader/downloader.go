@@ -52,7 +52,7 @@ func (d *DLP) downloader(link string) {
 		}
 		d.worker.Actual[link] = progressInfo
 
-		if strings.Contains(update.PercentString(), "10") {
+		if name != update.Filename {
 			name = update.Filename
 			if err := d.qdb.Update(link, db.StatusWORK, &name); err != nil {
 				fmt.Println("Update name (into work)", err)
