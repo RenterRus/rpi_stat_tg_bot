@@ -26,7 +26,7 @@ func (m *manager) Update(link, status string, name *string) error {
 		for i, v := range strings.Split(*name, ".") {
 			if i > 1 {
 				if len(v) > MAX_EXT_SIZE {
-					finalName += fmt.Sprintf(". %s", v)
+					finalName += fmt.Sprintf("\\. %s", v)
 				}
 			} else {
 				finalName += v
