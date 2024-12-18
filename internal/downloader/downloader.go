@@ -62,9 +62,10 @@ func (d *DLP) downloader(link string) {
 
 	_, err := d.dl.Run(context.TODO(), link)
 	if err != nil {
-		d.ToDownload(link)
-		fmt.Println(err)
 		d.totalRetry.Add(1)
+		if err := d.qdb.Update(link, db.StatusNEW, &name); err != nil {
+			fmt.Printf("\ndownloader set video to queue (retry): %s\n", err.Error())
+		}
 	} else {
 		if err := d.qdb.Update(link, db.StatusDONE, &name); err != nil {
 			fmt.Printf("\ndownloader update db error: %s\n", err.Error())
