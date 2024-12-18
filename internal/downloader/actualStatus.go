@@ -17,6 +17,7 @@ func (d *DLP) ActualStatus() string {
 			res += fmt.Sprintf("\n- File: %s\n- - -Info:\n- - - - - -Name: %s\n- - - - - -Downloaded: [%s/%s]mb or %s\n- - - - - -Status: %s\n", k_file,
 				v_file.Name, v_file.DownloadSize, v_file.TotalSize, v_file.Proc, v_file.Status)
 		}
+		res += "\n"
 	}
 
 	// Докидываем сахара
