@@ -28,9 +28,9 @@ func (m *manager) Update(link, status string, name *string) error {
 				if len(v) > MAX_EXT_SIZE {
 					finalName += fmt.Sprintf(". %s", v)
 				}
-				continue
+			} else {
+				finalName += v
 			}
-			finalName += v
 		}
 		_, err := m.db.Exec("update links set name = $1 where link = $2", finalName, link)
 		if err != nil {
