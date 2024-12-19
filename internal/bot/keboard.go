@@ -40,7 +40,7 @@ func init() {
 	}
 	buttonsMap["AutoConnect"] = buttons{
 		ID:   "AutoConnect",
-		Text: "Автоматическая попытка подключиться к RAID-массиву",
+		Text: "Автоматическое подключение RAID-массива",
 	}
 	buttonsMap["Info"] = buttons{
 		ID:   "Info",
