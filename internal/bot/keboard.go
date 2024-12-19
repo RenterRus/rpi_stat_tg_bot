@@ -16,51 +16,46 @@ var (
 func init() {
 	buttonsMap["ActualState"] = buttons{
 		ID:   "ActualState",
-		Text: "Actual State",
+		Text: "Текущие задачи",
 	}
 	buttonsMap["CleanHistory"] = buttons{
 		ID:   "CleanHistory",
-		Text: "Clean History",
+		Text: "Очистить историю",
 	}
 	buttonsMap["RemoveFromQueue"] = buttons{
 		ID:   "RemoveFromQueue",
-		Text: "Remove From Queue",
+		Text: "Удалить из очереди",
 	}
 	buttonsMap["ViewQueue"] = buttons{
 		ID:   "ViewQueue",
-		Text: "View Queue",
+		Text: "Показать очередь",
 	}
 	buttonsMap["Shutdown"] = buttons{
 		ID:   "Shutdown",
-		Text: "Shutdown",
+		Text: "Выключить сервер",
 	}
 	buttonsMap["Restart"] = buttons{
 		ID:   "Restart",
-		Text: "Restart",
+		Text: "Перезапустить сервер",
 	}
 	buttonsMap["AutoConnect"] = buttons{
 		ID:   "AutoConnect",
-		Text: "Auto Connect",
+		Text: "Автоматическая попытка подключиться к RAID-массиву",
 	}
 	buttonsMap["Info"] = buttons{
 		ID:   "Info",
-		Text: "Info",
+		Text: "Информация по жестким дискам",
 	}
 	buttonsMap["Sensors"] = buttons{
 		ID:   "Sensors",
-		Text: "Sensors",
+		Text: "Показания датчиков",
 	}
 }
 
 func keyboardDefault() tgbotapi.InlineKeyboardMarkup {
 	return tgbotapi.NewInlineKeyboardMarkup(
 		tgbotapi.NewInlineKeyboardRow(
-			tgbotapi.NewInlineKeyboardButtonData(buttonsMap["Info"].Text, buttonsMap["Info"].ID),
-			tgbotapi.NewInlineKeyboardButtonData(buttonsMap["Sensors"].Text, buttonsMap["Sensors"].ID),
-		),
-		tgbotapi.NewInlineKeyboardRow(
 			tgbotapi.NewInlineKeyboardButtonData(buttonsMap["CleanHistory"].Text, buttonsMap["CleanHistory"].ID),
-			tgbotapi.NewInlineKeyboardButtonData(buttonsMap["RemoveFromQueue"].Text, buttonsMap["RemoveFromQueue"].ID),
 		),
 		tgbotapi.NewInlineKeyboardRow(
 			tgbotapi.NewInlineKeyboardButtonData(buttonsMap["ViewQueue"].Text, buttonsMap["ViewQueue"].ID),
@@ -81,6 +76,8 @@ func keyboardAdmins() tgbotapi.InlineKeyboardMarkup {
 		),
 		tgbotapi.NewInlineKeyboardRow(
 			tgbotapi.NewInlineKeyboardButtonData(buttonsMap["AutoConnect"].Text, buttonsMap["AutoConnect"].ID),
+		),
+		tgbotapi.NewInlineKeyboardRow(
 			tgbotapi.NewInlineKeyboardButtonData(buttonsMap["Info"].Text, buttonsMap["Info"].ID),
 			tgbotapi.NewInlineKeyboardButtonData(buttonsMap["Sensors"].Text, buttonsMap["Sensors"].ID),
 		),
