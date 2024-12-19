@@ -28,8 +28,6 @@ func (k *RealBot) Run() {
 	go func() {
 		k.downloader.Run(ctx)
 	}()
-	fmt.Println("k.admins")
-	fmt.Println(k.admins)
 
 	for update := range updates {
 		// Обработка простых сообщений
