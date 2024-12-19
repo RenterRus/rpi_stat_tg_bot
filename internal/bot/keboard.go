@@ -44,7 +44,7 @@ func init() {
 	}
 	buttonsMap["Info"] = buttons{
 		ID:   "Info",
-		Text: "Информация по жестким дискам",
+		Text: "Статистика памяти",
 	}
 	buttonsMap["Sensors"] = buttons{
 		ID:   "Sensors",
