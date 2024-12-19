@@ -54,7 +54,11 @@ func (k *RealBot) Run() {
 				// Не получилось обновружить ссылку
 				if err := validate.Var(update.Message.Text, "url"); err != nil {
 					msg = tgbotapi.NewMessage(update.Message.Chat.ID, k.welcomeMSG(update.Message.Chat.ID))
-					msg.ReplyMarkup = keyboard()
+					if _, ok := k.admins[fmt.Sprintf("%d", int(update.Message.Chat.ID))]; ok {
+						msg.ReplyMarkup = keyboardAdmins()
+					} else {
+						msg.ReplyMarkup = keyboardDefault()
+					}
 					// Это ссылка, но вставка не удалась
 				} else if err := k.downloader.ToDownload(update.Message.Text); err != nil {
 					msg = tgbotapi.NewMessage(update.Message.Chat.ID, fmt.Sprintf("ERROR: %v", err.Error()))

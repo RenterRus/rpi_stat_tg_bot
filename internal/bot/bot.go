@@ -16,6 +16,7 @@ type RealBot struct {
 	timeout    int
 	isDelete   bool
 	allowedIPs map[string]struct{}
+	admins     map[string]struct{}
 	downloader downloader.Downloader
 	queue      db.Queue
 }
@@ -26,6 +27,7 @@ type BotConf struct {
 	Timeout    int
 	Finder     finder.Finder
 	AllowedIPs map[string]struct{}
+	Admins     map[string]struct{}
 	Downloader downloader.Downloader
 	Queue      db.Queue
 }
@@ -39,6 +41,7 @@ func NewBot(conf BotConf) Bot {
 		allowedIPs: conf.AllowedIPs,
 		downloader: conf.Downloader,
 		queue:      conf.Queue,
+		admins:     conf.Admins,
 	}
 }
 

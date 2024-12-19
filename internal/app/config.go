@@ -13,6 +13,7 @@ type Config struct {
 	Token          string   `validate:"required"`
 	Timeout        int      `validate:"required"`
 	AllowedIDs     []string `validate:"required"`
+	Admins         []string `validate:"required"`
 	FTPuser        string   `validate:"required"`
 	PathToDownload string   `validate:"required"`
 	PathToDB       string   `validate:"required"`

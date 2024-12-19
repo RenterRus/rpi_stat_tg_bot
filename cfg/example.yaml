@@ -2,6 +2,8 @@ Token: ""
 Timeout:    60
 AllowedIDs: 
   - ""  
+Admins: 
+  - ""  
 FTPuser:    ""
 DevSearch:  ""
 PathToDownload: ""

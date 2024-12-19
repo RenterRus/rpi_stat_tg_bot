@@ -9,7 +9,7 @@ func (m *manager) Update(link, status string, name *string) error {
 	m.Lock()
 	defer m.Unlock()
 
-	const MAX_EXT_SIZE = 4
+	const MAX_EXT_SIZE = 5
 
 	if err := m.open(); err != nil {
 		return fmt.Errorf("db.Update: %w", err)

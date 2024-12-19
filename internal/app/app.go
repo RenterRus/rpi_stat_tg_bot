@@ -44,17 +44,25 @@ func (a *App) Run() {
 		FileSearch: a.Conf.DevSearch,
 	})
 
-	allowedIPs := make(map[string]struct{})
-	for _, v := range a.Conf.AllowedIDs {
-		allowedIPs[v] = struct{}{}
-	}
-
 	queue := db.NewManager(a.Conf.PathToDB)
 	bot := bot.NewBot(bot.BotConf{
-		Token:      a.Conf.Token,
-		Timeout:    a.Conf.Timeout,
-		AllowedIPs: allowedIPs,
-		Finder:     finder,
+		Token:   a.Conf.Token,
+		Timeout: a.Conf.Timeout,
+		AllowedIPs: func() map[string]struct{} {
+			allowedIPs := make(map[string]struct{})
+			for _, v := range a.Conf.AllowedIDs {
+				allowedIPs[v] = struct{}{}
+			}
+			return allowedIPs
+		}(),
+		Admins: func() map[string]struct{} {
+			admins := make(map[string]struct{})
+			for _, v := range a.Conf.Admins {
+				admins[v] = struct{}{}
+			}
+			return admins
+		}(),
+		Finder: finder,
 		Informer: informer.NewInformer(informer.InformerConf{
 			Finder: finder,
 			User:   a.Conf.FTPuser,
