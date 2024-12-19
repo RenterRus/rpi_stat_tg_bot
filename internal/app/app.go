@@ -27,6 +27,7 @@ func NewApp(path string) App {
 		Token:          conf.Token,
 		Timeout:        conf.Timeout,
 		AllowedIDs:     conf.AllowedIDs,
+		Admins:         conf.Admins,
 		FTPuser:        conf.FTPuser,
 		DevSearch:      conf.DevSearch,
 		PathToDownload: conf.PathToDownload,
