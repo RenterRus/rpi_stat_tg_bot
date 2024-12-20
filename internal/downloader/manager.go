@@ -7,8 +7,6 @@ import (
 	"github.com/lrstanley/go-ytdlp"
 )
 
-const MAX_THREADS = 2
-
 type FileInfo struct {
 	Name         string
 	DownloadSize string
@@ -28,14 +26,16 @@ type DLP struct {
 	totalComplete atomic.Int64
 	totalRetry    atomic.Int64
 	qdb           db.Queue
+	maxWorkers    int
 }
 
-func NewDownloader(path string, db db.Queue) Downloader {
+func NewDownloader(path string, db db.Queue, maxWorkers int) Downloader {
 	return &DLP{
 		worker: WorkerStatus{
 			Actual: make(map[string]map[string]FileInfo),
 		},
-		path: path,
-		qdb:  db,
+		path:       path,
+		qdb:        db,
+		maxWorkers: maxWorkers,
 	}
 }

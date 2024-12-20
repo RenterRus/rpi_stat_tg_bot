@@ -17,6 +17,7 @@ type Config struct {
 	FTPuser        string   `validate:"required"`
 	PathToDownload string   `validate:"required"`
 	PathToDB       string   `validate:"required"`
+	MaxWorkers     int      `validate:"gt=0"`
 }
 
 func loadConfig(p string) (*Config, error) {

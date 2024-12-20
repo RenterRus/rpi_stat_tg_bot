@@ -23,16 +23,7 @@ func NewApp(path string) App {
 		panic(err)
 	}
 
-	config := Config{
-		Token:          conf.Token,
-		Timeout:        conf.Timeout,
-		AllowedIDs:     conf.AllowedIDs,
-		Admins:         conf.Admins,
-		FTPuser:        conf.FTPuser,
-		DevSearch:      conf.DevSearch,
-		PathToDownload: conf.PathToDownload,
-		PathToDB:       conf.PathToDB,
-	}
+	config := *conf
 
 	return App{
 		Conf: config,
@@ -68,7 +59,7 @@ func (a *App) Run() {
 			Finder: finder,
 			User:   a.Conf.FTPuser,
 		}),
-		Downloader: downloader.NewDownloader(a.Conf.PathToDownload, queue),
+		Downloader: downloader.NewDownloader(a.Conf.PathToDownload, queue, a.Conf.MaxWorkers),
 		Queue:      queue,
 	})
 

@@ -8,3 +8,4 @@ FTPuser:    ""
 DevSearch:  ""
 PathToDownload: ""
 PathToDB: ""
+MaxWorkers: 2

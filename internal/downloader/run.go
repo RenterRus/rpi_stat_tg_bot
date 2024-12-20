@@ -22,7 +22,7 @@ func (d *DLP) Run(ctx context.Context) {
 		Fixup(ytdlp.FixupForce).AbortOnError()
 
 	d.worker.Actual = make(map[string]map[string]FileInfo)
-	doubleWay := make(chan struct{}, MAX_THREADS)
+	doubleWay := make(chan struct{}, d.maxWorkers)
 
 	for {
 		select {
