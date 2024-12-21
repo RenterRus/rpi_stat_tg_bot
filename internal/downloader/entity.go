@@ -8,4 +8,5 @@ type Downloader interface {
 	DownloadHistory() string
 	ActualStatus() string
 	CleanHistory() string
+	UpdateInfo() string
 }

@@ -26,6 +26,7 @@ type DLP struct {
 	totalRetry atomic.Int64
 	qdb        db.Queue
 	maxWorkers int
+	updateStat string
 }
 
 func NewDownloader(path string, db db.Queue, maxWorkers int) Downloader {

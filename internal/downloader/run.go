@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"rpi_stat_tg_bot/internal/db"
+	"strings"
 	"time"
 
 	"github.com/lrstanley/go-ytdlp"
@@ -12,21 +13,25 @@ import (
 func (d *DLP) Run(ctx context.Context) {
 	ytdlp.MustInstall(context.TODO(), nil)
 	res, err := ytdlp.New().Update(context.Background())
+	var updateStat strings.Builder
 	if err != nil {
-		fmt.Println("check update error", err)
+		updateStat.WriteString(fmt.Sprintf("check update error: %s\n", err.Error()))
 	}
 	if res != nil {
 		extinfo, errs := res.GetExtractedInfo()
-		fmt.Println("res.Stdout", res.Stdout)
-		fmt.Println("res.GetExtractedInfo()", extinfo)
-		fmt.Println("res.GetExtractedInfo() error", errs)
-		fmt.Println("res.String()", res.String())
-		fmt.Println("res.Stderr", res.Stderr)
-		fmt.Println("res.OutputLogs", res.OutputLogs)
-		fmt.Println("res.ExitCode", res.ExitCode)
-		fmt.Println("res.Executable", res.Executable)
-		fmt.Println("res.Args", res.Args)
+
+		updateStat.WriteString(fmt.Sprintf("res.Stdout: %s\n", res.Stdout))
+		updateStat.WriteString(fmt.Sprintf("res.GetExtractedInfo(): %v\n", extinfo))
+		updateStat.WriteString(fmt.Sprintf("res.GetExtractedInfo() error: %s\n", errs.Error()))
+		updateStat.WriteString(fmt.Sprintf("res.String(): %s\n", res.String()))
+		updateStat.WriteString(fmt.Sprintf("res.Stderr: %s\n", res.Stderr))
+		updateStat.WriteString(fmt.Sprintf("res.OutputLogs: %v\n", res.OutputLogs))
+		updateStat.WriteString(fmt.Sprintf("res.ExitCode: %d\n", res.ExitCode))
+		updateStat.WriteString(fmt.Sprintf("res.Executable: %s\n", res.Executable))
+		updateStat.WriteString(fmt.Sprintf("res.Args: %v\n", res.Args))
 	}
+
+	d.updateStat = updateStat.String()
 
 	d.dl = ytdlp.New().
 		UnsetCacheDir().
