@@ -29,6 +29,8 @@ func (d *DLP) Run(ctx context.Context) {
 		updateStat.WriteString(fmt.Sprintf("res.ExitCode: %d\n", res.ExitCode))
 		updateStat.WriteString(fmt.Sprintf("res.Executable: %s\n", res.Executable))
 		updateStat.WriteString(fmt.Sprintf("res.Args: %v\n", res.Args))
+	} else {
+		updateStat.WriteString("Обновлений не найдено")
 	}
 
 	d.updateStat = updateStat.String()
