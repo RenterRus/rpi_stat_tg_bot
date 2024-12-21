@@ -36,7 +36,7 @@ func (k *RealBot) Run() {
 			if err != nil {
 				fmt.Println("ATOI:", err)
 			}
-			bot.Send(tgbotapi.NewMessage(int64(id), "Бот перезапущен. Через 3 минуты придет информация по оновлению yt-dlp"))
+			bot.Send(tgbotapi.NewMessage(int64(id), "Бот перезапущен. Через 3 минуты придет информация по обновлению yt-dlp"))
 		}
 
 		time.Sleep(time.Minute * 3)
@@ -63,9 +63,9 @@ func (k *RealBot) Run() {
 					k.isDelete = false
 					err := k.queue.DeleteByLink(update.Message.Text)
 					if err != nil {
-						bot.Send(tgbotapi.NewMessage(update.Message.Chat.ID, fmt.Sprintf("Delete from queue failed. Reason: %s", err.Error())))
+						bot.Send(tgbotapi.NewMessage(update.Message.Chat.ID, fmt.Sprintf("Не удалось удалить из очереди. Причина: %s", err.Error())))
 					} else {
-						bot.Send(tgbotapi.NewMessage(update.Message.Chat.ID, fmt.Sprintf("Link [%s] deleted from download queue", update.Message.Text)))
+						bot.Send(tgbotapi.NewMessage(update.Message.Chat.ID, fmt.Sprintf("Ссылка [%s] удалена из очереди", update.Message.Text)))
 						bot.Send(tgbotapi.NewMessage(update.Message.Chat.ID, k.downloader.DownloadHistory()))
 					}
 
@@ -82,14 +82,14 @@ func (k *RealBot) Run() {
 					}
 					// Это ссылка, но вставка не удалась
 				} else if err := k.downloader.ToDownload(update.Message.Text); err != nil {
-					msg = tgbotapi.NewMessage(update.Message.Chat.ID, fmt.Sprintf("ERROR: %v", err.Error()))
+					msg = tgbotapi.NewMessage(update.Message.Chat.ID, fmt.Sprintf("Не удалось вставить в очередь ссылку %s. Причина: %v", update.Message.Text, err.Error()))
 					//Ссылка встала в очередь
 				} else {
-					msg = tgbotapi.NewMessage(update.Message.Chat.ID, fmt.Sprintf("Link [%s] set to download queue", update.Message.Text))
+					msg = tgbotapi.NewMessage(update.Message.Chat.ID, fmt.Sprintf("Ссылка [%s] взята в работу", update.Message.Text))
 				}
 
 			} else { // Если нет, то даем ответ о запрещенном доступе
-				msg = tgbotapi.NewMessage(update.Message.Chat.ID, fmt.Sprintf("Access is denied: %d", int(update.Message.Chat.ID)))
+				msg = tgbotapi.NewMessage(update.Message.Chat.ID, fmt.Sprintf("Доступ запрещен: %d", int(update.Message.Chat.ID)))
 			}
 
 			// Отправляем сообщение
@@ -115,7 +115,7 @@ func (k *RealBot) Run() {
 				time.Sleep(time.Second * 10)
 				m, shutdown = cmd.Restart()
 			case buttonsMap["RemoveFromQueue"].ID:
-				m = "Paste link to delete from queue"
+				m = "Вставьте ссылку, которую надо удалить"
 				k.isDelete = true
 			case buttonsMap["AutoConnect"].ID:
 				m = cmd.Auto()
@@ -130,7 +130,7 @@ func (k *RealBot) Run() {
 			case buttonsMap["Info"].ID:
 				command := ""
 				m, command = cmd.Info()
-				if _, err := bot.Send(tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, "Fast update and restart bot into server")); err != nil {
+				if _, err := bot.Send(tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, "Команда для быстрого обновления бота на сервере")); err != nil {
 					fmt.Println("Info(send)", err)
 				}
 
@@ -138,14 +138,14 @@ func (k *RealBot) Run() {
 					fmt.Println("Info(send2)", err)
 				}
 
-				if _, err := bot.Send(tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, "Try this command to fast connect raid to ftp server")); err != nil {
+				if _, err := bot.Send(tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, "Команда для подключения RAID массива")); err != nil {
 					fmt.Println("Info(send3)", err)
 				}
 				if _, err := bot.Send(tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, command)); err != nil {
 					fmt.Println("Info(send4)", err)
 				}
 			default:
-				m = "Press one of button:\nshutdown - shutdown server\nrestart - restart server\nauto - attempt auto connection\ninfo - show info\n"
+				m = "Неожиданная команда"
 			}
 
 			// Отправляем сообщение, полученное в результате обработки данных выше

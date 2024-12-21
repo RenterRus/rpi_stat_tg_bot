@@ -25,7 +25,7 @@ func (c *CMD) Auto() string {
 
 	cmd := exec.Command("/bin/sh", "-c", ARGstr.String())
 	if err = cmd.Run(); err != nil {
-		return fmt.Sprintf("auto(mount) error: %s\ncommand: %s", err.Error(), ARGstr.String())
+		return fmt.Sprintf("Автоматическое подключение RAID провалилось: %s\ncommand: %s", err.Error(), ARGstr.String())
 	}
 
 	ARGstr.Reset()
@@ -38,8 +38,8 @@ func (c *CMD) Auto() string {
 
 	cmd = exec.Command("/bin/sh", "-c", ARGstr.String())
 	if err = cmd.Run(); err != nil {
-		return fmt.Sprintf("auto(chmod) error: %s\ncommand: %s", err.Error(), ARGstr.String())
+		return fmt.Sprintf("Автоматическое выделение прав провалено: %s\ncommand: %s", err.Error(), ARGstr.String())
 	}
 
-	return "auto-connection attempt completed"
+	return "Автоматическое подключение и настройка RAID выполнено успешно"
 }

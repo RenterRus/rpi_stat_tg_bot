@@ -10,5 +10,5 @@ func (c *CMD) Restart() (string, bool) {
 		return fmt.Sprintf("reboot error: %s", err.Error()), false
 	}
 
-	return "Restart is run", true
+	return "Перезапуск. Не забудьте подключить RAID при включении", true
 }

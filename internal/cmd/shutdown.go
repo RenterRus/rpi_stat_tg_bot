@@ -11,5 +11,5 @@ func (c *CMD) Shutdown() (string, bool) {
 		return fmt.Sprintf("restart error: %s", err.Error()), false
 	}
 
-	return "Shutdown is planing after " + strconv.Itoa(c.ttp) + " minutes. But the bot shutdown right now", true
+	return "Выключение запланировано через " + strconv.Itoa(c.ttp) + " минут. Но бот выключен уже сейчас", true
 }
