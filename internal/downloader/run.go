@@ -14,22 +14,13 @@ func (d *DLP) Run(ctx context.Context) {
 	ytdlp.MustInstall(context.TODO(), nil)
 	res, err := ytdlp.New().Update(context.Background())
 	var updateStat strings.Builder
-	updateStat.WriteString(fmt.Sprintf("Текущая версия: %s\n", ytdlp.Version))
+	updateStat.WriteString(fmt.Sprintf("Версия на сервере: %s\n", ytdlp.Version))
 	if err != nil {
-		updateStat.WriteString(fmt.Sprintf("check update error: %s\n", err.Error()))
+		updateStat.WriteString(fmt.Sprintf("Определение актульной версии провалено: %s\n", err.Error()))
 	}
 	if res != nil {
-		extinfo, errs := res.GetExtractedInfo()
-
-		updateStat.WriteString(fmt.Sprintf("res.Stdout: %s\n", res.Stdout))
-		updateStat.WriteString(fmt.Sprintf("res.GetExtractedInfo(): %v\n", extinfo))
-		updateStat.WriteString(fmt.Sprintf("res.GetExtractedInfo() error: %v\n", errs))
-		updateStat.WriteString(fmt.Sprintf("res.String(): %s\n", res.String()))
-		updateStat.WriteString(fmt.Sprintf("res.Stderr: %s\n", res.Stderr))
-		updateStat.WriteString(fmt.Sprintf("res.OutputLogs: %v\n", res.OutputLogs))
-		updateStat.WriteString(fmt.Sprintf("res.ExitCode: %d\n", res.ExitCode))
-		updateStat.WriteString(fmt.Sprintf("res.Executable: %s\n", res.Executable))
-		updateStat.WriteString(fmt.Sprintf("res.Args: %v\n", res.Args))
+		updateStat.WriteString(fmt.Sprintf("Актуальная версия: %s\n\n", res.Stdout))
+		updateStat.WriteString(fmt.Sprintf("Полное сообщение %s\n", res.String()))
 	} else {
 		updateStat.WriteString("Обновлений не найдено\n")
 	}
