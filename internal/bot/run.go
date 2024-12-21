@@ -43,9 +43,10 @@ func (k *RealBot) Run() {
 					k.isDelete = false
 					err := k.queue.DeleteByLink(update.Message.Text)
 					if err != nil {
-						msg = tgbotapi.NewMessage(update.Message.Chat.ID, fmt.Sprintf("Delete from queue failed. Reason: %s", err.Error()))
+						bot.Send(tgbotapi.NewMessage(update.Message.Chat.ID, fmt.Sprintf("Delete from queue failed. Reason: %s", err.Error())))
 					} else {
-						msg = tgbotapi.NewMessage(update.Message.Chat.ID, fmt.Sprintf("Link [%s] deleted from download queue", update.Message.Text))
+						bot.Send(tgbotapi.NewMessage(update.Message.Chat.ID, fmt.Sprintf("Link [%s] deleted from download queue", update.Message.Text)))
+						bot.Send(tgbotapi.NewMessage(update.Message.Chat.ID, k.downloader.DownloadHistory()))
 					}
 
 					continue
