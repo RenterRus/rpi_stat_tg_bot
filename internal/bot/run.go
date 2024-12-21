@@ -32,21 +32,22 @@ func (k *RealBot) Run() {
 
 	go func() {
 		for k := range k.admins {
-			id, err := strconv.Atoi(k)
+			id, err := strconv.ParseInt(k, 10, 64)
 			if err != nil {
 				fmt.Println("ATOI:", err)
 			}
-			bot.Send(tgbotapi.NewMessage(int64(id), "Бот запущен. Через 3 минуты придет информация по обновлению yt-dlp"))
+			bot.Send(tgbotapi.NewMessage(id, "Бот запущен. Через 3 минуты придет информация по обновлению yt-dlp"))
 		}
 
 		time.Sleep(time.Minute * 3)
 		updInfo := k.downloader.UpdateInfo()
 		for k := range k.admins {
-			id, err := strconv.Atoi(k)
+			id, err := strconv.ParseInt(k, 10, 64)
 			if err != nil {
 				fmt.Println("ATOI:", err)
 			}
-			bot.Send(tgbotapi.NewMessage(int64(id), updInfo))
+
+			bot.Send(tgbotapi.NewMessage(id, updInfo))
 		}
 	}()
 	for update := range updates {
