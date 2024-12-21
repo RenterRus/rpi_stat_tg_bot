@@ -36,7 +36,7 @@ func (k *RealBot) Run() {
 			if err != nil {
 				fmt.Println("ATOI:", err)
 			}
-			bot.Send(tgbotapi.NewMessage(int64(id), "Бот перезапущен. Через 3 минуты придет информация по обновлению yt-dlp"))
+			bot.Send(tgbotapi.NewMessage(int64(id), "Бот запущен. Через 3 минуты придет информация по обновлению yt-dlp"))
 		}
 
 		time.Sleep(time.Minute * 3)

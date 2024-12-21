@@ -47,14 +47,14 @@ func NewBot(conf BotConf) Bot {
 
 func (k *RealBot) welcomeMSG(chatID int64) string {
 	welcome := strings.Builder{}
-	welcome.WriteString(fmt.Sprintf("Access is allowed for: %d", int(chatID)))
+	welcome.WriteString(fmt.Sprintf("Доступ разрешен для: %d", int(chatID)))
 	welcome.WriteString("\n")
 	welcome.WriteString(k.informer.IPFormatter())
 	welcome.WriteString("\n")
 	welcome.WriteString("\n")
-	welcome.WriteString("Paste link for send video to download queue")
+	welcome.WriteString("Вставьте ссылку для отправки ее в очередь на скачивание")
 	welcome.WriteString("\n")
-	welcome.WriteString("Or select one of the options on the keyboard below")
+	welcome.WriteString("Или выберите одну из опций ниже")
 
 	return welcome.String()
 }
