@@ -27,8 +27,6 @@ func (d *DLP) downloader(link string) {
 			}
 		}
 
-		d.totalComplete.Add(1)
-
 		fmt.Printf("\n\nVIDEO %s\nLINK: %s\nIS DONE\n\n", name, link)
 		delete(d.worker.Actual, link)
 	}()

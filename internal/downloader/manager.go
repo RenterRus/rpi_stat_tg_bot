@@ -20,13 +20,12 @@ type WorkerStatus struct {
 }
 
 type DLP struct {
-	worker        WorkerStatus
-	path          string
-	dl            *ytdlp.Command
-	totalComplete atomic.Int64
-	totalRetry    atomic.Int64
-	qdb           db.Queue
-	maxWorkers    int
+	worker     WorkerStatus
+	path       string
+	dl         *ytdlp.Command
+	totalRetry atomic.Int64
+	qdb        db.Queue
+	maxWorkers int
 }
 
 func NewDownloader(path string, db db.Queue, maxWorkers int) Downloader {
