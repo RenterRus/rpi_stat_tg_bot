@@ -22,7 +22,7 @@ func (d *DLP) Run(ctx context.Context) {
 
 		updateStat.WriteString(fmt.Sprintf("res.Stdout: %s\n", res.Stdout))
 		updateStat.WriteString(fmt.Sprintf("res.GetExtractedInfo(): %v\n", extinfo))
-		updateStat.WriteString(fmt.Sprintf("res.GetExtractedInfo() error: %s\n", errs.Error()))
+		updateStat.WriteString(fmt.Sprintf("res.GetExtractedInfo() error: %v\n", errs))
 		updateStat.WriteString(fmt.Sprintf("res.String(): %s\n", res.String()))
 		updateStat.WriteString(fmt.Sprintf("res.Stderr: %s\n", res.Stderr))
 		updateStat.WriteString(fmt.Sprintf("res.OutputLogs: %v\n", res.OutputLogs))
