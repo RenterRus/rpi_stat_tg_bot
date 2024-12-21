@@ -11,6 +11,22 @@ import (
 
 func (d *DLP) Run(ctx context.Context) {
 	ytdlp.MustInstall(context.TODO(), nil)
+	res, err := ytdlp.New().Update(context.Background())
+	if err != nil {
+		fmt.Println("check update error", err)
+	}
+	if res != nil {
+		extinfo, errs := res.GetExtractedInfo()
+		fmt.Println("res.Stdout", res.Stdout)
+		fmt.Println("res.GetExtractedInfo()", extinfo)
+		fmt.Println("res.GetExtractedInfo() error", errs)
+		fmt.Println("res.String()", res.String())
+		fmt.Println("res.Stderr", res.Stderr)
+		fmt.Println("res.OutputLogs", res.OutputLogs)
+		fmt.Println("res.ExitCode", res.ExitCode)
+		fmt.Println("res.Executable", res.Executable)
+		fmt.Println("res.Args", res.Args)
+	}
 
 	d.dl = ytdlp.New().
 		UnsetCacheDir().

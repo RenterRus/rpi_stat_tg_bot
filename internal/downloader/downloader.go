@@ -19,15 +19,6 @@ func (d *DLP) ToDownload(url string) error {
 
 func (d *DLP) downloader(link string) {
 	defer func() {
-		name := ""
-		for i := range d.worker.Actual[link] {
-			if name == "" {
-				name = d.worker.Actual[link][i].Name
-				break
-			}
-		}
-
-		fmt.Printf("\n\nVIDEO %s\nLINK: %s\nIS DONE\n\n", name, link)
 		delete(d.worker.Actual, link)
 	}()
 
