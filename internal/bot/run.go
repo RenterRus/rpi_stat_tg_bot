@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"rpi_stat_tg_bot/internal/cmd"
+	"strconv"
 	"time"
 
 	"github.com/go-playground/validator/v10"
@@ -29,6 +30,25 @@ func (k *RealBot) Run() {
 		k.downloader.Run(ctx)
 	}()
 
+	go func() {
+		for k := range k.admins {
+			id, err := strconv.Atoi(k)
+			if err != nil {
+				fmt.Println("ATOI:", err)
+			}
+			bot.Send(tgbotapi.NewMessage(int64(id), "Бот перезапущен. Через 3 минуты придет информация по оновлению yt-dlp"))
+		}
+
+		time.Sleep(time.Minute * 3)
+		updInfo := k.downloader.UpdateInfo()
+		for k := range k.admins {
+			id, err := strconv.Atoi(k)
+			if err != nil {
+				fmt.Println("ATOI:", err)
+			}
+			bot.Send(tgbotapi.NewMessage(int64(id), updInfo))
+		}
+	}()
 	for update := range updates {
 		// Обработка простых сообщений
 		if update.Message != nil {
