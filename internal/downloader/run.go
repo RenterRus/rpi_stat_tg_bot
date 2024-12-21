@@ -14,6 +14,7 @@ func (d *DLP) Run(ctx context.Context) {
 	ytdlp.MustInstall(context.TODO(), nil)
 	res, err := ytdlp.New().Update(context.Background())
 	var updateStat strings.Builder
+	updateStat.WriteString(fmt.Sprintf("Текущая версия: %s\n", ytdlp.Version))
 	if err != nil {
 		updateStat.WriteString(fmt.Sprintf("check update error: %s\n", err.Error()))
 	}
@@ -30,7 +31,7 @@ func (d *DLP) Run(ctx context.Context) {
 		updateStat.WriteString(fmt.Sprintf("res.Executable: %s\n", res.Executable))
 		updateStat.WriteString(fmt.Sprintf("res.Args: %v\n", res.Args))
 	} else {
-		updateStat.WriteString("Обновлений не найдено")
+		updateStat.WriteString("Обновлений не найдено\n")
 	}
 
 	d.updateStat = updateStat.String()
