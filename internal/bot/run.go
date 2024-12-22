@@ -36,7 +36,7 @@ func (k *RealBot) Run() {
 		for k := range k.admins {
 			id, err := strconv.ParseInt(k, 10, 64)
 			if err != nil {
-				fmt.Println("PareintError:", err)
+				fmt.Println("ParseintError:", err)
 			}
 			bot.Send(tgbotapi.NewMessage(id, fmt.Sprintf("Бот запущен. Через 3 минуты придет информация по обновлению yt-dlp.\n%s", autoConnect)))
 		}
@@ -46,7 +46,7 @@ func (k *RealBot) Run() {
 		for k := range k.admins {
 			id, err := strconv.ParseInt(k, 10, 64)
 			if err != nil {
-				fmt.Println("ATOI:", err)
+				fmt.Println("ParseintError_2:", err)
 			}
 
 			bot.Send(tgbotapi.NewMessage(id, updInfo))
