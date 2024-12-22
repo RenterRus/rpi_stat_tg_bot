@@ -34,7 +34,7 @@ func (d *DLP) Run(ctx context.Context) {
 		RecodeVideo("mp4").
 		Output("%(title)s.%(ext)s").
 		NoRestrictFilenames().
-		Fixup(ytdlp.FixupForce).AbortOnError()
+		Fixup(ytdlp.FixupForce).AbortOnError().RmCacheDir()
 
 	d.worker.Actual = make(map[string]map[string]FileInfo)
 	doubleWay := make(chan struct{}, d.maxWorkers)
