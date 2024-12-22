@@ -31,12 +31,14 @@ func (k *RealBot) Run() {
 	}()
 
 	go func() {
+		autoConnect := cmd.Auto()
+
 		for k := range k.admins {
 			id, err := strconv.ParseInt(k, 10, 64)
 			if err != nil {
-				fmt.Println("ATOI:", err)
+				fmt.Println("PareintError:", err)
 			}
-			bot.Send(tgbotapi.NewMessage(id, "Бот запущен. Через 3 минуты придет информация по обновлению yt-dlp"))
+			bot.Send(tgbotapi.NewMessage(id, fmt.Sprintf("Бот запущен. Через 3 минуты придет информация по обновлению yt-dlp.\n%s", autoConnect)))
 		}
 
 		time.Sleep(time.Minute * 3)
