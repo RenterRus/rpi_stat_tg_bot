@@ -30,9 +30,9 @@ func (k *RealBot) Run() {
 		k.downloader.Run(ctx)
 	}()
 
-	go func() {
-		autoConnect := cmd.Auto()
+	autoConnect := cmd.Auto()
 
+	go func() {
 		for k := range k.admins {
 			id, err := strconv.ParseInt(k, 10, 64)
 			if err != nil {
