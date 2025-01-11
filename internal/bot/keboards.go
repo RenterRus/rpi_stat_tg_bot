@@ -50,6 +50,14 @@ func init() {
 		ID:   "Sensors",
 		Text: "Показания датчиков",
 	}
+	buttonsMap["Help"] = buttons{
+		ID:   "Help",
+		Text: "Подсказка",
+	}
+	buttonsMap["FullState"] = buttons{
+		ID:   "FullState",
+		Text: "Вся статистика и поддсказка",
+	}
 }
 
 func keyboardDefault() tgbotapi.InlineKeyboardMarkup {
@@ -72,6 +80,10 @@ func keyboardAdmins() tgbotapi.InlineKeyboardMarkup {
 		),
 		tgbotapi.NewInlineKeyboardRow(
 			tgbotapi.NewInlineKeyboardButtonData(buttonsMap["AutoConnect"].Text, buttonsMap["AutoConnect"].ID),
+			tgbotapi.NewInlineKeyboardButtonData(buttonsMap["Help"].Text, buttonsMap["Help"].ID),
+		),
+		tgbotapi.NewInlineKeyboardRow(
+			tgbotapi.NewInlineKeyboardButtonData(buttonsMap["FullState"].Text, buttonsMap["FullState"].ID),
 		),
 		tgbotapi.NewInlineKeyboardRow(
 			tgbotapi.NewInlineKeyboardButtonData(buttonsMap["CleanHistory"].Text, buttonsMap["CleanHistory"].ID),

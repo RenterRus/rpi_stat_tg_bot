@@ -122,17 +122,9 @@ func (k *RealBot) Run() {
 				k.isDelete = true
 			case buttonsMap["AutoConnect"].ID:
 				m = cmd.Auto()
-			case buttonsMap["CleanHistory"].ID:
-				m = k.downloader.CleanHistory()
-			case buttonsMap["ActualState"].ID:
-				m = k.downloader.ActualStatus()
-			case buttonsMap["ViewQueue"].ID:
-				m = k.downloader.DownloadHistory()
-			case buttonsMap["Sensors"].ID:
-				m = cmd.Sensors()
-			case buttonsMap["Info"].ID:
+			case buttonsMap["Help"].ID:
 				command := ""
-				m, command = cmd.Info()
+				_, command = cmd.Info()
 				if _, err := bot.Send(tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, "Команда для быстрого обновления бота на сервере")); err != nil {
 					fmt.Println("Info(send)", err)
 				}
@@ -144,9 +136,55 @@ func (k *RealBot) Run() {
 				if _, err := bot.Send(tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, "Команда для подключения RAID массива")); err != nil {
 					fmt.Println("Info(send3)", err)
 				}
+
 				if _, err := bot.Send(tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, command)); err != nil {
 					fmt.Println("Info(send4)", err)
 				}
+			case buttonsMap["FullState"].ID:
+				command := ""
+				m, command = cmd.Info()
+				if _, err := bot.Send(tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, "Команда для быстрого обновления бота на сервере")); err != nil {
+					fmt.Println("Info(send5)", err)
+				}
+
+				if _, err := bot.Send(tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, "cd pets/rpi_stat_tg_bot/ && sudo rm main && git pull && sudo systemctl stop runbot.service && go build cmd/main.go && sudo systemctl start runbot.service && sudo systemctl enable runbot.service && sudo systemctl status runbot.service")); err != nil {
+					fmt.Println("Info(send6)", err)
+				}
+
+				if _, err := bot.Send(tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, "Команда для подключения RAID массива")); err != nil {
+					fmt.Println("Info(send7)", err)
+				}
+
+				if _, err := bot.Send(tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, command)); err != nil {
+					fmt.Println("Info(send8)", err)
+				}
+
+				if _, err := bot.Send(tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, k.downloader.DownloadHistory())); err != nil {
+					fmt.Println("Info(send9)", err)
+				}
+
+				if _, err := bot.Send(tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, k.downloader.ActualStatus())); err != nil {
+					fmt.Println("Info(send10)", err)
+				}
+
+				state, _ := cmd.Info()
+				if _, err := bot.Send(tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, state)); err != nil {
+					fmt.Println("Info(send11)", err)
+				}
+
+				if _, err := bot.Send(tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, cmd.Sensors())); err != nil {
+					fmt.Println("Info(send12)", err)
+				}
+			case buttonsMap["CleanHistory"].ID:
+				m = k.downloader.CleanHistory()
+			case buttonsMap["ActualState"].ID:
+				m = k.downloader.ActualStatus()
+			case buttonsMap["ViewQueue"].ID:
+				m = k.downloader.DownloadHistory()
+			case buttonsMap["Sensors"].ID:
+				m = cmd.Sensors()
+			case buttonsMap["Info"].ID:
+				m, _ = cmd.Info()
 			default:
 				m = "Неожиданная команда"
 			}
