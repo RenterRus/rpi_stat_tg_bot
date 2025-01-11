@@ -38,10 +38,10 @@ func (k *RealBot) Run() {
 			if err != nil {
 				fmt.Println("ParseintError:", err)
 			}
-			bot.Send(tgbotapi.NewMessage(id, fmt.Sprintf("Бот запущен. Через 3 минуты придет информация по обновлению yt-dlp.\n%s", autoConnect)))
+			bot.Send(tgbotapi.NewMessage(id, fmt.Sprintf("Бот запущен. Через минуту придет информация по обновлению yt-dlp.\n%s", autoConnect)))
 		}
 
-		time.Sleep(time.Minute * 3)
+		time.Sleep(time.Minute)
 		updInfo := k.downloader.UpdateInfo()
 		for k := range k.admins {
 			id, err := strconv.ParseInt(k, 10, 64)
