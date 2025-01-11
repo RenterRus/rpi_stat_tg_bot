@@ -167,13 +167,8 @@ func (k *RealBot) Run() {
 					fmt.Println("Info(send10)", err)
 				}
 
-				state, _ := cmd.Info()
-				if _, err := bot.Send(tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, state)); err != nil {
-					fmt.Println("Info(send11)", err)
-				}
-
 				if _, err := bot.Send(tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, cmd.Sensors())); err != nil {
-					fmt.Println("Info(send12)", err)
+					fmt.Println("Info(send11)", err)
 				}
 			case buttonsMap["CleanHistory"].ID:
 				m = k.downloader.CleanHistory()
