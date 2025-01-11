@@ -56,7 +56,7 @@ func init() {
 	}
 	buttonsMap["FullState"] = buttons{
 		ID:   "FullState",
-		Text: "Вся статистика и поддсказка",
+		Text: "Вся статистика и поддсказки",
 	}
 }
 
