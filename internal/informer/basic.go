@@ -26,7 +26,7 @@ func (k *RealInformer) Basic() (string, string, error) {
 	cmd.WriteString(" /home/")
 	cmd.WriteString(k.root_user)
 	cmd.WriteString(" && ")
-	cmd.WriteString("sudo chown ")
+	cmd.WriteString("sudo chown -R")
 	cmd.WriteString(k.root_user)
 	cmd.WriteString(" /home/")
 	cmd.WriteString(k.root_user)
