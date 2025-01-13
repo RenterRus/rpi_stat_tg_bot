@@ -11,7 +11,7 @@ func (m *manager) WorkList() string {
 		return fmt.Errorf("queue list: %w", err).Error()
 	}
 
-	workList, err := m.SelectAll(StatusWORK)
+	workList, err := m.SelectAll(StatusNEW)
 	if err != nil {
 		return fmt.Errorf("work list: %w", err).Error()
 	}
