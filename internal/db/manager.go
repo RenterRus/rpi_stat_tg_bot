@@ -21,6 +21,7 @@ type Queue interface {
 	Update(link, status string, name *string) error
 	Delete() error
 	DeleteByLink(link string) error
+	WorkList() string
 }
 
 type links struct {

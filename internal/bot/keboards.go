@@ -58,12 +58,19 @@ func init() {
 		ID:   "FullState",
 		Text: "Вся статистика и поддсказки",
 	}
+	buttonsMap["LinksForUtil"] = buttons{
+		ID:   "LinksForUtil",
+		Text: "Список ссылок в работе (для утилиты)",
+	}
 }
 
 func keyboardDefault() tgbotapi.InlineKeyboardMarkup {
 	return tgbotapi.NewInlineKeyboardMarkup(
 		tgbotapi.NewInlineKeyboardRow(
 			tgbotapi.NewInlineKeyboardButtonData(buttonsMap["CleanHistory"].Text, buttonsMap["CleanHistory"].ID),
+		),
+		tgbotapi.NewInlineKeyboardRow(
+			tgbotapi.NewInlineKeyboardButtonData(buttonsMap["LinksForUtil"].Text, buttonsMap["LinksForUtil"].ID),
 		),
 		tgbotapi.NewInlineKeyboardRow(
 			tgbotapi.NewInlineKeyboardButtonData(buttonsMap["ViewQueue"].Text, buttonsMap["ViewQueue"].ID),
@@ -81,6 +88,9 @@ func keyboardAdmins() tgbotapi.InlineKeyboardMarkup {
 		tgbotapi.NewInlineKeyboardRow(
 			tgbotapi.NewInlineKeyboardButtonData(buttonsMap["AutoConnect"].Text, buttonsMap["AutoConnect"].ID),
 			tgbotapi.NewInlineKeyboardButtonData(buttonsMap["Help"].Text, buttonsMap["Help"].ID),
+		),
+		tgbotapi.NewInlineKeyboardRow(
+			tgbotapi.NewInlineKeyboardButtonData(buttonsMap["LinksForUtil"].Text, buttonsMap["LinksForUtil"].ID),
 		),
 		tgbotapi.NewInlineKeyboardRow(
 			tgbotapi.NewInlineKeyboardButtonData(buttonsMap["FullState"].Text, buttonsMap["FullState"].ID),

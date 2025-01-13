@@ -18,7 +18,7 @@ type RealBot struct {
 	allowedIPs map[string]struct{}
 	admins     map[string]struct{}
 	downloader downloader.Downloader
-	queue      db.Queue
+	queueDB    db.Queue
 }
 
 type BotConf struct {
@@ -40,7 +40,7 @@ func NewBot(conf BotConf) Bot {
 		timeout:    conf.Timeout,
 		allowedIPs: conf.AllowedIPs,
 		downloader: conf.Downloader,
-		queue:      conf.Queue,
+		queueDB:    conf.Queue,
 		admins:     conf.Admins,
 	}
 }

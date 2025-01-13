@@ -64,7 +64,7 @@ func (k *RealBot) Run() {
 				// Если режим удаления
 				if k.isDelete {
 					k.isDelete = false
-					err := k.queue.DeleteByLink(update.Message.Text)
+					err := k.queueDB.DeleteByLink(update.Message.Text)
 					if err != nil {
 						bot.Send(tgbotapi.NewMessage(update.Message.Chat.ID, fmt.Sprintf("Не удалось удалить из очереди. Причина: %s", err.Error())))
 					} else {
@@ -122,6 +122,8 @@ func (k *RealBot) Run() {
 				k.isDelete = true
 			case buttonsMap["AutoConnect"].ID:
 				m = cmd.Auto()
+			case buttonsMap["LinksForUtil"].ID:
+				m = k.queueDB.WorkList()
 			case buttonsMap["Help"].ID:
 				command := ""
 				_, command = cmd.Info()
