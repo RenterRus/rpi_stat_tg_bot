@@ -28,14 +28,18 @@ func (d *DLP) Run(ctx context.Context) {
 	d.updateStat = updateStat.String()
 
 	d.dl = ytdlp.New().
-		UnsetCacheDir().
 		SetWorkDir(d.path).
 		FormatSort("res,ext:mp4:m4a").
 		RecodeVideo("mp4").
 		Output("%(title)s.%(ext)s").
 		NoRestrictFilenames().
-		Fixup(ytdlp.FixupForce).AbortOnError().RmCacheDir().ExtractorRetries("10")
-
+		Fixup(ytdlp.FixupForce).
+		Retries("20").
+		NoWriteSubs().
+		IgnoreErrors().
+		IgnoreNoFormatsError().
+		NoAbortOnError().
+		RmCacheDir()
 	d.worker.Actual = make(map[string]map[string]FileInfo)
 	doubleWay := make(chan struct{}, d.maxWorkers)
 
