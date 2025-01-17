@@ -12,18 +12,29 @@ import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
 
+func (k *RealBot) toAdmins(msg string) {
+	for v := range k.admins {
+		id, err := strconv.ParseInt(v, 10, 64)
+		if err != nil {
+			fmt.Println("ParseintError:", err)
+		}
+		k.bot.Send(tgbotapi.NewMessage(id, msg))
+	}
+}
+
 func (k *RealBot) Run() {
-	bot, err := tgbotapi.NewBotAPI(k.token)
+	var err error
+	k.bot, err = tgbotapi.NewBotAPI(k.token)
 	if err != nil {
 		panic(err)
 	}
-	log.Printf("Authorized on account %s", bot.Self.UserName)
+	log.Printf("Authorized on account %s", k.bot.Self.UserName)
 
 	validate := validator.New(validator.WithRequiredStructEnabled())
 	u := tgbotapi.NewUpdate(0)
 	u.Timeout = k.timeout
 	cmd := cmd.NewCMD(k.informer, k.finder)
-	updates := bot.GetUpdatesChan(u)
+	updates := k.bot.GetUpdatesChan(u)
 	ctx := context.Background()
 
 	go func() {
@@ -33,24 +44,10 @@ func (k *RealBot) Run() {
 	autoConnect := cmd.Auto()
 
 	go func() {
-		for k := range k.admins {
-			id, err := strconv.ParseInt(k, 10, 64)
-			if err != nil {
-				fmt.Println("ParseintError:", err)
-			}
-			bot.Send(tgbotapi.NewMessage(id, fmt.Sprintf("Бот запущен. Через минуту придет информация по обновлению yt-dlp.\n%s", autoConnect)))
-		}
-
+		k.toAdmins(fmt.Sprintf("Бот запущен. Через минуту придет информация по обновлению yt-dlp.\n%s", autoConnect))
 		time.Sleep(time.Minute)
 		updInfo := k.downloader.UpdateInfo()
-		for k := range k.admins {
-			id, err := strconv.ParseInt(k, 10, 64)
-			if err != nil {
-				fmt.Println("ParseintError_2:", err)
-			}
-
-			bot.Send(tgbotapi.NewMessage(id, updInfo))
-		}
+		k.toAdmins(updInfo)
 	}()
 	for update := range updates {
 		// Обработка простых сообщений
@@ -66,10 +63,14 @@ func (k *RealBot) Run() {
 					k.isDelete = false
 					err := k.queueDB.DeleteByLink(update.Message.Text)
 					if err != nil {
-						bot.Send(tgbotapi.NewMessage(update.Message.Chat.ID, fmt.Sprintf("Не удалось удалить из очереди. Причина: %s", err.Error())))
+						k.bot.Send(tgbotapi.NewMessage(update.Message.Chat.ID, fmt.Sprintf("Не удалось удалить из очереди. Причина: %s", err.Error())))
 					} else {
-						bot.Send(tgbotapi.NewMessage(update.Message.Chat.ID, fmt.Sprintf("Ссылка [%s] удалена из очереди", update.Message.Text)))
-						bot.Send(tgbotapi.NewMessage(update.Message.Chat.ID, k.downloader.DownloadHistory()))
+						k.bot.Send(tgbotapi.NewMessage(update.Message.Chat.ID, fmt.Sprintf("Ссылка [%s] удалена из очереди", update.Message.Text)))
+						if _, ok := k.admins[strconv.Itoa(int(update.Message.Chat.ID))]; !ok {
+							k.toAdmins(fmt.Sprintf("Ссылка [%s] удалена из очереди", update.Message.Text))
+						}
+
+						k.bot.Send(tgbotapi.NewMessage(update.Message.Chat.ID, k.downloader.DownloadHistory()))
 					}
 
 					continue
@@ -89,6 +90,9 @@ func (k *RealBot) Run() {
 					//Ссылка встала в очередь
 				} else {
 					msg = tgbotapi.NewMessage(update.Message.Chat.ID, fmt.Sprintf("Ссылка [%s] взята в работу", update.Message.Text))
+					if _, ok := k.admins[strconv.Itoa(int(update.Message.Chat.ID))]; !ok {
+						k.toAdmins(fmt.Sprintf("Ссылка [%s] взята в работу", update.Message.Text))
+					}
 				}
 
 			} else { // Если нет, то даем ответ о запрещенном доступе
@@ -96,12 +100,12 @@ func (k *RealBot) Run() {
 			}
 
 			// Отправляем сообщение
-			if _, err = bot.Send(msg); err != nil {
+			if _, err = k.bot.Send(msg); err != nil {
 				fmt.Println("Send", err)
 			}
 		} else if update.CallbackQuery != nil { // Если пришел колбэк
 			callback := tgbotapi.NewCallback(update.CallbackQuery.ID, update.CallbackQuery.Data)
-			if _, err := bot.Request(callback); err != nil {
+			if _, err := k.bot.Request(callback); err != nil {
 				fmt.Println("update.CallbackQuery", err)
 			}
 
@@ -127,49 +131,49 @@ func (k *RealBot) Run() {
 			case buttonsMap["Help"].ID:
 				command := ""
 				_, command = cmd.Info()
-				if _, err := bot.Send(tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, "Команда для быстрого обновления бота на сервере")); err != nil {
+				if _, err := k.bot.Send(tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, "Команда для быстрого обновления бота на сервере")); err != nil {
 					fmt.Println("Info(send)", err)
 				}
 
-				if _, err := bot.Send(tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, "cd pets/rpi_stat_tg_bot/ && sudo rm main && git pull && sudo systemctl stop runbot.service && go build cmd/main.go && sudo systemctl start runbot.service && sudo systemctl enable runbot.service && sudo systemctl status runbot.service")); err != nil {
+				if _, err := k.bot.Send(tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, "cd pets/rpi_stat_tg_bot/ && sudo rm main && git pull && sudo systemctl stop runbot.service && go build cmd/main.go && sudo systemctl start runbot.service && sudo systemctl enable runbot.service && sudo systemctl status runbot.service")); err != nil {
 					fmt.Println("Info(send2)", err)
 				}
 
-				if _, err := bot.Send(tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, "Команда для подключения RAID массива")); err != nil {
+				if _, err := k.bot.Send(tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, "Команда для подключения RAID массива")); err != nil {
 					fmt.Println("Info(send3)", err)
 				}
 
-				if _, err := bot.Send(tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, command)); err != nil {
+				if _, err := k.bot.Send(tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, command)); err != nil {
 					fmt.Println("Info(send4)", err)
 				}
 			case buttonsMap["FullState"].ID:
 				command := ""
 				m, command = cmd.Info()
-				if _, err := bot.Send(tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, "Команда для быстрого обновления бота на сервере")); err != nil {
+				if _, err := k.bot.Send(tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, "Команда для быстрого обновления бота на сервере")); err != nil {
 					fmt.Println("Info(send5)", err)
 				}
 
-				if _, err := bot.Send(tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, "cd pets/rpi_stat_tg_bot/ && sudo rm main && git pull && sudo systemctl stop runbot.service && go build cmd/main.go && sudo systemctl start runbot.service && sudo systemctl enable runbot.service && sudo systemctl status runbot.service")); err != nil {
+				if _, err := k.bot.Send(tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, "cd pets/rpi_stat_tg_bot/ && sudo rm main && git pull && sudo systemctl stop runbot.service && go build cmd/main.go && sudo systemctl start runbot.service && sudo systemctl enable runbot.service && sudo systemctl status runbot.service")); err != nil {
 					fmt.Println("Info(send6)", err)
 				}
 
-				if _, err := bot.Send(tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, "Команда для подключения RAID массива")); err != nil {
+				if _, err := k.bot.Send(tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, "Команда для подключения RAID массива")); err != nil {
 					fmt.Println("Info(send7)", err)
 				}
 
-				if _, err := bot.Send(tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, command)); err != nil {
+				if _, err := k.bot.Send(tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, command)); err != nil {
 					fmt.Println("Info(send8)", err)
 				}
 
-				if _, err := bot.Send(tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, k.downloader.DownloadHistory())); err != nil {
+				if _, err := k.bot.Send(tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, k.downloader.DownloadHistory())); err != nil {
 					fmt.Println("Info(send9)", err)
 				}
 
-				if _, err := bot.Send(tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, k.downloader.ActualStatus())); err != nil {
+				if _, err := k.bot.Send(tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, k.downloader.ActualStatus())); err != nil {
 					fmt.Println("Info(send10)", err)
 				}
 
-				if _, err := bot.Send(tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, cmd.Sensors())); err != nil {
+				if _, err := k.bot.Send(tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, cmd.Sensors())); err != nil {
 					fmt.Println("Info(send11)", err)
 				}
 			case buttonsMap["CleanHistory"].ID:
@@ -188,7 +192,7 @@ func (k *RealBot) Run() {
 
 			// Отправляем сообщение, полученное в результате обработки данных выше
 			msg := tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, m)
-			if _, err := bot.Send(msg); err != nil {
+			if _, err := k.bot.Send(msg); err != nil {
 				fmt.Println("NewMessage", err)
 			}
 

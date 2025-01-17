@@ -7,6 +7,8 @@ import (
 	"rpi_stat_tg_bot/internal/finder"
 	"rpi_stat_tg_bot/internal/informer"
 	"strings"
+
+	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
 
 type RealBot struct {
@@ -19,6 +21,7 @@ type RealBot struct {
 	admins     map[string]struct{}
 	downloader downloader.Downloader
 	queueDB    db.Queue
+	bot        *tgbotapi.BotAPI
 }
 
 type BotConf struct {
