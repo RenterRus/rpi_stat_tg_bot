@@ -39,7 +39,7 @@ func (d *DLP) Run(ctx context.Context) {
 		IgnoreErrors().
 		IgnoreNoFormatsError().
 		NoAbortOnError().
-		RmCacheDir()
+		RmCacheDir().CookiesFromBrowser("chrome")
 	d.worker.Actual = make(map[string]map[string]FileInfo)
 	doubleWay := make(chan struct{}, d.maxWorkers)
 

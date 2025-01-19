@@ -10,6 +10,8 @@ import (
 	"github.com/lrstanley/go-ytdlp"
 )
 
+const DEFAULT_TIMEOUT = 17
+
 func (d *DLP) ToDownload(url string) error {
 	if err := d.qdb.Insert(url); err != nil {
 		return fmt.Errorf("to download: %w", err)
@@ -24,6 +26,7 @@ func (d *DLP) downloader(link string) {
 
 	progressInfo := map[string]FileInfo{}
 	name := ""
+	duration := float64(DEFAULT_TIMEOUT)
 	d.dl.ProgressFunc(time.Duration(time.Millisecond*750), func(update ytdlp.ProgressUpdate) {
 		size := (float64(update.DownloadedBytes) / 1024) / 1024 // К мегабайтам
 		totalSize := (float64(update.TotalBytes) / 1024) / 1024 // К мегабайтам
@@ -32,6 +35,13 @@ func (d *DLP) downloader(link string) {
 		if strings.Contains(status, "finished") {
 			status = "converting"
 		}
+
+		if update.Info.Duration != nil {
+			duration = *update.Info.Duration
+		} else {
+			duration = DEFAULT_TIMEOUT
+		}
+
 		progressInfo[update.Filename] = FileInfo{
 			Name:         d.path + "/" + update.Filename,
 			DownloadSize: fmt.Sprintf("%.2f", size),
@@ -57,12 +67,15 @@ func (d *DLP) downloader(link string) {
 		if err := d.qdb.Update(link, db.StatusNEW, &name); err != nil {
 			fmt.Printf("\ndownloader set video to queue (retry): %s\n", err.Error())
 		}
+		if !d.eagerMode {
+			time.Sleep(time.Millisecond * time.Duration(duration))
+		}
 	} else {
 		if err := d.qdb.Update(link, db.StatusDONE, &name); err != nil {
 			fmt.Printf("\ndownloader update db error: %s\n", err.Error())
 		}
+		if !d.eagerMode {
+			time.Sleep(time.Second * time.Duration(duration))
+		}
 	}
-
-	// Даем процессору "отдохнуть". Ему реально было не просто
-	time.Sleep(time.Second * 7)
 }

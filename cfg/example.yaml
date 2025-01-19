@@ -9,3 +9,4 @@ DevSearch:  ""
 PathToDownload: ""
 PathToDB: ""
 MaxWorkers: 2
+EagerMode: true

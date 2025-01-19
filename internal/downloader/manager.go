@@ -27,9 +27,10 @@ type DLP struct {
 	qdb        db.Queue
 	maxWorkers int
 	updateStat string
+	eagerMode  bool
 }
 
-func NewDownloader(path string, db db.Queue, maxWorkers int) Downloader {
+func NewDownloader(path string, db db.Queue, maxWorkers int, eagerMode bool) Downloader {
 	return &DLP{
 		worker: WorkerStatus{
 			Actual: make(map[string]map[string]FileInfo),
@@ -37,5 +38,6 @@ func NewDownloader(path string, db db.Queue, maxWorkers int) Downloader {
 		path:       path,
 		qdb:        db,
 		maxWorkers: maxWorkers,
+		eagerMode:  eagerMode,
 	}
 }

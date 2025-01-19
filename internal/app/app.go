@@ -59,7 +59,7 @@ func (a *App) Run() {
 			Finder: finder,
 			User:   a.Conf.FTPuser,
 		}),
-		Downloader: downloader.NewDownloader(a.Conf.PathToDownload, queue, a.Conf.MaxWorkers),
+		Downloader: downloader.NewDownloader(a.Conf.PathToDownload, queue, a.Conf.MaxWorkers, a.Conf.EagerMode),
 		Queue:      queue,
 	})
 
