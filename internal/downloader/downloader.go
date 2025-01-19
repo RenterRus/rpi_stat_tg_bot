@@ -78,5 +78,7 @@ func (d *DLP) downloader(link string) {
 	}
 	if !d.eagerMode {
 		time.Sleep(time.Second * time.Duration(duration))
+		return
 	}
+	time.Sleep(time.Second * DEFAULT_TIMEOUT)
 }
