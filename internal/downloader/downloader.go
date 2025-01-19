@@ -70,12 +70,13 @@ func (d *DLP) downloader(link string) {
 		if !d.eagerMode {
 			time.Sleep(time.Millisecond * time.Duration(duration))
 		}
-	} else {
-		if err := d.qdb.Update(link, db.StatusDONE, &name); err != nil {
-			fmt.Printf("\ndownloader update db error: %s\n", err.Error())
-		}
-		if !d.eagerMode {
-			time.Sleep(time.Second * time.Duration(duration))
-		}
+		return
+	}
+
+	if err := d.qdb.Update(link, db.StatusDONE, &name); err != nil {
+		fmt.Printf("\ndownloader update db error: %s\n", err.Error())
+	}
+	if !d.eagerMode {
+		time.Sleep(time.Second * time.Duration(duration))
 	}
 }
