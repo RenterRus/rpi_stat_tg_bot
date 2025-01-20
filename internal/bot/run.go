@@ -126,6 +126,7 @@ func (k *RealBot) Run() {
 			case buttonsMap["AutoConnect"].ID:
 				msg.Text = cmd.Auto()
 			case buttonsMap["EagerMode"].ID:
+				k.downloader.EagerModeToggle()
 				msg.ReplyMarkup = k.keyboardDefault()
 			case buttonsMap["LinksForUtil"].ID:
 				msg.Text = k.queueDB.WorkList()
