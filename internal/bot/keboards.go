@@ -13,7 +13,7 @@ var (
 	buttonsMap = make(map[string]buttons)
 )
 
-func init() {
+func (k *RealBot) initKeyboard() {
 	buttonsMap["ActualState"] = buttons{
 		ID:   "ActualState",
 		Text: "Текущие задачи",
@@ -62,9 +62,14 @@ func init() {
 		ID:   "LinksForUtil",
 		Text: "Список ссылок в работе (для утилиты)",
 	}
+	buttonsMap["EagerMode"] = buttons{
+		ID:   "EagerMode",
+		Text: "Жадный режим " + k.downloader.EagerModeState(),
+	}
 }
 
-func keyboardDefault() tgbotapi.InlineKeyboardMarkup {
+func (k *RealBot) keyboardDefault() tgbotapi.InlineKeyboardMarkup {
+	k.initKeyboard()
 	return tgbotapi.NewInlineKeyboardMarkup(
 		tgbotapi.NewInlineKeyboardRow(
 			tgbotapi.NewInlineKeyboardButtonData(buttonsMap["CleanHistory"].Text, buttonsMap["CleanHistory"].ID),
@@ -79,7 +84,8 @@ func keyboardDefault() tgbotapi.InlineKeyboardMarkup {
 	)
 }
 
-func keyboardAdmins() tgbotapi.InlineKeyboardMarkup {
+func (k *RealBot) keyboardAdmins() tgbotapi.InlineKeyboardMarkup {
+	k.initKeyboard()
 	return tgbotapi.NewInlineKeyboardMarkup(
 		tgbotapi.NewInlineKeyboardRow(
 			tgbotapi.NewInlineKeyboardButtonData(buttonsMap["Shutdown"].Text, buttonsMap["Shutdown"].ID),

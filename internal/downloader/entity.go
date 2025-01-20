@@ -9,4 +9,6 @@ type Downloader interface {
 	ActualStatus() string
 	CleanHistory() string
 	UpdateInfo() string
+	EagerModeToggle()
+	EagerModeState() string
 }

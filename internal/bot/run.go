@@ -80,9 +80,9 @@ func (k *RealBot) Run() {
 				if err := validate.Var(update.Message.Text, "url"); err != nil {
 					msg = tgbotapi.NewMessage(update.Message.Chat.ID, k.welcomeMSG(update.Message.Chat.ID))
 					if _, ok := k.admins[fmt.Sprintf("%d", int(update.Message.Chat.ID))]; ok {
-						msg.ReplyMarkup = keyboardAdmins()
+						msg.ReplyMarkup = k.keyboardAdmins()
 					} else {
-						msg.ReplyMarkup = keyboardDefault()
+						msg.ReplyMarkup = k.keyboardDefault()
 					}
 					// Это ссылка, но вставка не удалась
 				} else if err := k.downloader.ToDownload(update.Message.Text); err != nil {
@@ -110,24 +110,25 @@ func (k *RealBot) Run() {
 			}
 
 			shutdown := false
-			m := ""
-
+			msg := tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, "")
 			switch update.CallbackQuery.Data {
 			case buttonsMap["Shutdown"].ID:
 				ctx.Done()
 				time.Sleep(time.Second * 10)
-				m, shutdown = cmd.Shutdown()
+				msg.Text, shutdown = cmd.Shutdown()
 			case buttonsMap["Restart"].ID:
 				ctx.Done()
 				time.Sleep(time.Second * 10)
-				m, shutdown = cmd.Restart()
+				msg.Text, shutdown = cmd.Restart()
 			case buttonsMap["RemoveFromQueue"].ID:
-				m = "Вставьте ссылку, которую надо удалить"
 				k.isDelete = true
+				msg.Text = "Вставьте ссылку, которую надо удалить"
 			case buttonsMap["AutoConnect"].ID:
-				m = cmd.Auto()
+				msg.Text = cmd.Auto()
+			case buttonsMap["EagerMode"].ID:
+				msg.ReplyMarkup = k.keyboardDefault()
 			case buttonsMap["LinksForUtil"].ID:
-				m = k.queueDB.WorkList()
+				msg.Text = k.queueDB.WorkList()
 			case buttonsMap["Help"].ID:
 				command := ""
 				_, command = cmd.Info()
@@ -148,7 +149,7 @@ func (k *RealBot) Run() {
 				}
 			case buttonsMap["FullState"].ID:
 				command := ""
-				m, command = cmd.Info()
+				msg.Text, command = cmd.Info()
 				if _, err := k.bot.Send(tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, "Команда для быстрого обновления бота на сервере")); err != nil {
 					fmt.Println("Info(send5)", err)
 				}
@@ -177,21 +178,21 @@ func (k *RealBot) Run() {
 					fmt.Println("Info(send11)", err)
 				}
 			case buttonsMap["CleanHistory"].ID:
-				m = k.downloader.CleanHistory()
+				msg.Text = k.downloader.CleanHistory()
 			case buttonsMap["ActualState"].ID:
-				m = k.downloader.ActualStatus()
+				msg.Text = k.downloader.ActualStatus()
 			case buttonsMap["ViewQueue"].ID:
-				m = k.downloader.DownloadHistory()
+				msg.Text = k.downloader.DownloadHistory()
 			case buttonsMap["Sensors"].ID:
-				m = cmd.Sensors()
+				msg.Text = cmd.Sensors()
 			case buttonsMap["Info"].ID:
-				m, _ = cmd.Info()
+				msg.Text, _ = cmd.Info()
 			default:
-				m = "Неожиданная команда"
+				msg.Text = "Неожиданная команда"
 			}
 
 			// Отправляем сообщение, полученное в результате обработки данных выше
-			msg := tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, m)
+
 			if _, err := k.bot.Send(msg); err != nil {
 				fmt.Println("NewMessage", err)
 			}
