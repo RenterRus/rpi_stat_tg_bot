@@ -128,7 +128,7 @@ func (k *RealBot) Run() {
 			case buttonsMap["EagerMode"].ID:
 				k.downloader.EagerModeToggle()
 				msg.ReplyMarkup = k.keyboardAdmins()
-
+				msg.Text = "Жадный режим " + k.downloader.EagerModeState()
 			case buttonsMap["LinksForUtil"].ID:
 				msg.Text = k.queueDB.WorkList()
 			case buttonsMap["Help"].ID:
