@@ -61,6 +61,7 @@ func (a *App) Run() {
 		}),
 		Downloader: downloader.NewDownloader(a.Conf.PathToDownload, queue, a.Conf.MaxWorkers, a.Conf.EagerMode),
 		Queue:      queue,
+		Name:       a.Conf.ServiceName,
 	})
 
 	var wg sync.WaitGroup
