@@ -2,9 +2,11 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"log"
 	"os"
 	"rpi_stat_tg_bot/internal/app"
+	"time"
 )
 
 var path *string
@@ -20,8 +22,8 @@ func init() {
 }
 
 func main() {
-	//	fmt.Println("Lazy waiting for full load device")
-	//	time.Sleep(time.Second * 30)
+	fmt.Println("Lazy waiting for full load device")
+	time.Sleep(time.Second * 17)
 	a := app.NewApp(*path)
 	a.Run()
 }

@@ -99,10 +99,10 @@ func (k *RealBot) keyboardAdmins() tgbotapi.InlineKeyboardMarkup {
 			tgbotapi.NewInlineKeyboardButtonData(buttonsMap["Help"].Text, buttonsMap["Help"].ID),
 		),
 		tgbotapi.NewInlineKeyboardRow(
-			tgbotapi.NewInlineKeyboardButtonData(buttonsMap["LinksForUtil"].Text, buttonsMap["LinksForUtil"].ID),
+			tgbotapi.NewInlineKeyboardButtonData(buttonsMap["EagerMode"].Text, buttonsMap["EagerMode"].ID),
 		),
 		tgbotapi.NewInlineKeyboardRow(
-			tgbotapi.NewInlineKeyboardButtonData(buttonsMap["EagerMode"].Text, buttonsMap["EagerMode"].ID),
+			tgbotapi.NewInlineKeyboardButtonData(buttonsMap["LinksForUtil"].Text, buttonsMap["LinksForUtil"].ID),
 		),
 		tgbotapi.NewInlineKeyboardRow(
 			tgbotapi.NewInlineKeyboardButtonData(buttonsMap["FullState"].Text, buttonsMap["FullState"].ID),
