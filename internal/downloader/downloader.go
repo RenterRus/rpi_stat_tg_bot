@@ -39,7 +39,7 @@ func (d *DLP) downloader(link string) {
 		if update.Info.Duration != nil {
 			duration = *update.Info.Duration
 		} else {
-			duration = DEFAULT_TIMEOUT
+			duration = DEFAULT_TIMEOUT * 60 // 17 минут
 		}
 
 		progressInfo[update.Filename] = FileInfo{
