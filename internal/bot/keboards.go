@@ -30,9 +30,9 @@ func (k *RealBot) initKeyboard() {
 		ID:   "ViewQueue",
 		Text: "Показать очередь",
 	}
-	buttonsMap["Shutdown"] = buttons{
-		ID:   "Shutdown",
-		Text: "Выключить сервер",
+	buttonsMap["RestartBot"] = buttons{
+		ID:   "RestartBot",
+		Text: "Перезапустить бот",
 	}
 	buttonsMap["Restart"] = buttons{
 		ID:   "Restart",
@@ -91,7 +91,7 @@ func (k *RealBot) keyboardAdmins() tgbotapi.InlineKeyboardMarkup {
 	k.initKeyboard()
 	return tgbotapi.NewInlineKeyboardMarkup(
 		tgbotapi.NewInlineKeyboardRow(
-			tgbotapi.NewInlineKeyboardButtonData(buttonsMap["Shutdown"].Text, buttonsMap["Shutdown"].ID),
+			tgbotapi.NewInlineKeyboardButtonData(buttonsMap["RestartBot"].Text, buttonsMap["RestartBot"].ID),
 			tgbotapi.NewInlineKeyboardButtonData(buttonsMap["Restart"].Text, buttonsMap["Restart"].ID),
 		),
 		tgbotapi.NewInlineKeyboardRow(

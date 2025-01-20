@@ -3,13 +3,12 @@ package cmd
 import (
 	"fmt"
 	"os/exec"
-	"strconv"
 )
 
-func (c *CMD) Shutdown() (string, bool) {
-	if err := exec.Command("/bin/sh", "-c", "sudo shutdown -h "+strconv.Itoa(c.ttp)).Run(); err != nil {
+func (c *CMD) RestartBot(name string) (string, bool) {
+	if err := exec.Command("/bin/sh", "-c", fmt.Sprintf("sudo systemctl restart %s.service", name)).Run(); err != nil {
 		return fmt.Sprintf("restart error: %s", err.Error()), false
 	}
 
-	return "Выключение запланировано через " + strconv.Itoa(c.ttp) + " минут. Но бот выключен уже сейчас", true
+	return "Бот перезапускается", true
 }

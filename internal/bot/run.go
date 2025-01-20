@@ -112,10 +112,10 @@ func (k *RealBot) Run() {
 			shutdown := false
 			msg := tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, "")
 			switch update.CallbackQuery.Data {
-			case buttonsMap["Shutdown"].ID:
+			case buttonsMap["RestartBot"].ID:
 				ctx.Done()
 				time.Sleep(time.Second * 10)
-				msg.Text, shutdown = cmd.Shutdown()
+				msg.Text, shutdown = cmd.RestartBot(k.botName)
 			case buttonsMap["Restart"].ID:
 				ctx.Done()
 				time.Sleep(time.Second * 10)

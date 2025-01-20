@@ -22,6 +22,7 @@ type RealBot struct {
 	downloader downloader.Downloader
 	queueDB    db.Queue
 	bot        *tgbotapi.BotAPI
+	botName    string
 }
 
 type BotConf struct {
@@ -33,6 +34,7 @@ type BotConf struct {
 	Admins     map[string]struct{}
 	Downloader downloader.Downloader
 	Queue      db.Queue
+	Name       string
 }
 
 func NewBot(conf BotConf) Bot {
@@ -45,6 +47,7 @@ func NewBot(conf BotConf) Bot {
 		downloader: conf.Downloader,
 		queueDB:    conf.Queue,
 		admins:     conf.Admins,
+		botName:    conf.Name,
 	}
 }
 

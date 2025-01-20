@@ -19,6 +19,7 @@ type Config struct {
 	PathToDB       string   `validate:"required"`
 	MaxWorkers     int      `validate:"gt=0"`
 	EagerMode      bool
+	ServiceName    string
 }
 
 func loadConfig(p string) (*Config, error) {
