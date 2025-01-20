@@ -61,3 +61,7 @@ create table links (link text unique, status text, name text;
 
 ```sudo apt install lm-sensors``` установка
 ```sudo sensors-detect``` настройка. Везьде Yes
+
+# П.с.
+
+Добавьте файлы cookie от браузера хром с авторизованными сервисами для упрощения скачивания по пути: <пользователь от имени которого происходит запуск сервиса>/.config/google-chrome
