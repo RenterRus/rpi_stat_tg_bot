@@ -12,6 +12,8 @@ import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
 
+const DEFAULT_SLEEP = 7
+
 func (k *RealBot) toAdmins(msg string) {
 	for v := range k.admins {
 		id, err := strconv.ParseInt(v, 10, 64)
@@ -114,11 +116,12 @@ func (k *RealBot) Run() {
 			switch update.CallbackQuery.Data {
 			case buttonsMap["RestartBot"].ID:
 				ctx.Done()
-				time.Sleep(time.Second * 10)
-				msg.Text, shutdown = cmd.RestartBot(k.botName)
+				time.Sleep(time.Second * DEFAULT_SLEEP)
+				k.toAdmins("Вызван перезапуск бота")
+				msg.Text = cmd.RestartBot(k.botName)
 			case buttonsMap["Restart"].ID:
 				ctx.Done()
-				time.Sleep(time.Second * 10)
+				time.Sleep(time.Second * DEFAULT_SLEEP)
 				msg.Text, shutdown = cmd.Restart()
 			case buttonsMap["RemoveFromQueue"].ID:
 				k.isDelete = true
