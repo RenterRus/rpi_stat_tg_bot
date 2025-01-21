@@ -11,10 +11,9 @@ func (k *RealInformer) FullState() (string, error) {
 		return "", fmt.Errorf("syscall.Statfs: %w", err)
 	}
 
-	return fmt.Sprintf("RAID size:\nTotal: %d gb(round int)\nFree: %d gb(round int)\nAvailable: %d gb(round int)\nUsed: %d gb(round int)\n",
-			int(((stat.Blocks*uint64(stat.Bsize)/1024)/1024)/1024),
-			int(((stat.Bfree*uint64(stat.Bsize)/1024)/1024)/1024),
-			int(((stat.Bavail*uint64(stat.Bsize)/1024)/1024)/1024),
-			int((((stat.Blocks*uint64(stat.Bsize))-(stat.Bfree*uint64(stat.Bsize)))/1024)/1024)/1024),
-		nil
+	return fmt.Sprintf("RAID size:\nTotal: %.2f gb\nFree: %.2f gb\nAvailable: %.2f gb\nUsed: %.2f gb\n",
+		(float64(stat.Blocks*uint64(stat.Bsize)/1024)/1024)/1024,
+		(float64(stat.Bfree*uint64(stat.Bsize)/1024)/1024)/1024,
+		(float64(stat.Bavail*uint64(stat.Bsize)/1024)/1024)/1024,
+		(float64((stat.Blocks*uint64(stat.Bsize)-stat.Bfree*uint64(stat.Bsize))/1024)/1024)/1024), nil
 }
