@@ -74,12 +74,10 @@ func (d *DLP) downloader(link string) {
 	t := time.Now()
 	if err != nil {
 		baseMessage.Status = fmt.Sprintf("error: [%s]", err.Error())
-		d.Lock()
 		if d.worker.Actual == nil {
 			d.worker.Actual = make(map[string]map[string]FileInfo)
 		}
 		d.worker.Actual[link][name] = baseMessage
-		d.Unlock()
 
 		fmt.Printf("\ndownload error: %s\n", err.Error())
 

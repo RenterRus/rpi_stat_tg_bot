@@ -23,7 +23,7 @@ func init() {
 
 func main() {
 	fmt.Println("Lazy waiting for full load device")
-	time.Sleep(time.Second * 17)
+	time.Sleep(time.Second * 7)
 	a := app.NewApp(*path)
 	a.Run()
 }
