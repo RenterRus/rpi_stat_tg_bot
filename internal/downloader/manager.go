@@ -2,7 +2,6 @@ package downloader
 
 import (
 	"rpi_stat_tg_bot/internal/db"
-	"sync"
 	"sync/atomic"
 
 	"github.com/lrstanley/go-ytdlp"
@@ -29,7 +28,6 @@ type DLP struct {
 	maxWorkers int
 	updateStat string
 	eagerMode  bool
-	sync.Mutex
 }
 
 func NewDownloader(path string, db db.Queue, maxWorkers int, eagerMode bool) Downloader {
