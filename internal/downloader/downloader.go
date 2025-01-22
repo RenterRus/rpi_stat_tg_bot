@@ -72,9 +72,10 @@ func (d *DLP) downloader(link string) {
 	t := time.Now()
 	if err != nil {
 		baseMessage.Status = fmt.Sprintf("error: [%s]", err.Error())
-		if d.worker.Actual == nil {
-			d.worker.Actual = make(map[string]map[string]FileInfo)
+		if d.worker.Actual[link] == nil {
+			d.worker.Actual[link] = make(map[string]FileInfo)
 		}
+
 		d.worker.Actual[link][name] = baseMessage
 
 		fmt.Printf("\ndownload error: %s\n", err.Error())
@@ -94,6 +95,10 @@ func (d *DLP) downloader(link string) {
 			time.Sleep(time.Second * time.Duration(DEFAULT_TIMEOUT))
 		}
 		return
+	}
+
+	if d.worker.Actual[link] == nil {
+		d.worker.Actual[link] = make(map[string]FileInfo)
 	}
 
 	baseMessage.Status = "download and compiling complete"
