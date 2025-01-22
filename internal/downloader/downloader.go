@@ -25,6 +25,15 @@ func (d *DLP) downloader(link string) {
 	}()
 
 	progressInfo := make(map[string]FileInfo)
+	baseMessage := FileInfo{
+		Name:         link,
+		DownloadSize: "0",
+		TotalSize:    "0",
+		Proc:         "100%",
+		Status:       "done",
+	}
+
+	d.ActualStatus()
 	name := ""
 	duration := float64(DEFAULT_TIMEOUT)
 	d.dl.ProgressFunc(time.Duration(time.Millisecond*750), func(update ytdlp.ProgressUpdate) {
@@ -41,14 +50,14 @@ func (d *DLP) downloader(link string) {
 		} else {
 			duration = DEFAULT_TIMEOUT * 60 // 17 минут
 		}
-
-		progressInfo[update.Filename] = FileInfo{
+		baseMessage = FileInfo{
 			Name:         d.path + "/" + update.Filename,
 			DownloadSize: fmt.Sprintf("%.2f", size),
 			TotalSize:    fmt.Sprintf("%.2f", totalSize),
 			Proc:         update.PercentString(),
 			Status:       status,
 		}
+		progressInfo[update.Filename] = baseMessage
 		d.Lock()
 		d.worker.Actual[link] = progressInfo
 		d.Unlock()
@@ -62,13 +71,6 @@ func (d *DLP) downloader(link string) {
 
 	_, err := d.dl.Run(context.TODO(), link)
 
-	baseMessage := FileInfo{
-		Name:         d.worker.Actual[link][name].Name,
-		DownloadSize: d.worker.Actual[link][name].DownloadSize,
-		TotalSize:    d.worker.Actual[link][name].TotalSize,
-		Proc:         "100%",
-		Status:       "done",
-	}
 	t := time.Now()
 	if err != nil {
 		baseMessage.Status = fmt.Sprintf("error: [%s]", err.Error())
