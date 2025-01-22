@@ -69,6 +69,7 @@ func (d *DLP) downloader(link string) {
 		Proc:         "100%",
 		Status:       "done",
 	}
+	t := time.Now()
 	if err != nil {
 		baseMessage.Status = fmt.Sprintf("error: [%s]", err.Error())
 		d.Lock()
@@ -86,9 +87,10 @@ func (d *DLP) downloader(link string) {
 		d.worker.Actual[link][name] = baseMessage
 		d.Unlock()
 
+		// Спокойный режим
 		if !d.eagerMode {
-
-			baseMessage.Status += fmt.Sprintf("\n- - - - - - - -EagleMode: %s\n- - - - - - - - -Waiting %d second to next", d.EagerModeState(), DEFAULT_TIMEOUT)
+			t = t.Add(time.Second * DEFAULT_TIMEOUT)
+			baseMessage.Status += fmt.Sprintf("\n- - - - - - - -EagleMode: %s\n- - - - - - - - -Waiting %s to next", d.EagerModeState(), t.Format(time.DateTime))
 			d.Lock()
 			d.worker.Actual[link][name] = baseMessage
 			d.Unlock()
@@ -108,8 +110,10 @@ func (d *DLP) downloader(link string) {
 		d.Unlock()
 		fmt.Printf("\ndownloader update status db error: %s\n", err.Error())
 	}
+	// Спокойный режим
 	if !d.eagerMode {
-		baseMessage.Status += fmt.Sprintf("\n- - - - - - - - -EagleMode: %s\n- - - - - - - - - -Waiting %.2f second to next", d.EagerModeState(), duration)
+		t = t.Add(time.Second * time.Duration(duration))
+		baseMessage.Status += fmt.Sprintf("\n- - - - - - - - -EagleMode: %s\n- - - - - - - - - -Waiting %s to next", d.EagerModeState(), t.Format(time.DateTime))
 		d.Lock()
 		d.worker.Actual[link][name] = baseMessage
 		d.Unlock()
@@ -117,7 +121,8 @@ func (d *DLP) downloader(link string) {
 		return
 	}
 
-	baseMessage.Status += fmt.Sprintf("\n- - - - - - - - -EagleMode: %s\n- - - - - - - - - -Waiting %.2f second to next", d.EagerModeState(), duration)
+	t = t.Add(time.Millisecond * DEFAULT_TIMEOUT)
+	baseMessage.Status += fmt.Sprintf("\n- - - - - - - - -EagleMode: %s\n- - - - - - - - - -Waiting %s to next", d.EagerModeState(), t.Format(time.DateTime))
 	d.Lock()
 	d.worker.Actual[link][name] = baseMessage
 	d.Unlock()
