@@ -43,6 +43,7 @@ func (d *DLP) Run(ctx context.Context) {
 	d.worker.Actual = make(map[string]map[string]FileInfo)
 	doubleWay := make(chan struct{}, d.maxWorkers)
 	_ = d.worker.Actual
+
 	for {
 		select {
 		case <-ctx.Done():

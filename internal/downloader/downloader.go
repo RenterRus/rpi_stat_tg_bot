@@ -112,6 +112,7 @@ func (d *DLP) downloader(link string) {
 		d.worker.Actual[link][name] = baseMessage
 		fmt.Printf("\ndownloader update status db error: %s\n", err.Error())
 	}
+
 	// Спокойный режим
 	if !d.eagerMode {
 		t = t.Add(time.Second * time.Duration(duration))
