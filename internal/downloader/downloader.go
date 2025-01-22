@@ -69,7 +69,7 @@ func (d *DLP) downloader(link string) {
 
 	_, err := d.dl.Run(context.TODO(), link)
 
-	t := time.Now()
+	t := time.Now().Local()
 	if err != nil {
 		if strings.Contains(err.Error(), "could not find chrome cookies") {
 			d.dl.NoCookiesFromBrowser()
@@ -93,8 +93,7 @@ func (d *DLP) downloader(link string) {
 
 		// Спокойный режим
 		if !d.eagerMode {
-			t = t.Add(time.Second * DEFAULT_TIMEOUT)
-			baseMessage.Status += fmt.Sprintf("\n- - - - - - - -EagleMode: %s\n- - - - - - - - -Waiting %s to next", d.EagerModeState(), t.Format(time.DateTime))
+			baseMessage.Status += fmt.Sprintf("\n- - - - - - - -EagleMode: %s\n- - - - - - - - -Waiting %s to next", d.EagerModeState(), t.Add(time.Second*DEFAULT_TIMEOUT).Format(time.DateTime))
 			d.worker.Actual[link][name] = baseMessage
 			time.Sleep(time.Second * time.Duration(DEFAULT_TIMEOUT))
 		}
@@ -115,15 +114,13 @@ func (d *DLP) downloader(link string) {
 
 	// Спокойный режим
 	if !d.eagerMode {
-		t = t.Add(time.Second * time.Duration(duration))
-		baseMessage.Status += fmt.Sprintf("\n- - - - - - - - -EagleMode: %s\n- - - - - - - - - -Waiting %s to next", d.EagerModeState(), t.Format(time.DateTime))
+		baseMessage.Status += fmt.Sprintf("\n- - - - - - - - -EagleMode: %s\n- - - - - - - - - -Waiting %s to next", d.EagerModeState(), t.Add(time.Second*time.Duration(duration)).Format(time.DateTime))
 		d.worker.Actual[link][name] = baseMessage
 		time.Sleep(time.Second * time.Duration(duration))
 		return
 	}
 
-	t = t.Add(time.Millisecond * DEFAULT_TIMEOUT)
-	baseMessage.Status += fmt.Sprintf("\n- - - - - - - - -EagleMode: %s\n- - - - - - - - - -Waiting %s to next", d.EagerModeState(), t.Format(time.DateTime))
+	baseMessage.Status += fmt.Sprintf("\n- - - - - - - - -EagleMode: %s\n- - - - - - - - - -Waiting %s to next", d.EagerModeState(), t.Add(time.Millisecond*DEFAULT_TIMEOUT).Format(time.DateTime))
 	d.worker.Actual[link][name] = baseMessage
 	time.Sleep(time.Second * DEFAULT_TIMEOUT)
 }
