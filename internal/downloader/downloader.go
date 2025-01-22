@@ -63,9 +63,9 @@ func (d *DLP) downloader(link string) {
 	_, err := d.dl.Run(context.TODO(), link)
 
 	baseMessage := FileInfo{
-		Name:         progressInfo[name].Name,
-		DownloadSize: progressInfo[name].DownloadSize,
-		TotalSize:    progressInfo[name].TotalSize,
+		Name:         d.worker.Actual[link][name].Name,
+		DownloadSize: d.worker.Actual[link][name].DownloadSize,
+		TotalSize:    d.worker.Actual[link][name].TotalSize,
 		Proc:         "100%",
 		Status:       "done",
 	}
