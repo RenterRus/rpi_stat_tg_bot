@@ -49,8 +49,9 @@ func (d *DLP) downloader(link string) {
 			Proc:         update.PercentString(),
 			Status:       status,
 		}
+		d.Lock()
 		d.worker.Actual[link] = progressInfo
-
+		d.Unlock()
 		if name != update.Filename {
 			name = update.Filename
 			if err := d.qdb.Update(link, db.StatusWORK, &name); err != nil {
@@ -60,25 +61,65 @@ func (d *DLP) downloader(link string) {
 	})
 
 	_, err := d.dl.Run(context.TODO(), link)
+
+	baseMessage := FileInfo{
+		Name:         progressInfo[name].Name,
+		DownloadSize: progressInfo[name].DownloadSize,
+		TotalSize:    progressInfo[name].TotalSize,
+		Proc:         "100%",
+		Status:       "done",
+	}
 	if err != nil {
+		baseMessage.Status = fmt.Sprintf("error: [%s]", err.Error())
+		d.Lock()
+		d.worker.Actual[link][name] = baseMessage
+		d.Unlock()
+
 		fmt.Printf("\ndownload error: %s\n", err.Error())
 
 		d.totalRetry.Add(1)
 		if err := d.qdb.Update(link, db.StatusNEW, &name); err != nil {
-			fmt.Printf("\ndownloader set video to queue (retry): %s\n", err.Error())
+			fmt.Printf("\ndownloader set video to queue (retry): [%s]\n", err.Error())
 		}
+		baseMessage.Status += "\n- - - - - - -Returned to the queue."
+		d.Lock()
+		d.worker.Actual[link][name] = baseMessage
+		d.Unlock()
+
 		if !d.eagerMode {
-			time.Sleep(time.Millisecond * time.Duration(duration))
+
+			baseMessage.Status += fmt.Sprintf("\n- - - - - - - -EagleMode: %s\n- - - - - - - - -Waiting %d second to next", d.EagerModeState(), DEFAULT_TIMEOUT)
+			d.Lock()
+			d.worker.Actual[link][name] = baseMessage
+			d.Unlock()
+			time.Sleep(time.Second * time.Duration(DEFAULT_TIMEOUT))
 		}
 		return
 	}
 
+	baseMessage.Status = "download and compiling complete"
+	d.Lock()
+	d.worker.Actual[link][name] = baseMessage
+	d.Unlock()
 	if err := d.qdb.Update(link, db.StatusDONE, &name); err != nil {
-		fmt.Printf("\ndownloader update db error: %s\n", err.Error())
+		baseMessage.Status += fmt.Sprintf("\n- - - - - - -update to done status failed: [%s]", err.Error())
+		d.Lock()
+		d.worker.Actual[link][name] = baseMessage
+		d.Unlock()
+		fmt.Printf("\ndownloader update status db error: %s\n", err.Error())
 	}
 	if !d.eagerMode {
+		baseMessage.Status += fmt.Sprintf("\n- - - - - - - - -EagleMode: %s\n- - - - - - - - - -Waiting %.2f second to next", d.EagerModeState(), duration)
+		d.Lock()
+		d.worker.Actual[link][name] = baseMessage
+		d.Unlock()
 		time.Sleep(time.Second * time.Duration(duration))
 		return
 	}
+
+	baseMessage.Status += fmt.Sprintf("\n- - - - - - - - -EagleMode: %s\n- - - - - - - - - -Waiting %.2f second to next", d.EagerModeState(), duration)
+	d.Lock()
+	d.worker.Actual[link][name] = baseMessage
+	d.Unlock()
 	time.Sleep(time.Second * DEFAULT_TIMEOUT)
 }
