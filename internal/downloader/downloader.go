@@ -71,6 +71,9 @@ func (d *DLP) downloader(link string) {
 
 	t := time.Now()
 	if err != nil {
+		if strings.Contains(err.Error(), "could not find chrome cookies") {
+			d.dl.NoCookiesFromBrowser()
+		}
 		baseMessage.Status = fmt.Sprintf("error: [%s]", err.Error())
 		if d.worker.Actual[link] == nil {
 			d.worker.Actual[link] = make(map[string]FileInfo)
