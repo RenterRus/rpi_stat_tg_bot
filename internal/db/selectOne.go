@@ -12,14 +12,18 @@ func (m *manager) SelectOne() (string, error) {
 	defer m.close()
 
 	rows, err := m.db.Query("select link, name from links where status = $1 order by RANDOM() limit 1", StatusNEW)
-	if err != nil {
-		return "", fmt.Errorf("db.SelectOne(query): %w", err)
-	}
 	defer func() {
 		rows.Close()
 	}()
 
-	rows.Next()
+	if err != nil && rows.Next() {
+		return "", fmt.Errorf("db.SelectOne(query): %w", err)
+	}
+
+	isNext := rows.Next()
+	if !isNext {
+		return "", nil
+	}
 	p := links{}
 	err = rows.Scan(&p.Link, &p.Name)
 	if err != nil {

@@ -56,18 +56,22 @@ func (d *DLP) Run(ctx context.Context) {
 				link, err := d.qdb.SelectOne()
 				if err != nil {
 					fmt.Printf("\nERROR get link: %v", err)
-				} else {
+					return
+				}
+				if link != "" {
 
 					if err := d.qdb.Update(link, db.StatusWORK, nil); err != nil {
 						fmt.Printf("\ndownloader update db error(run): %s\n", err.Error())
 					}
 
 					d.downloader(link)
+					return
 				}
+				time.Sleep(time.Second * DEFAULT_TIMEOUT)
 			}()
 
 		default:
-			time.Sleep(time.Second * 17)
+			time.Sleep(time.Second * DEFAULT_TIMEOUT)
 		}
 	}
 }
