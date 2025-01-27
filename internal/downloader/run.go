@@ -10,8 +10,18 @@ import (
 	"github.com/lrstanley/go-ytdlp"
 )
 
+func (d *DLP) ytInit(ctx context.Context) {
+	defer func() {
+		if r := recover(); r != nil {
+			d.retryInit.Add(1)
+			d.ytInit(ctx)
+		}
+	}()
+	ytdlp.MustInstall(ctx, nil)
+}
+
 func (d *DLP) Run(ctx context.Context) {
-	ytdlp.MustInstall(context.TODO(), nil)
+	d.ytInit(ctx)
 	res, err := ytdlp.New().Update(context.Background())
 	var updateStat strings.Builder
 	updateStat.WriteString(fmt.Sprintf("Версия на сервере: %s\n", ytdlp.Version))
@@ -24,6 +34,8 @@ func (d *DLP) Run(ctx context.Context) {
 	} else {
 		updateStat.WriteString("Обновлений не найдено\n")
 	}
+	updateStat.WriteString(fmt.Sprintf("Количество повторов инициализации загрузчика: %d", d.retryInit.Load()))
+	d.retryInit.Store(0)
 
 	d.updateStat = updateStat.String()
 

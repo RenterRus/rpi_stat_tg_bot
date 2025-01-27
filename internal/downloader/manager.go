@@ -24,6 +24,7 @@ type DLP struct {
 	path       string
 	dl         *ytdlp.Command
 	totalRetry atomic.Int64
+	retryInit  atomic.Int64
 	qdb        db.Queue
 	maxWorkers int
 	updateStat string
