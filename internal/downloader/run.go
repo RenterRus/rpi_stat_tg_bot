@@ -13,6 +13,10 @@ import (
 func (d *DLP) ytInit(ctx context.Context) {
 	defer func() {
 		if r := recover(); r != nil {
+			fmt.Println("===RECOVER===")
+			fmt.Println(r)
+			fmt.Println("===RECOVER===")
+
 			d.retryInit.Add(1)
 			d.ytInit(ctx)
 		}
