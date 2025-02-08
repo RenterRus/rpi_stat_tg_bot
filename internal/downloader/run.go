@@ -50,12 +50,13 @@ func (d *DLP) Run(ctx context.Context) {
 		Output("%(title)s.%(ext)s").
 		NoRestrictFilenames().
 		Fixup(ytdlp.FixupForce).
-		Retries("20").
-		NoWriteSubs().
 		IgnoreErrors().
 		IgnoreNoFormatsError().
 		NoAbortOnError().
-		RmCacheDir().CookiesFromBrowser("chrome")
+		RmCacheDir().
+		CookiesFromBrowser("chrome").
+		MarkWatched().
+		EmbedChapters()
 	d.worker.Actual = make(map[string]map[string]FileInfo)
 	doubleWay := make(chan struct{}, d.maxWorkers)
 
