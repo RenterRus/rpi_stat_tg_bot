@@ -40,10 +40,10 @@ func (a *App) Run() {
 	bot := bot.NewBot(bot.BotConf{
 		Token:   a.Conf.Token,
 		Timeout: a.Conf.Timeout,
-		AllowedIPs: func() map[string]struct{} {
-			allowedIPs := make(map[string]struct{})
+		AllowedIPs: func() map[string]bool {
+			allowedIPs := make(map[string]bool)
 			for _, v := range a.Conf.AllowedIDs {
-				allowedIPs[v] = struct{}{}
+				allowedIPs[v] = false
 			}
 			return allowedIPs
 		}(),

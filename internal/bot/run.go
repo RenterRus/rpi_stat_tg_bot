@@ -61,8 +61,8 @@ func (k *RealBot) Run() {
 			if _, ok := k.allowedIPs[fmt.Sprintf("%d", int(update.Message.Chat.ID))]; ok {
 				// Этот блок должен идти до валидации на url, т.к. в очереди, теоретически, может оказаться вообще не ссылка (ручной ввод)
 				// Если режим удаления
-				if k.isDelete {
-					k.isDelete = false
+				if k.allowedIPs[fmt.Sprintf("%d", update.Message.Chat.ID)] {
+					k.allowedIPs[fmt.Sprintf("%d", update.Message.Chat.ID)] = false
 					err := k.queueDB.DeleteByLink(update.Message.Text)
 					if err != nil {
 						k.bot.Send(tgbotapi.NewMessage(update.Message.Chat.ID, fmt.Sprintf("Не удалось удалить из очереди. Причина: %s", err.Error())))
@@ -124,14 +124,16 @@ func (k *RealBot) Run() {
 				time.Sleep(time.Second * DEFAULT_SLEEP)
 				msg.Text, shutdown = cmd.Restart()
 			case buttonsMap["RemoveFromQueue"].ID:
-				k.isDelete = true
+				k.allowedIPs[fmt.Sprintf("%d", update.Message.Chat.ID)] = true
 				msg.Text = "Вставьте ссылку, которую надо удалить"
 			case buttonsMap["AutoConnect"].ID:
 				msg.Text = cmd.Auto()
 			case buttonsMap["EagerMode"].ID:
 				k.downloader.EagerModeToggle()
-				//		msg.ReplyMarkup = k.keyboardAdmins()
-				msg.Text = "Жадный режим " + k.downloader.EagerModeState()
+
+				msg.ReplyMarkup = tgbotapi.NewRemoveKeyboard(true)
+				msg.ReplyMarkup = k.keyboardAdmins()
+				//msg.Text = "Жадный режим " + k.downloader.EagerModeState()
 			case buttonsMap["LinksForUtil"].ID:
 				msg.Text = k.queueDB.WorkList()
 			case buttonsMap["Help"].ID:
