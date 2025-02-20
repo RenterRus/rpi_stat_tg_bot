@@ -81,11 +81,6 @@ func (k *RealBot) Run() {
 				// Не получилось обновружить ссылку
 				if err := validate.Var(update.Message.Text, "url"); err != nil {
 					msg = tgbotapi.NewMessage(update.Message.Chat.ID, k.welcomeMSG(update.Message.Chat.ID))
-					if _, ok := k.admins[fmt.Sprintf("%d", int(update.Message.Chat.ID))]; ok {
-						msg.ReplyMarkup = k.keyboardAdmins()
-					} else {
-						msg.ReplyMarkup = k.keyboardDefault()
-					}
 					// Это ссылка, но вставка не удалась
 				} else if err := k.downloader.ToDownload(update.Message.Text); err != nil {
 					msg = tgbotapi.NewMessage(update.Message.Chat.ID, fmt.Sprintf("Не удалось вставить в очередь ссылку %s. Причина: %v", update.Message.Text, err.Error()))
@@ -95,6 +90,13 @@ func (k *RealBot) Run() {
 					if _, ok := k.admins[strconv.Itoa(int(update.Message.Chat.ID))]; !ok {
 						k.toAdmins(fmt.Sprintf("Ссылка [%s] взята в работу", update.Message.Text))
 					}
+				}
+
+				// Всегда прикрепляем клавиатуру
+				if _, ok := k.admins[fmt.Sprintf("%d", int(update.Message.Chat.ID))]; ok {
+					msg.ReplyMarkup = k.keyboardAdmins()
+				} else {
+					msg.ReplyMarkup = k.keyboardDefault()
 				}
 
 			} else { // Если нет, то даем ответ о запрещенном доступе
@@ -131,9 +133,7 @@ func (k *RealBot) Run() {
 			case buttonsMap["EagerMode"].ID:
 				k.downloader.EagerModeToggle()
 
-				//	msg.ReplyMarkup = tgbotapi.NewInlineKeyboardMarkup(k.keyboardAdmins())
-				msg.ReplyMarkup = k.keyboardAdmins()
-				//msg.Text = "Жадный режим " + k.downloader.EagerModeState()
+				msg.Text = "Жадный режим " + k.downloader.EagerModeState()
 			case buttonsMap["LinksForUtil"].ID:
 				msg.Text = k.queueDB.WorkList()
 			case buttonsMap["Help"].ID:
