@@ -131,7 +131,7 @@ func (k *RealBot) Run() {
 			case buttonsMap["EagerMode"].ID:
 				k.downloader.EagerModeToggle()
 
-				msg.ReplyMarkup = tgbotapi.NewRemoveKeyboard(true)
+				//	msg.ReplyMarkup = tgbotapi.NewInlineKeyboardMarkup(k.keyboardAdmins())
 				msg.ReplyMarkup = k.keyboardAdmins()
 				//msg.Text = "Жадный режим " + k.downloader.EagerModeState()
 			case buttonsMap["LinksForUtil"].ID:
