@@ -38,12 +38,15 @@ func (a *App) Run() {
 
 	queue := db.NewManager(a.Conf.PathToDB)
 	bot := bot.NewBot(bot.BotConf{
-		Token:   a.Conf.Token,
-		Timeout: a.Conf.Timeout,
-		AllowedIPs: func() map[string]bool {
-			allowedIPs := make(map[string]bool)
+		DownloadPath: a.Conf.PathToDownload,
+		Token:        a.Conf.Token,
+		Timeout:      a.Conf.Timeout,
+		AllowedIPs: func() map[string]bot.UserMode {
+			allowedIPs := make(map[string]bot.UserMode)
 			for _, v := range a.Conf.AllowedIDs {
-				allowedIPs[v] = false
+				allowedIPs[v] = bot.UserMode{
+					Remove: false,
+				}
 			}
 			return allowedIPs
 		}(),

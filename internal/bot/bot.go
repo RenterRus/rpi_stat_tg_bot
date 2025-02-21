@@ -12,41 +12,49 @@ import (
 )
 
 type RealBot struct {
-	informer   informer.Informer
-	finder     finder.Finder
-	token      string
-	timeout    int
-	allowedIPs map[string]bool
-	admins     map[string]struct{}
-	downloader downloader.Downloader
-	queueDB    db.Queue
-	bot        *tgbotapi.BotAPI
-	botName    string
+	informer     informer.Informer
+	finder       finder.Finder
+	token        string
+	timeout      int
+	allowedIPs   map[string]UserMode
+	admins       map[string]struct{}
+	downloader   downloader.Downloader
+	queueDB      db.Queue
+	bot          *tgbotapi.BotAPI
+	botName      string
+	downloadPath string
+}
+type UserMode struct {
+	Remove   bool
+	Download bool
+	Files    []string
 }
 
 type BotConf struct {
-	Informer   informer.Informer
-	Token      string
-	Timeout    int
-	Finder     finder.Finder
-	AllowedIPs map[string]bool
-	Admins     map[string]struct{}
-	Downloader downloader.Downloader
-	Queue      db.Queue
-	Name       string
+	Informer     informer.Informer
+	Token        string
+	Timeout      int
+	Finder       finder.Finder
+	AllowedIPs   map[string]UserMode
+	Admins       map[string]struct{}
+	Downloader   downloader.Downloader
+	Queue        db.Queue
+	Name         string
+	DownloadPath string
 }
 
 func NewBot(conf BotConf) Bot {
 	return &RealBot{
-		informer:   conf.Informer,
-		token:      conf.Token,
-		finder:     conf.Finder,
-		timeout:    conf.Timeout,
-		allowedIPs: conf.AllowedIPs,
-		downloader: conf.Downloader,
-		queueDB:    conf.Queue,
-		admins:     conf.Admins,
-		botName:    conf.Name,
+		informer:     conf.Informer,
+		token:        conf.Token,
+		finder:       conf.Finder,
+		timeout:      conf.Timeout,
+		allowedIPs:   conf.AllowedIPs,
+		downloader:   conf.Downloader,
+		queueDB:      conf.Queue,
+		admins:       conf.Admins,
+		botName:      conf.Name,
+		downloadPath: conf.DownloadPath,
 	}
 }
 

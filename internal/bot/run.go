@@ -14,16 +14,6 @@ import (
 
 const DEFAULT_SLEEP = 7
 
-func (k *RealBot) toAdmins(msg string) {
-	for v := range k.admins {
-		id, err := strconv.ParseInt(v, 10, 64)
-		if err != nil {
-			fmt.Println("ParseintError:", err)
-		}
-		k.bot.Send(tgbotapi.NewMessage(id, msg))
-	}
-}
-
 func (k *RealBot) Run() {
 	var err error
 	k.bot, err = tgbotapi.NewBotAPI(k.token)
@@ -53,6 +43,7 @@ func (k *RealBot) Run() {
 	}()
 	for update := range updates {
 		// Обработка простых сообщений
+
 		if update.Message != nil {
 			log.Printf("[%s] %s", update.Message.From.UserName, update.Message.Text)
 
@@ -61,8 +52,10 @@ func (k *RealBot) Run() {
 			if _, ok := k.allowedIPs[fmt.Sprintf("%d", int(update.Message.Chat.ID))]; ok {
 				// Этот блок должен идти до валидации на url, т.к. в очереди, теоретически, может оказаться вообще не ссылка (ручной ввод)
 				// Если режим удаления
-				if k.allowedIPs[fmt.Sprintf("%d", update.Message.Chat.ID)] {
-					k.allowedIPs[fmt.Sprintf("%d", update.Message.Chat.ID)] = false
+				if k.allowedIPs[fmt.Sprintf("%d", update.Message.Chat.ID)].Remove {
+					k.allowedIPs[fmt.Sprintf("%d", update.Message.Chat.ID)] = UserMode{
+						Remove: false,
+					}
 					err := k.queueDB.DeleteByLink(update.Message.Text)
 					if err != nil {
 						k.bot.Send(tgbotapi.NewMessage(update.Message.Chat.ID, fmt.Sprintf("Не удалось удалить из очереди. Причина: %s", err.Error())))
@@ -103,6 +96,27 @@ func (k *RealBot) Run() {
 				msg = tgbotapi.NewMessage(update.Message.Chat.ID, fmt.Sprintf("Доступ запрещен: %d", int(update.Message.Chat.ID)))
 			}
 
+			if pinned := update.FromChat().PinnedMessage; pinned != nil {
+				if video := pinned.Video; video != nil {
+					go k.saveVideo(update.Message.Chat.ID, video.FileID)
+				}
+			}
+
+			if k.allowedIPs[fmt.Sprintf("%d", update.Message.Chat.ID)].Download {
+				files := k.allowedIPs[fmt.Sprintf("%d", update.Message.Chat.ID)].Files
+				k.allowedIPs[fmt.Sprintf("%d", update.Message.Chat.ID)] = UserMode{
+					Download: false,
+				}
+
+				number, err := strconv.Atoi(update.Message.Text)
+				if err != nil {
+					msg = tgbotapi.NewMessage(update.Message.Chat.ID, "Не удалось распознать ввод")
+					continue
+				}
+
+				go k.loadVideo(update.Message.Chat.ID, files[number])
+			}
+
 			// Отправляем сообщение
 			if _, err = k.bot.Send(msg); err != nil {
 				fmt.Println("Send", err)
@@ -126,8 +140,30 @@ func (k *RealBot) Run() {
 				time.Sleep(time.Second * DEFAULT_SLEEP)
 				msg.Text, shutdown = cmd.Restart()
 			case buttonsMap["RemoveFromQueue"].ID:
-				k.allowedIPs[fmt.Sprintf("%d", update.Message.Chat.ID)] = true
+				k.allowedIPs[fmt.Sprintf("%d", update.Message.Chat.ID)] = UserMode{
+					Remove: true,
+				}
 				msg.Text = "Вставьте ссылку, которую надо удалить"
+			case buttonsMap["RemoveFromQueue"].ID:
+				files, err := k.getAllowedFiles()
+				if err != nil {
+					msg.Text = "Не удается получить список файлов: " + err.Error()
+					continue
+				}
+				if len(files) == 0 {
+					msg.Text = "Нет файлов пригодных под передачу через телеграмм"
+					continue
+				}
+
+				k.allowedIPs[fmt.Sprintf("%d", int(update.Message.Chat.ID))] = UserMode{
+					Download: true,
+					Files:    files,
+				}
+
+				for i, v := range files {
+					msg.Text += fmt.Sprintf("%d. %s\n", i, v)
+				}
+
 			case buttonsMap["AutoConnect"].ID:
 				msg.Text = cmd.Auto()
 			case buttonsMap["EagerMode"].ID:

@@ -66,6 +66,11 @@ func (k *RealBot) initKeyboard() {
 		ID:   "EagerMode",
 		Text: "Жадный режим " + k.downloader.EagerModeState(),
 	}
+
+	buttonsMap["Download"] = buttons{
+		ID:   "Download",
+		Text: "Скачать загруженное (до 1.5 гб)",
+	}
 }
 
 func (k *RealBot) keyboardDefault() tgbotapi.InlineKeyboardMarkup {
@@ -79,6 +84,9 @@ func (k *RealBot) keyboardDefault() tgbotapi.InlineKeyboardMarkup {
 		),
 		tgbotapi.NewInlineKeyboardRow(
 			tgbotapi.NewInlineKeyboardButtonData(buttonsMap["LinksForUtil"].Text, buttonsMap["LinksForUtil"].ID),
+		),
+		tgbotapi.NewInlineKeyboardRow(
+			tgbotapi.NewInlineKeyboardButtonData(buttonsMap["Download"].Text, buttonsMap["Download"].ID),
 		),
 		tgbotapi.NewInlineKeyboardRow(
 			tgbotapi.NewInlineKeyboardButtonData(buttonsMap["ViewQueue"].Text, buttonsMap["ViewQueue"].ID),
@@ -118,6 +126,9 @@ func (k *RealBot) keyboardAdmins() tgbotapi.InlineKeyboardMarkup {
 		tgbotapi.NewInlineKeyboardRow(
 			tgbotapi.NewInlineKeyboardButtonData(buttonsMap["Sensors"].Text, buttonsMap["Sensors"].ID),
 			tgbotapi.NewInlineKeyboardButtonData(buttonsMap["ActualState"].Text, buttonsMap["ActualState"].ID),
+		),
+		tgbotapi.NewInlineKeyboardRow(
+			tgbotapi.NewInlineKeyboardButtonData(buttonsMap["Download"].Text, buttonsMap["Download"].ID),
 		),
 	)
 }
