@@ -144,7 +144,7 @@ func (k *RealBot) Run() {
 					Remove: true,
 				}
 				msg.Text = "Вставьте ссылку, которую надо удалить"
-			case buttonsMap["RemoveFromQueue"].ID:
+			case buttonsMap["Download"].ID:
 				files, err := k.getAllowedFiles()
 				if err != nil {
 					msg.Text = "Не удается получить список файлов: " + err.Error()
