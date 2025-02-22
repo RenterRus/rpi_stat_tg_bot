@@ -128,6 +128,14 @@ func (k *RealBot) Run() {
 				number, err := strconv.Atoi(update.Message.Text)
 				if err != nil {
 					msg = tgbotapi.NewMessage(update.Message.Chat.ID, "Не удалось распознать ввод")
+					if _, ok := k.admins[fmt.Sprintf("%d", int(update.Message.Chat.ID))]; ok {
+						msg.ReplyMarkup = k.keyboardAdmins()
+					} else {
+						msg.ReplyMarkup = k.keyboardDefault()
+					}
+
+					k.bot.Send(msg)
+
 					continue
 				}
 
