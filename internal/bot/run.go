@@ -107,13 +107,13 @@ func (k *RealBot) Run() {
 				fmt.Println("video")
 
 				file, err := k.bot.GetFile(tgbotapi.FileConfig{
-					FileID: media.FileID,
+					FileID: media.Thumbnail.FileID,
 				})
 				if err != nil {
 					k.bot.Send(tgbotapi.NewMessage(update.Message.Chat.ID, fmt.Sprintf("Не получилось сохранить файл на сервере: %s", err.Error())))
 				}
 
-				fmt.Println(fmt.Sprintf("https://api.telegram.org/file/bot" + k.token + "/" + file.FilePath))
+				fmt.Println(file.Link(k.token))
 
 				//		go k.saveVideo(update.Message.Chat.ID, media.Thumbnail.FileID)
 			}
