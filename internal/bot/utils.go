@@ -34,10 +34,10 @@ func (k *RealBot) saveVideo(chatID int64, fileID string) {
 	}
 }
 
-func (k *RealBot) loadVideo(chatID int64, fileName string) {
+func (k *RealBot) loadVideo(chatID int64, fileName string) error {
 	local_video, err := os.ReadFile(fmt.Sprintf("%s/%s", k.downloadPath, fileName))
 	if err != nil {
-		k.bot.Send(tgbotapi.NewMessage(chatID, fmt.Sprintf("Не удается загрузить файл %s: %s", fileName, err.Error())))
+		return fmt.Errorf("ReadFile: %w", err)
 	}
 
 	videoFileBytes := tgbotapi.FileBytes{
@@ -46,9 +46,9 @@ func (k *RealBot) loadVideo(chatID int64, fileName string) {
 	}
 
 	if _, err := k.bot.Send(tgbotapi.NewVideo(chatID, videoFileBytes)); err != nil {
-		k.bot.Send(tgbotapi.NewMessage(chatID, fmt.Sprintf("Не удается отправить файл %s: %s", fileName, err.Error())))
+		return fmt.Errorf("send: %s", err.Error())
 	}
-
+	return nil
 }
 
 func (k *RealBot) removeVideo(chatID int64, fileName string) {

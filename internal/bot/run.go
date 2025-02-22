@@ -140,7 +140,10 @@ func (k *RealBot) Run() {
 				msg = tgbotapi.NewMessage(update.Message.Chat.ID, fmt.Sprintf("Видео [%s] поставлено в загрузку", files[number]))
 				go func() {
 					if k.allowedIPs[fmt.Sprintf("%d", update.Message.Chat.ID)].Mode == DownloadMode || k.allowedIPs[fmt.Sprintf("%d", update.Message.Chat.ID)].Mode == EraseMode {
-						k.loadVideo(update.Message.Chat.ID, files[number])
+						if err := k.loadVideo(update.Message.Chat.ID, files[number]); err != nil {
+							k.bot.Send(tgbotapi.NewMessage(update.Message.Chat.ID, fmt.Sprintf("Не удается загрузить файл %s: %s", files[number], err.Error())))
+							return
+						}
 					}
 					if k.allowedIPs[fmt.Sprintf("%d", update.Message.Chat.ID)].Mode == EraseMode || k.allowedIPs[fmt.Sprintf("%d", update.Message.Chat.ID)].Mode == RemoveMode {
 						k.removeVideo(update.Message.Chat.ID, files[number])
