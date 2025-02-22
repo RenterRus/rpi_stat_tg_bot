@@ -102,12 +102,21 @@ func (k *RealBot) Run() {
 					go k.saveVideo(update.Message.Chat.ID, video.Thumbnail.FileID)
 				}
 			}
-
+			*/
 			if media := update.Message.Video; media != nil {
 				fmt.Println("video")
 
-				go k.saveVideo(update.Message.Chat.ID, media.Thumbnail.FileID)
-			}*/
+				file, err := k.bot.GetFile(tgbotapi.FileConfig{
+					FileID: media.FileID,
+				})
+				if err != nil {
+					k.bot.Send(tgbotapi.NewMessage(update.Message.Chat.ID, fmt.Sprintf("Не получилось сохранить файл на сервере: %s", err.Error())))
+				}
+
+				fmt.Println(fmt.Sprintf("https://api.telegram.org/file/bot" + k.token + "/" + file.FilePath))
+
+				//		go k.saveVideo(update.Message.Chat.ID, media.Thumbnail.FileID)
+			}
 
 			if k.allowedIPs[fmt.Sprintf("%d", update.Message.Chat.ID)].Download {
 				files := k.allowedIPs[fmt.Sprintf("%d", update.Message.Chat.ID)].Files
