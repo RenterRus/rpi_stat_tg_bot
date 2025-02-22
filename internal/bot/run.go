@@ -146,7 +146,7 @@ func (k *RealBot) Run() {
 				time.Sleep(time.Second * DEFAULT_SLEEP)
 				msg.Text, shutdown = cmd.Restart()
 			case buttonsMap["RemoveFromQueue"].ID:
-				k.allowedIPs[fmt.Sprintf("%d", update.Message.Chat.ID)] = &UserMode{
+				k.allowedIPs[fmt.Sprintf("%d", update.CallbackQuery.Message.Chat.ID)] = &UserMode{
 					Remove: true,
 				}
 				msg.Text = "Вставьте ссылку, которую надо удалить"
@@ -161,17 +161,10 @@ func (k *RealBot) Run() {
 					continue
 				}
 
-				fmt.Println(files)
-
-				data := &UserMode{
+				k.allowedIPs[fmt.Sprintf("%d", int(update.CallbackQuery.Message.Chat.ID))] = &UserMode{
 					Download: true,
 					Files:    files,
 				}
-				fmt.Println(update.Message.Chat.ID)
-				fmt.Println(k.allowedIPs)
-
-				k.allowedIPs[fmt.Sprintf("%d", int(update.Message.Chat.ID))] = new(UserMode)
-				k.allowedIPs[fmt.Sprintf("%d", int(update.Message.Chat.ID))] = data
 
 				for i, v := range files {
 					msg.Text += fmt.Sprintf("%d. %s\n", i, v)
