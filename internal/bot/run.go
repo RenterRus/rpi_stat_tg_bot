@@ -165,7 +165,7 @@ func (k *RealBot) Run() {
 			shutdown := false
 			msg := tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, "")
 
-			mode := func(m MODE) {
+			/*mode := func(m MODE) {
 				files, err := k.getAllowedFiles(m)
 				if err != nil {
 					msg.Text = "Не удается получить список файлов: " + err.Error()
@@ -186,7 +186,7 @@ func (k *RealBot) Run() {
 				for i, v := range files {
 					msg.Text += fmt.Sprintf("%d. %s\n", i, v)
 				}
-			}
+			}*/
 
 			switch update.CallbackQuery.Data {
 			case buttonsMap["RestartBot"].ID:
@@ -203,12 +203,12 @@ func (k *RealBot) Run() {
 					Remove: true,
 				}
 				msg.Text = "Вставьте ссылку, которую надо удалить"
-			case buttonsMap["Download"].ID:
+			/*case buttonsMap["Download"].ID:
 				mode(DownloadMode)
 			case buttonsMap["EraseDownload"].ID:
 				mode(EraseMode)
 			case buttonsMap["RemoveDownload"].ID:
-				mode(RemoveMode)
+				mode(RemoveMode)*/
 			case buttonsMap["AutoConnect"].ID:
 				msg.Text = cmd.Auto()
 			case buttonsMap["EagerMode"].ID:
