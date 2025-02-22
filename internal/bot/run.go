@@ -102,7 +102,7 @@ func (k *RealBot) Run() {
 					go k.saveVideo(update.Message.Chat.ID, video.Thumbnail.FileID)
 				}
 			}
-			*/
+
 			if media := update.Message.Video; media != nil {
 				fmt.Println("video")
 
@@ -117,6 +117,7 @@ func (k *RealBot) Run() {
 
 				//		go k.saveVideo(update.Message.Chat.ID, media.Thumbnail.FileID)
 			}
+			*/
 
 			if k.allowedIPs[fmt.Sprintf("%d", update.Message.Chat.ID)].Download {
 				files := k.allowedIPs[fmt.Sprintf("%d", update.Message.Chat.ID)].Files
