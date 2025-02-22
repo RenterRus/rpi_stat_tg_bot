@@ -100,9 +100,9 @@ func (k *RealBot) keyboardDefault() tgbotapi.InlineKeyboardMarkup {
 		tgbotapi.NewInlineKeyboardRow(
 			tgbotapi.NewInlineKeyboardButtonData(buttonsMap["LinksForUtil"].Text, buttonsMap["LinksForUtil"].ID),
 		),
-		tgbotapi.NewInlineKeyboardRow(
+		/*tgbotapi.NewInlineKeyboardRow(
 			tgbotapi.NewInlineKeyboardButtonData(buttonsMap["Download"].Text, buttonsMap["Download"].ID),
-		),
+		),*/
 		tgbotapi.NewInlineKeyboardRow(
 			tgbotapi.NewInlineKeyboardButtonData(buttonsMap["ViewQueue"].Text, buttonsMap["ViewQueue"].ID),
 			tgbotapi.NewInlineKeyboardButtonData(buttonsMap["ActualState"].Text, buttonsMap["ActualState"].ID),
@@ -146,10 +146,10 @@ func (k *RealBot) keyboardAdmins() tgbotapi.InlineKeyboardMarkup {
 			tgbotapi.NewInlineKeyboardButtonData(buttonsMap["ActualState"].Text, buttonsMap["ActualState"].ID),
 		),
 
-		tgbotapi.NewInlineKeyboardRow(
+		/*tgbotapi.NewInlineKeyboardRow(
 			tgbotapi.NewInlineKeyboardButtonData(buttonsMap["RemoveDownload"].Text, buttonsMap["RemoveDownload"].ID),
 			tgbotapi.NewInlineKeyboardButtonData(buttonsMap["EraseDownload"].Text, buttonsMap["EraseDownload"].ID),
 			tgbotapi.NewInlineKeyboardButtonData(buttonsMap["Download"].Text, buttonsMap["Download"].ID),
-		),
+		),*/
 	)
 }
