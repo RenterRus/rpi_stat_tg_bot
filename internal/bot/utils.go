@@ -45,9 +45,8 @@ func (k *RealBot) loadVideo(chatID int64, fileName string) error {
 		Bytes: local_video,
 	}
 
-	if _, err := k.bot.Send(tgbotapi.NewVideo(chatID, videoFileBytes)); err != nil {
-		return fmt.Errorf("send: %s", err.Error())
-	}
+	k.bot.Send(tgbotapi.NewVideo(chatID, videoFileBytes))
+
 	return nil
 }
 
