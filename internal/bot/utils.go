@@ -3,7 +3,6 @@ package bot
 import (
 	"fmt"
 	"io"
-	"io/fs"
 	"os"
 	"strconv"
 
@@ -35,7 +34,6 @@ func (k *RealBot) saveVideo(chatID int64, fileID string) {
 }
 
 func (k *RealBot) loadVideo(chatID int64, fileName string) {
-
 	local_video, err := os.ReadFile(fmt.Sprintf("%s/%s", k.downloadPath, fileName))
 	if err != nil {
 		k.bot.Send(tgbotapi.NewMessage(chatID, fmt.Sprintf("Не удается загрузить файл %s: %s", fileName, err.Error())))
@@ -72,12 +70,12 @@ func (k *RealBot) getAllowedFiles() ([]string, error) {
 	}
 
 	res := make([]string, 0, len(files))
-	var info fs.FileInfo
+	//var info fs.FileInfo
 	for i := range files {
-		info, err = files[i].Info()
-		if err == nil && (info.Size()/1024/1024) < 1500 {
-			res = append(res, files[i].Name())
-		}
+		//info, err = files[i].Info()
+		//	if err == nil && (info.Size()/1024/1024) < 1500 {
+		res = append(res, files[i].Name())
+		//	}
 	}
 
 	return res, nil
