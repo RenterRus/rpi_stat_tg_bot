@@ -69,7 +69,7 @@ func (k *RealBot) initKeyboard() {
 
 	buttonsMap["Download"] = buttons{
 		ID:   "Download",
-		Text: "Скачать загруженное",
+		Text: "Скачать загруженное (до 2 гб)",
 	}
 
 	buttonsMap["EraseDownload"] = buttons{

@@ -3,6 +3,7 @@ package bot
 import (
 	"fmt"
 	"io"
+	"io/fs"
 	"os"
 	"strconv"
 
@@ -47,13 +48,14 @@ func (k *RealBot) loadVideo(chatID int64, fileName string) {
 	if _, err := k.bot.Send(tgbotapi.NewVideo(chatID, videoFileBytes)); err != nil {
 		k.bot.Send(tgbotapi.NewMessage(chatID, fmt.Sprintf("Не удается отправить файл %s: %s", fileName, err.Error())))
 	}
-	k.bot.Send(tgbotapi.NewMessage(chatID, "Видео удалено"))
+
 }
 
 func (k *RealBot) removeVideo(chatID int64, fileName string) {
 	if err := os.Remove(fmt.Sprintf("%s/%s", k.downloadPath, fileName)); err != nil {
 		k.bot.Send(tgbotapi.NewMessage(chatID, fmt.Sprintf("Не удается удалить файл %s с сервера: %s", fileName, err.Error())))
 	}
+	k.bot.Send(tgbotapi.NewMessage(chatID, "Видео удалено"))
 }
 
 func (k *RealBot) toAdmins(msg string) {
@@ -73,12 +75,12 @@ func (k *RealBot) getAllowedFiles() ([]string, error) {
 	}
 
 	res := make([]string, 0, len(files))
-	//var info fs.FileInfo
+	var info fs.FileInfo
 	for i := range files {
-		//info, err = files[i].Info()
-		//	if err == nil && (info.Size()/1024/1024) < 1500 {
-		res = append(res, files[i].Name())
-		//	}
+		info, err = files[i].Info()
+		if err == nil && (info.Size()/1024/1024) < 2048 {
+			res = append(res, files[i].Name())
+		}
 	}
 
 	return res, nil
