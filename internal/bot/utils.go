@@ -12,19 +12,23 @@ import (
 
 func (k *RealBot) saveVideo(chatID int64, fileID string) {
 	// Получение файлов?
+	fmt.Println("info")
+
 	name, file, err := tgbotapi.NewVideo(chatID, tgbotapi.FileID(fileID)).File.UploadData()
 	if err != nil {
 		k.bot.Send(tgbotapi.NewMessage(chatID, fmt.Sprintf("Файл %s не был загружен: %s", name, err.Error())))
 		return
 	}
+	fmt.Println("read")
 
 	b, err := io.ReadAll(file)
 	if err != nil {
 		k.bot.Send(tgbotapi.NewMessage(chatID, fmt.Sprintf("Файл %s не может быть прочитан: %s", name, err.Error())))
 		return
 	}
+	fmt.Println("write")
 
-	if err := os.WriteFile(name, b, os.FileMode(os.O_CREATE)); err != nil {
+	if err := os.WriteFile(k.downloadPath+"/"+name, b, os.FileMode(os.O_CREATE)); err != nil {
 		k.bot.Send(tgbotapi.NewMessage(chatID, fmt.Sprintf("Файл %s не был сохранен: %s", name, err.Error())))
 		return
 	}

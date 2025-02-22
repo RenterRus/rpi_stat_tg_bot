@@ -96,9 +96,16 @@ func (k *RealBot) Run() {
 			}
 
 			if pinned := update.FromChat().PinnedMessage; pinned != nil {
+				fmt.Println("pinned")
 				if video := pinned.Video; video != nil {
+					fmt.Println("video")
 					go k.saveVideo(update.Message.Chat.ID, video.FileID)
 				}
+			}
+
+			if media := update.Message.Video; media != nil {
+				fmt.Println("video")
+				go k.saveVideo(update.Message.Chat.ID, media.FileID)
 			}
 
 			if k.allowedIPs[fmt.Sprintf("%d", update.Message.Chat.ID)].Download {
