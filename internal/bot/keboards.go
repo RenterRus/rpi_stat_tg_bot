@@ -72,6 +72,16 @@ func (k *RealBot) initKeyboard() {
 		Text: "Скачать загруженное",
 	}
 
+	buttonsMap["EraseDownload"] = buttons{
+		ID:   "EraseDownload",
+		Text: "Вырезать загруженное",
+	}
+
+	buttonsMap["RemoveDownload"] = buttons{
+		ID:   "RemoveDownload",
+		Text: "Удалить загруженное",
+	}
+
 	buttonsMap["Quality"] = buttons{
 		ID:   "Quality",
 		Text: "Максимальное качество загрузки: " + k.downloader.QualityModeState(),
@@ -115,6 +125,9 @@ func (k *RealBot) keyboardAdmins() tgbotapi.InlineKeyboardMarkup {
 			tgbotapi.NewInlineKeyboardButtonData(buttonsMap["EagerMode"].Text, buttonsMap["EagerMode"].ID),
 		),
 		tgbotapi.NewInlineKeyboardRow(
+			tgbotapi.NewInlineKeyboardButtonData(buttonsMap["Quality"].Text, buttonsMap["Quality"].ID),
+		),
+		tgbotapi.NewInlineKeyboardRow(
 			tgbotapi.NewInlineKeyboardButtonData(buttonsMap["LinksForUtil"].Text, buttonsMap["LinksForUtil"].ID),
 		),
 		tgbotapi.NewInlineKeyboardRow(
@@ -132,10 +145,10 @@ func (k *RealBot) keyboardAdmins() tgbotapi.InlineKeyboardMarkup {
 			tgbotapi.NewInlineKeyboardButtonData(buttonsMap["Sensors"].Text, buttonsMap["Sensors"].ID),
 			tgbotapi.NewInlineKeyboardButtonData(buttonsMap["ActualState"].Text, buttonsMap["ActualState"].ID),
 		),
+
 		tgbotapi.NewInlineKeyboardRow(
-			tgbotapi.NewInlineKeyboardButtonData(buttonsMap["Quality"].Text, buttonsMap["Quality"].ID),
-		),
-		tgbotapi.NewInlineKeyboardRow(
+			tgbotapi.NewInlineKeyboardButtonData(buttonsMap["RemoveDownload"].Text, buttonsMap["RemoveDownload"].ID),
+			tgbotapi.NewInlineKeyboardButtonData(buttonsMap["EraseDownload"].Text, buttonsMap["EraseDownload"].ID),
 			tgbotapi.NewInlineKeyboardButtonData(buttonsMap["Download"].Text, buttonsMap["Download"].ID),
 		),
 	)

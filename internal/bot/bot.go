@@ -24,9 +24,18 @@ type RealBot struct {
 	botName      string
 	downloadPath string
 }
+type MODE int
+
+const (
+	DownloadMode MODE = iota
+	EraseMode    MODE = iota
+	RemoveMode   MODE = iota
+)
+
 type UserMode struct {
 	Remove   bool
 	Download bool
+	Mode     MODE
 	Files    []string
 }
 

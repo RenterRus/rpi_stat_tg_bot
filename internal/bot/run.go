@@ -132,7 +132,14 @@ func (k *RealBot) Run() {
 				}
 
 				msg = tgbotapi.NewMessage(update.Message.Chat.ID, fmt.Sprintf("Видео [%s] поставлено в загрузку", files[number]))
-				go k.loadVideo(update.Message.Chat.ID, files[number])
+				go func() {
+					if k.allowedIPs[fmt.Sprintf("%d", update.Message.Chat.ID)].Mode == DownloadMode || k.allowedIPs[fmt.Sprintf("%d", update.Message.Chat.ID)].Mode == EraseMode {
+						k.loadVideo(update.Message.Chat.ID, files[number])
+					}
+					if k.allowedIPs[fmt.Sprintf("%d", update.Message.Chat.ID)].Mode == EraseMode || k.allowedIPs[fmt.Sprintf("%d", update.Message.Chat.ID)].Mode == RemoveMode {
+						k.removeVideo(update.Message.Chat.ID, files[number])
+					}
+				}()
 			}
 
 			// Отправляем сообщение
@@ -147,6 +154,30 @@ func (k *RealBot) Run() {
 
 			shutdown := false
 			msg := tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, "")
+
+			mode := func(m MODE) {
+				files, err := k.getAllowedFiles()
+				if err != nil {
+					msg.Text = "Не удается получить список файлов: " + err.Error()
+					return
+				}
+				if len(files) == 0 {
+					msg.Text = "Нет файлов пригодных под передачу через телеграмм"
+					return
+				}
+
+				k.allowedIPs[fmt.Sprintf("%d", int(update.CallbackQuery.Message.Chat.ID))] = &UserMode{
+					Mode:     m,
+					Download: true,
+					Files:    files,
+				}
+
+				msg.Text += "Введите номер видео для продолжения:\n"
+				for i, v := range files {
+					msg.Text += fmt.Sprintf("%d. %s\n", i, v)
+				}
+			}
+
 			switch update.CallbackQuery.Data {
 			case buttonsMap["RestartBot"].ID:
 				ctx.Done()
@@ -163,26 +194,11 @@ func (k *RealBot) Run() {
 				}
 				msg.Text = "Вставьте ссылку, которую надо удалить"
 			case buttonsMap["Download"].ID:
-				files, err := k.getAllowedFiles()
-				if err != nil {
-					msg.Text = "Не удается получить список файлов: " + err.Error()
-					continue
-				}
-				if len(files) == 0 {
-					msg.Text = "Нет файлов пригодных под передачу через телеграмм"
-					continue
-				}
-
-				k.allowedIPs[fmt.Sprintf("%d", int(update.CallbackQuery.Message.Chat.ID))] = &UserMode{
-					Download: true,
-					Files:    files,
-				}
-
-				msg.Text += "Введите номер видео для загрузки:\n"
-				for i, v := range files {
-					msg.Text += fmt.Sprintf("%d. %s\n", i, v)
-				}
-
+				mode(DownloadMode)
+			case buttonsMap["EraseDownload"].ID:
+				mode(EraseMode)
+			case buttonsMap["RemoveDownload"].ID:
+				mode(RemoveMode)
 			case buttonsMap["AutoConnect"].ID:
 				msg.Text = cmd.Auto()
 			case buttonsMap["EagerMode"].ID:
