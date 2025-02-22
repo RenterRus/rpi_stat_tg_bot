@@ -95,7 +95,7 @@ func (k *RealBot) Run() {
 				msg = tgbotapi.NewMessage(update.Message.Chat.ID, fmt.Sprintf("Доступ запрещен: %d", int(update.Message.Chat.ID)))
 			}
 
-			if pinned := update.FromChat().PinnedMessage; pinned != nil {
+			/*if pinned := update.FromChat().PinnedMessage; pinned != nil {
 				fmt.Println("pinned")
 				if video := pinned.Video; video != nil {
 					fmt.Println("video")
@@ -107,7 +107,7 @@ func (k *RealBot) Run() {
 				fmt.Println("video")
 
 				go k.saveVideo(update.Message.Chat.ID, media.Thumbnail.FileID)
-			}
+			}*/
 
 			if k.allowedIPs[fmt.Sprintf("%d", update.Message.Chat.ID)].Download {
 				files := k.allowedIPs[fmt.Sprintf("%d", update.Message.Chat.ID)].Files
