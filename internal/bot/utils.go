@@ -68,7 +68,7 @@ func (k *RealBot) toAdmins(msg string) {
 	}
 }
 
-func (k *RealBot) getAllowedFiles() ([]string, error) {
+func (k *RealBot) getAllowedFiles(mode MODE) ([]string, error) {
 	files, err := os.ReadDir(k.downloadPath)
 	if err != nil {
 		return nil, fmt.Errorf("caanot read directory: %w", err)
@@ -78,7 +78,7 @@ func (k *RealBot) getAllowedFiles() ([]string, error) {
 	var info fs.FileInfo
 	for i := range files {
 		info, err = files[i].Info()
-		if err == nil && (info.Size()/1024/1024) < 2048 {
+		if (err == nil && (info.Size()/1024/1024) < 2048) || mode == RemoveMode {
 			res = append(res, files[i].Name())
 		}
 	}

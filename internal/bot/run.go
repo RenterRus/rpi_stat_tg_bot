@@ -162,7 +162,7 @@ func (k *RealBot) Run() {
 			msg := tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, "")
 
 			mode := func(m MODE) {
-				files, err := k.getAllowedFiles()
+				files, err := k.getAllowedFiles(m)
 				if err != nil {
 					msg.Text = "Не удается получить список файлов: " + err.Error()
 					return
