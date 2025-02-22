@@ -72,7 +72,7 @@ func (k *RealBot) initKeyboard() {
 		Text: "Скачать загруженное (до 2 гб)",
 	}
 
-	buttonsMap["EraseDownload"] = buttons{
+	/*buttonsMap["EraseDownload"] = buttons{
 		ID:   "EraseDownload",
 		Text: "Вырезать загруженное (до 2 гб)",
 	}
@@ -85,7 +85,7 @@ func (k *RealBot) initKeyboard() {
 	buttonsMap["Quality"] = buttons{
 		ID:   "Quality",
 		Text: "Максимальное качество загрузки: " + k.downloader.QualityModeState(),
-	}
+	}*/
 }
 
 func (k *RealBot) keyboardDefault() tgbotapi.InlineKeyboardMarkup {
