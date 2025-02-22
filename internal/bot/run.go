@@ -167,6 +167,9 @@ func (k *RealBot) Run() {
 					Download: true,
 					Files:    files,
 				}
+				fmt.Println(update.Message.Chat.ID)
+				fmt.Println(k.allowedIPs)
+
 				k.allowedIPs[fmt.Sprintf("%d", int(update.Message.Chat.ID))] = new(UserMode)
 				k.allowedIPs[fmt.Sprintf("%d", int(update.Message.Chat.ID))] = data
 

@@ -36,27 +36,28 @@ func (a *App) Run() {
 		FileSearch: a.Conf.DevSearch,
 	})
 
-	allowedIPs := make(map[string]*bot.UserMode)
-	for _, v := range a.Conf.AllowedIDs {
-		allowedIPs[v] = &bot.UserMode{
-			Remove:   false,
-			Download: false,
-		}
-	}
-
-	admins := make(map[string]struct{})
-	for _, v := range a.Conf.Admins {
-		admins[v] = struct{}{}
-	}
-
 	queue := db.NewManager(a.Conf.PathToDB)
 	bot := bot.NewBot(bot.BotConf{
 		DownloadPath: a.Conf.PathToDownload,
 		Token:        a.Conf.Token,
 		Timeout:      a.Conf.Timeout,
-		AllowedIPs:   allowedIPs,
-		Admins:       admins,
-		Finder:       finder,
+		AllowedIPs: func() map[string]*bot.UserMode {
+			allowedIPs := make(map[string]*bot.UserMode)
+			for _, v := range a.Conf.AllowedIDs {
+				allowedIPs[v] = &bot.UserMode{
+					Remove: false,
+				}
+			}
+			return allowedIPs
+		}(),
+		Admins: func() map[string]struct{} {
+			admins := make(map[string]struct{})
+			for _, v := range a.Conf.Admins {
+				admins[v] = struct{}{}
+			}
+			return admins
+		}(),
+		Finder: finder,
 		Informer: informer.NewInformer(informer.InformerConf{
 			Finder: finder,
 			User:   a.Conf.FTPuser,
