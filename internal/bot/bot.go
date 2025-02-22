@@ -16,7 +16,7 @@ type RealBot struct {
 	finder       finder.Finder
 	token        string
 	timeout      int
-	allowedIPs   map[string]UserMode
+	allowedIPs   map[string]*UserMode
 	admins       map[string]struct{}
 	downloader   downloader.Downloader
 	queueDB      db.Queue
@@ -35,7 +35,7 @@ type BotConf struct {
 	Token        string
 	Timeout      int
 	Finder       finder.Finder
-	AllowedIPs   map[string]UserMode
+	AllowedIPs   map[string]*UserMode
 	Admins       map[string]struct{}
 	Downloader   downloader.Downloader
 	Queue        db.Queue

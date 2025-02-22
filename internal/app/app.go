@@ -41,10 +41,10 @@ func (a *App) Run() {
 		DownloadPath: a.Conf.PathToDownload,
 		Token:        a.Conf.Token,
 		Timeout:      a.Conf.Timeout,
-		AllowedIPs: func() map[string]bot.UserMode {
-			allowedIPs := make(map[string]bot.UserMode)
+		AllowedIPs: func() map[string]*bot.UserMode {
+			allowedIPs := make(map[string]*bot.UserMode)
 			for _, v := range a.Conf.AllowedIDs {
-				allowedIPs[v] = bot.UserMode{
+				allowedIPs[v] = &bot.UserMode{
 					Remove: false,
 				}
 			}

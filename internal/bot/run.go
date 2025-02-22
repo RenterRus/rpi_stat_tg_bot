@@ -52,7 +52,7 @@ func (k *RealBot) Run() {
 				// Этот блок должен идти до валидации на url, т.к. в очереди, теоретически, может оказаться вообще не ссылка (ручной ввод)
 				// Если режим удаления
 				if k.allowedIPs[fmt.Sprintf("%d", update.Message.Chat.ID)].Remove {
-					k.allowedIPs[fmt.Sprintf("%d", update.Message.Chat.ID)] = UserMode{
+					k.allowedIPs[fmt.Sprintf("%d", update.Message.Chat.ID)] = &UserMode{
 						Remove: false,
 					}
 					err := k.queueDB.DeleteByLink(update.Message.Text)
@@ -110,7 +110,7 @@ func (k *RealBot) Run() {
 
 			if k.allowedIPs[fmt.Sprintf("%d", update.Message.Chat.ID)].Download {
 				files := k.allowedIPs[fmt.Sprintf("%d", update.Message.Chat.ID)].Files
-				k.allowedIPs[fmt.Sprintf("%d", update.Message.Chat.ID)] = UserMode{
+				k.allowedIPs[fmt.Sprintf("%d", update.Message.Chat.ID)] = &UserMode{
 					Download: false,
 				}
 
@@ -146,7 +146,7 @@ func (k *RealBot) Run() {
 				time.Sleep(time.Second * DEFAULT_SLEEP)
 				msg.Text, shutdown = cmd.Restart()
 			case buttonsMap["RemoveFromQueue"].ID:
-				k.allowedIPs[fmt.Sprintf("%d", update.Message.Chat.ID)] = UserMode{
+				k.allowedIPs[fmt.Sprintf("%d", update.Message.Chat.ID)] = &UserMode{
 					Remove: true,
 				}
 				msg.Text = "Вставьте ссылку, которую надо удалить"
@@ -163,7 +163,7 @@ func (k *RealBot) Run() {
 
 				fmt.Println(files)
 
-				data := UserMode{
+				data := &UserMode{
 					Download: true,
 					Files:    files,
 				}
