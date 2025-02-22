@@ -107,7 +107,7 @@ func (k *RealBot) Run() {
 				fmt.Println("video")
 
 				file, err := k.bot.GetFile(tgbotapi.FileConfig{
-					FileID: media.Thumbnail.FileID,
+					FileID: media.FileUniqueID,
 				})
 				if err != nil {
 					k.bot.Send(tgbotapi.NewMessage(update.Message.Chat.ID, fmt.Sprintf("Не получилось сохранить файл на сервере: %s", err.Error())))
