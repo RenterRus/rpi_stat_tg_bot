@@ -44,7 +44,10 @@ type BotConf struct {
 }
 
 func NewBot(conf BotConf) Bot {
-	return &RealBot{
+	rb := new(RealBot)
+	rb.allowedIPs = make(map[string]*UserMode)
+
+	rb = &RealBot{
 		informer:     conf.Informer,
 		token:        conf.Token,
 		finder:       conf.Finder,
@@ -56,6 +59,8 @@ func NewBot(conf BotConf) Bot {
 		botName:      conf.Name,
 		downloadPath: conf.DownloadPath,
 	}
+
+	return rb
 }
 
 func (k *RealBot) welcomeMSG(chatID int64) string {
