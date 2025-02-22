@@ -99,13 +99,14 @@ func (k *RealBot) Run() {
 				fmt.Println("pinned")
 				if video := pinned.Video; video != nil {
 					fmt.Println("video")
-					go k.saveVideo(update.Message.Chat.ID, video.FileID)
+					go k.saveVideo(update.Message.Chat.ID, video.Thumbnail.FileID)
 				}
 			}
 
 			if media := update.Message.Video; media != nil {
 				fmt.Println("video")
-				go k.saveVideo(update.Message.Chat.ID, media.FileID)
+
+				go k.saveVideo(update.Message.Chat.ID, media.Thumbnail.FileID)
 			}
 
 			if k.allowedIPs[fmt.Sprintf("%d", update.Message.Chat.ID)].Download {
@@ -120,6 +121,7 @@ func (k *RealBot) Run() {
 					continue
 				}
 
+				msg = tgbotapi.NewMessage(update.Message.Chat.ID, fmt.Sprintf("Видео [%s] поставлено в загрузку", files[number]))
 				go k.loadVideo(update.Message.Chat.ID, files[number])
 			}
 
@@ -166,6 +168,7 @@ func (k *RealBot) Run() {
 					Files:    files,
 				}
 
+				msg.Text += "Введите номер видео для загрузки:\n"
 				for i, v := range files {
 					msg.Text += fmt.Sprintf("%d. %s\n", i, v)
 				}
