@@ -5,8 +5,9 @@ import (
 )
 
 type buttons struct {
-	ID   string
-	Text string
+	ID         string
+	IsDownload bool
+	Text       string
 }
 
 var (

@@ -119,37 +119,6 @@ func (k *RealBot) Run() {
 			}
 			*/
 
-			if k.allowedIPs[fmt.Sprintf("%d", update.Message.Chat.ID)].Download {
-				files := k.allowedIPs[fmt.Sprintf("%d", update.Message.Chat.ID)].Files
-				k.allowedIPs[fmt.Sprintf("%d", update.Message.Chat.ID)] = &UserMode{
-					Download: false,
-				}
-
-				number, err := strconv.Atoi(update.Message.Text)
-				if err != nil {
-					msg = tgbotapi.NewMessage(update.Message.Chat.ID, "Не удалось распознать ввод")
-					if _, ok := k.admins[fmt.Sprintf("%d", int(update.Message.Chat.ID))]; ok {
-						msg.ReplyMarkup = k.keyboardAdmins()
-					} else {
-						msg.ReplyMarkup = k.keyboardDefault()
-					}
-
-					k.bot.Send(msg)
-
-					continue
-				}
-
-				msg = tgbotapi.NewMessage(update.Message.Chat.ID, fmt.Sprintf("Видео [%s] поставлено в загрузку", files[number]))
-				go func() {
-					if k.allowedIPs[fmt.Sprintf("%d", update.Message.Chat.ID)].Mode == DownloadMode || k.allowedIPs[fmt.Sprintf("%d", update.Message.Chat.ID)].Mode == EraseMode {
-						k.loadVideo(update.Message.Chat.ID, files[number])
-					}
-					if k.allowedIPs[fmt.Sprintf("%d", update.Message.Chat.ID)].Mode == EraseMode || k.allowedIPs[fmt.Sprintf("%d", update.Message.Chat.ID)].Mode == RemoveMode {
-						k.removeVideo(update.Message.Chat.ID, files[number])
-					}
-				}()
-			}
-
 			// Отправляем сообщение
 			if _, err = k.bot.Send(msg); err != nil {
 				fmt.Println("Send", err)
@@ -180,10 +149,23 @@ func (k *RealBot) Run() {
 					Files:    files,
 				}
 
-				msg.Text += "Введите номер видео для продолжения:\n"
+				msg.Text += "Выберите видео для продолжения:\n"
+				var rows []tgbotapi.InlineKeyboardButton
 				for i, v := range files {
 					msg.Text += fmt.Sprintf("%d. %s\n", i, v)
+
+					buttonsMap[v] = buttons{
+						ID:         v,
+						IsDownload: true,
+						Text:       v,
+					}
+					rows = append(rows, tgbotapi.NewInlineKeyboardRow(
+						tgbotapi.NewInlineKeyboardButtonData(buttonsMap[v].Text, buttonsMap[v].ID),
+					)...)
+
 				}
+
+				msg.ReplyMarkup = tgbotapi.NewInlineKeyboardRow(rows...)
 			}
 
 			switch update.CallbackQuery.Data {
@@ -278,6 +260,21 @@ func (k *RealBot) Run() {
 			case buttonsMap["Info"].ID:
 				msg.Text, _ = cmd.Info()
 			default:
+				if v, ok := buttonsMap[update.CallbackQuery.Data]; ok && v.IsDownload {
+					k.allowedIPs[fmt.Sprintf("%d", update.CallbackQuery.Message.Chat.ID)] = &UserMode{
+						Download: false,
+					}
+
+					msg = tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, fmt.Sprintf("Видео [%s] поставлено в загрузку", v.Text))
+					go func() {
+						if k.allowedIPs[fmt.Sprintf("%d", update.CallbackQuery.Message.Chat.ID)].Mode == DownloadMode || k.allowedIPs[fmt.Sprintf("%d", update.CallbackQuery.Message.Chat.ID)].Mode == EraseMode {
+							k.loadVideo(update.CallbackQuery.Message.Chat.ID, v.Text)
+						}
+						if k.allowedIPs[fmt.Sprintf("%d", update.CallbackQuery.Message.Chat.ID)].Mode == EraseMode || k.allowedIPs[fmt.Sprintf("%d", update.CallbackQuery.Message.Chat.ID)].Mode == RemoveMode {
+							k.removeVideo(update.CallbackQuery.Message.Chat.ID, v.Text)
+						}
+					}()
+				}
 				msg.Text = "Неожиданная команда"
 			}
 

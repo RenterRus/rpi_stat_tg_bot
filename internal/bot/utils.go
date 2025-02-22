@@ -47,6 +47,7 @@ func (k *RealBot) loadVideo(chatID int64, fileName string) {
 	if _, err := k.bot.Send(tgbotapi.NewVideo(chatID, videoFileBytes)); err != nil {
 		k.bot.Send(tgbotapi.NewMessage(chatID, fmt.Sprintf("Не удается отправить файл %s: %s", fileName, err.Error())))
 	}
+	k.bot.Send(tgbotapi.NewMessage(chatID, "Видео удалено"))
 }
 
 func (k *RealBot) removeVideo(chatID int64, fileName string) {
