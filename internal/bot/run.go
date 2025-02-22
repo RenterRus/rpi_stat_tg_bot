@@ -167,6 +167,7 @@ func (k *RealBot) Run() {
 					Download: true,
 					Files:    files,
 				}
+				k.allowedIPs[fmt.Sprintf("%d", int(update.Message.Chat.ID))] = new(UserMode)
 				k.allowedIPs[fmt.Sprintf("%d", int(update.Message.Chat.ID))] = data
 
 				for i, v := range files {
