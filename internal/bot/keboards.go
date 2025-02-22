@@ -71,6 +71,11 @@ func (k *RealBot) initKeyboard() {
 		ID:   "Download",
 		Text: "Скачать загруженное (до 1.5 гб)",
 	}
+
+	buttonsMap["Quality"] = buttons{
+		ID:   "Quality",
+		Text: "Максимальное качество загрузки: " + k.downloader.QualityModeState(),
+	}
 }
 
 func (k *RealBot) keyboardDefault() tgbotapi.InlineKeyboardMarkup {
@@ -126,6 +131,9 @@ func (k *RealBot) keyboardAdmins() tgbotapi.InlineKeyboardMarkup {
 		tgbotapi.NewInlineKeyboardRow(
 			tgbotapi.NewInlineKeyboardButtonData(buttonsMap["Sensors"].Text, buttonsMap["Sensors"].ID),
 			tgbotapi.NewInlineKeyboardButtonData(buttonsMap["ActualState"].Text, buttonsMap["ActualState"].ID),
+		),
+		tgbotapi.NewInlineKeyboardRow(
+			tgbotapi.NewInlineKeyboardButtonData(buttonsMap["Quality"].Text, buttonsMap["Quality"].ID),
 		),
 		tgbotapi.NewInlineKeyboardRow(
 			tgbotapi.NewInlineKeyboardButtonData(buttonsMap["Download"].Text, buttonsMap["Download"].ID),

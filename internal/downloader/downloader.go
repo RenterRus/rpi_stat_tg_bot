@@ -36,6 +36,9 @@ func (d *DLP) downloader(link string) {
 	d.ActualStatus()
 	name := ""
 	duration := float64(DEFAULT_TIMEOUT)
+
+	d.dl.Format(fmt.Sprintf("bv*[height=%d]+ba", qualityMapping[d.quality]))
+
 	d.dl.ProgressFunc(time.Duration(time.Millisecond*750), func(update ytdlp.ProgressUpdate) {
 		size := (float64(update.DownloadedBytes) / 1024) / 1024 // К мегабайтам
 		totalSize := (float64(update.TotalBytes) / 1024) / 1024 // К мегабайтам

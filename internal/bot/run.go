@@ -46,7 +46,6 @@ func (k *RealBot) Run() {
 
 		if update.Message != nil {
 			log.Printf("[%s] %s", update.Message.From.UserName, update.Message.Text)
-
 			// Убеждаемся, что пользователь из разрешенного пула
 			var msg tgbotapi.MessageConfig
 			if _, ok := k.allowedIPs[fmt.Sprintf("%d", int(update.Message.Chat.ID))]; ok {
@@ -222,6 +221,10 @@ func (k *RealBot) Run() {
 				}
 			case buttonsMap["CleanHistory"].ID:
 				msg.Text = k.downloader.CleanHistory()
+			case buttonsMap["Quality"].ID:
+				k.downloader.QualityModeToggle()
+
+				msg.Text = "Максимальное качество видео: " + k.downloader.QualityModeState()
 			case buttonsMap["ActualState"].ID:
 				msg.Text = k.downloader.ActualStatus()
 			case buttonsMap["ViewQueue"].ID:

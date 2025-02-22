@@ -19,6 +19,16 @@ type WorkerStatus struct {
 	Actual map[string]map[string]FileInfo
 }
 
+var (
+	qualityMapping = map[int]int{
+		0: 4320,
+		1: 2160,
+		2: 1440,
+		3: 1080,
+		4: 720,
+	}
+)
+
 type DLP struct {
 	worker     WorkerStatus
 	path       string
@@ -29,6 +39,7 @@ type DLP struct {
 	maxWorkers int
 	updateStat string
 	eagerMode  bool
+	quality    int
 }
 
 func NewDownloader(path string, db db.Queue, maxWorkers int, eagerMode bool) Downloader {
@@ -40,5 +51,6 @@ func NewDownloader(path string, db db.Queue, maxWorkers int, eagerMode bool) Dow
 		qdb:        db,
 		maxWorkers: maxWorkers,
 		eagerMode:  eagerMode,
+		quality:    0,
 	}
 }

@@ -11,4 +11,6 @@ type Downloader interface {
 	UpdateInfo() string
 	EagerModeToggle()
 	EagerModeState() string
+	QualityModeToggle()
+	QualityModeState() string
 }
