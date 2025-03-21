@@ -45,7 +45,7 @@ func (d *DLP) Run(ctx context.Context) {
 
 	d.dl = ytdlp.New().
 		RmCacheDir().
-		ExtractorArgs("youtube:player_client=default,ios").
+		//ExtractorArgs("youtube:player_client=default,ios").
 		SetWorkDir(d.path).
 		FormatSort("res,ext:mp4:m4a").
 		RecodeVideo("mp4").
