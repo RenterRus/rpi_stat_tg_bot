@@ -57,7 +57,9 @@ func (d *DLP) Run(ctx context.Context) {
 		NoAbortOnError().
 		CookiesFromBrowser("chrome").
 		MarkWatched().
-		EmbedChapters()
+		EmbedChapters().
+		ExtractorArgs("youtube:player-client=default,-tv,web_safari,web_embedded")
+
 	d.worker.Actual = make(map[string]map[string]FileInfo)
 	doubleWay := make(chan struct{}, d.maxWorkers)
 
