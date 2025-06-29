@@ -56,6 +56,7 @@ func (d *DLP) Run(ctx context.Context) {
 		IgnoreNoFormatsError().
 		NoAbortOnError().
 		CookiesFromBrowser("chrome").
+		ExtractorArgs("youtube:player-client=tv_embedded").
 		MarkWatched().
 		EmbedChapters()
 		// .ExtractorArgs("youtube:player-client=default,-tv,web_safari,web_embedded")
