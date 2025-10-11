@@ -25,7 +25,7 @@ func (d *DLP) ytInit(ctx context.Context) {
 }
 
 func (d *DLP) Run(ctx context.Context) {
-	d.ytInit(ctx)
+	//	d.ytInit(ctx)
 	res, err := ytdlp.New().Update(context.Background())
 	var updateStat strings.Builder
 	updateStat.WriteString(fmt.Sprintf("Версия на сервере: %s\n", ytdlp.Version))
