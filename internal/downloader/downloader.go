@@ -42,7 +42,7 @@ func (d *DLP) downloader(link string) {
 	d.dl.ProgressFunc(time.Duration(time.Millisecond*750), func(update ytdlp.ProgressUpdate) {
 		size := (float64(update.DownloadedBytes) / 1024) / 1024 // К мегабайтам
 		totalSize := (float64(update.TotalBytes) / 1024) / 1024 // К мегабайтам
-		fmt.Println(update.PercentString(), fmt.Sprintf("[%.2f/%.2f]mb", size, totalSize), update.Filename)
+		fmt.Println(update.PercentString(), fmt.Sprintf("[%.2f/%.2f]mb", size, totalSize), fmt.Sprintf("[%s]", update.Info.Format), update.Filename)
 		status := string(update.Status)
 		if strings.Contains(status, "finished") {
 			status = "converting"
@@ -58,7 +58,7 @@ func (d *DLP) downloader(link string) {
 			DownloadSize: fmt.Sprintf("%.2f", size),
 			TotalSize:    fmt.Sprintf("%.2f", totalSize),
 			Proc:         update.PercentString(),
-			Status:       status,
+			Status:       fmt.Sprintf("%s [%s]", status, update.Info.Format),
 		}
 		progressInfo[update.Filename] = baseMessage
 		d.worker.Actual[link] = progressInfo
